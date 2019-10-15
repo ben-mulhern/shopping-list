@@ -1,14 +1,16 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Shopping List</h1>
-      <p>Here's a shopping list app</p>
-      <p>It's going to be great when it's finished</p>
-    </div>
+    <React.Fragment>
+      <CssBaseline />
+      <div className="App">
+        <h1>Shopping List</h1>
+        <p>Here's a shopping list app</p>
+      </div>
+    </React.Fragment>
   );
 }
 
