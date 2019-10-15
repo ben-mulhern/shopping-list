@@ -1,17 +1,25 @@
-import React from 'react';
-import './App.css';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import React from 'react'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import {Route, HashRouter} from 'react-router-dom'
+import Placeholder from './components/Placeholder.js'
 
-function App() {
+
+const App = () => {
+
   return (
     <React.Fragment>
       <CssBaseline />
+      <HashRouter>
       <div className="App">
-        <h1>Shopping List</h1>
-        <p>Here's a shopping list app</p>
+
+        <div>
+          <Route exact path="/" component={Placeholder} /> 
+        </div>   
+
       </div>
+      </HashRouter>
     </React.Fragment>
-  );
+  )
 }
 
-export default App;
+export default App
