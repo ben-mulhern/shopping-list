@@ -1,6 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import {Route, HashRouter} from 'react-router-dom'
+import {connect} from 'react-redux'
+import {Route} from 'react-router-dom'
 import Placeholder from './Placeholder.js'
 import checkLogin from '../apiActions/checkLogin'
 import Login from './Login'
@@ -19,15 +19,14 @@ const MainView = (props) => {
   if (!loggedIn) return <Login />
 
   return (
-      <HashRouter>
-      <div className="App">
+    <div className="App">
 
-        <div>
-          <Route exact path="/" component={Placeholder} /> 
-        </div>   
+      <div>
+        <Route exact path="/" component={Placeholder} /> 
+        <Route exact path="/login" component={Login} />
+      </div>   
 
-      </div>
-      </HashRouter>
+    </div>
 
   )
 }
