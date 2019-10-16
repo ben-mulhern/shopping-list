@@ -8,13 +8,12 @@ import Login from './Login'
 
 const MainView = (props) => {
 
-  const {loggedIn, fetching} = props.loginReducer
+  const {loggedIn, fetching, heartbeatChecked} = props.loginReducer
 
-  console.log("About to check login status")
-  checkLogin()
-
-  // Check login status and show loading icon until we know
-  // render login if not or show relevant page
+  if (!heartbeatChecked) {
+    props.checkLogin()
+  }
+  // TODO - show loading icon
 
   if (fetching) return <p>Loading...</p>
   if (!loggedIn) return <Login />

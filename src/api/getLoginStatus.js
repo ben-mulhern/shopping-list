@@ -3,7 +3,7 @@ const getLoginStatus = () => {
   // Get value out of cookie
   // Attempt heartbeat api call
   // return Boolean (promise?) if logged in
-  console.log("Here's the api call")
+  console.log("Calling getLoginStatus")
   return Promise.resolve(new Response())
 }
 

@@ -1,7 +1,7 @@
 const initialState = {
   loggedIn: false,
-  fetching: false
-
+  fetching: false,
+  heartbeatChecked: false
 }
 
 const loginReducer = (state = initialState, action) => {
@@ -12,27 +12,30 @@ const loginReducer = (state = initialState, action) => {
       return {
         ...state,
         fetching: false,
-        loggedIn: true
+        loggedIn: true,
+        heartbeatChecked: true
       }
 
       case 'START_LOGIN_CHECK':
-        console.log("Starting login check")
         return {
           ...state,
-          fetching: true
+          fetching: true,
+          heartbeatChecked: true
         }
 
       case 'LOGOUT':
         return {
           ...state,
           fetching: false,
-          loggedIn: false
+          loggedIn: false,
+          heartbeatChecked: true
         }  
 
         case 'LOGIN_API_ERROR':
             return {
               ...state,
               fetching: false,
+              heartbeatChecked: true,
               error: 'Error communicating with server: ' + action.error
             }        
             

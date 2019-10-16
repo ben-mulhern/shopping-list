@@ -2,17 +2,15 @@ import {login, logout, startLoginCheck} from '../actions/loginActions'
 import getLoginStatus from '../api/getLoginStatus'
 
 const checkLogin = () => {  
-  console.log("About to call API")
   return dispatch => {
-    console.log("Really about to call API")
     dispatch(startLoginCheck())    
     getLoginStatus()
       .then(res => {
         if (res.ok) {
-          console.log("API call was good")
+          console.log("Login check successful")
           dispatch(login())
         } else {
-          console.log("API call was bad")
+          console.log("Login check failed")
           dispatch(logout())
         }    
       })   
