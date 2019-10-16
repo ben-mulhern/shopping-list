@@ -1,14 +1,14 @@
 import React from 'react'
-import CssBaseline from '@material-ui/core/CssBaseline'
 import {Route, HashRouter} from 'react-router-dom'
 import Placeholder from './components/Placeholder.js'
 
 
 const App = () => {
 
+  // Check login status and show loading icon until we know
+  // render login if not or show relevant page
+
   return (
-    <React.Fragment>
-      <CssBaseline />
       <HashRouter>
       <div className="App">
 
@@ -18,7 +18,7 @@ const App = () => {
 
       </div>
       </HashRouter>
-    </React.Fragment>
+
   )
 }
 
