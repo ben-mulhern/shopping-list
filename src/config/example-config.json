@@ -1,3 +1,4 @@
 { 
-  "apiUrl": "SET THIS"
+  "apiUrl": "SET THIS",
+  "apiKey": "SET THIS"
 }
