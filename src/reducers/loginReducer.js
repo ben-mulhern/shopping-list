@@ -1,8 +1,7 @@
-import Immutable from 'immutable'
-import cloneDeep from "lodash.clonedeep"
-
 const initialState = {
-  loggedIn: false
+  loggedIn: false,
+  fetching: false,
+  heartbeatChecked: false
 }
 
 const loginReducer = (state = initialState, action) => {
@@ -12,13 +11,33 @@ const loginReducer = (state = initialState, action) => {
     case 'LOGIN':
       return {
         ...state,
-        loggedIn: true
+        fetching: false,
+        loggedIn: true,
+        heartbeatChecked: true
       }
+
+      case 'START_LOGIN_CHECK':
+        return {
+          ...state,
+          fetching: true,
+          heartbeatChecked: true
+        }
+
       case 'LOGOUT':
         return {
           ...state,
-          loggedIn: false
+          fetching: false,
+          loggedIn: false,
+          heartbeatChecked: true
         }  
+
+        case 'LOGIN_API_ERROR':
+            return {
+              ...state,
+              fetching: false,
+              heartbeatChecked: true,
+              error: 'Error communicating with server: ' + action.error
+            }        
             
     default:
       return state
