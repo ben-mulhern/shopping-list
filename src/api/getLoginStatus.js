@@ -9,7 +9,7 @@ const getLoginStatus = async () => {
   // errors[0].extensions.code = "access-denied"  <--- login fail
   //                           = "validation-failed" <---- login success
   console.log("Calling getLoginStatus")
-  await delayHelper(2000)
+  await delayHelper(500)
   return Promise.resolve(new Response())
 }
 
