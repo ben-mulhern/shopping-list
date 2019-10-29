@@ -1,10 +1,10 @@
 import ApolloClient from 'apollo-boost'
-import Config from "../config/config.json"
+
 
 const apiClient = new ApolloClient({
-  uri: process.env.API_URL || Config.apiUrl,
+  uri: process.env.REACT_APP_API_URL,
   headers: {
-    "x-hasura-admin-secret": process.env.API_KEY || Config.apiKey
+    "x-hasura-admin-secret": process.env.REACT_APP_API_KEY
   }
 })
 
