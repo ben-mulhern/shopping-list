@@ -5,10 +5,21 @@ import MealCards from './MealCards'
 import ShoppingList from './ShoppingList'
 import IngredientCards from './IngredientCards'
 import Navbar from './Navbar'
+import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
+
+const useStyles = makeStyles(theme => ({
+  margin: {
+    margin: theme.spacing(1),
+  }
+}))
 
 const MainView = (props) => {
+
+  const classes = useStyles()
+
   return (
-    <div className="App">
+    <div className={clsx(classes.margin, "App")}>
       <Navbar />
       <div>
         <Switch>
