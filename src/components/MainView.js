@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, Switch} from 'react-router-dom'
+import {Route, Switch, Redirect, withRouter} from 'react-router-dom'
 import Login from './Login'
 import MealCards from './MealCards'
 import ShoppingList from './ShoppingList'
@@ -17,6 +17,11 @@ const useStyles = makeStyles(theme => ({
 const MainView = (props) => {
 
   const classes = useStyles()
+  const loggedIn = true
+
+  if (!loggedIn && props.location.pathname !== '/login') {
+    return <Redirect to='/login'/>
+  }
 
   return (
     <div className={clsx(classes.margin, "App")}>
@@ -34,4 +39,4 @@ const MainView = (props) => {
   )
 }
 
-export default MainView
+export default withRouter(MainView)

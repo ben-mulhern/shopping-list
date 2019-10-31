@@ -9,7 +9,7 @@ const loginReducer = (state = initialState, action) => {
     case 'LOGIN':
       return {
         ...state,
-        apiKey: action.password
+        apiKey: action.apiKey
       }
             
     default:
