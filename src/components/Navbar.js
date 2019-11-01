@@ -3,27 +3,21 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import {Link} from 'react-router-dom'
+import { connect } from 'react-redux'
 
-const Navbar = () => {
-
-  const [value, setValue] = React.useState(0)
- 
-  const handleChange = (newValue) => {
-    setValue(newValue)
-  }
+const Navbar = (props) => {
 
   const LinkTab = (props) => (
     <Tab
       label={props.label}
       component={Link}
       to={props.href}
-      onClick={e => handleChange(props.value)}
     />
   )
 
   return (
     <AppBar position="static">
-      <Tabs value={value}>
+      <Tabs value={props.activeTab}>
         <LinkTab label="Shopping list" href="/list" />
         <LinkTab label="Meals" href="/meals" />
         <LinkTab label="Ingredients" href="/ingredients" />
@@ -32,4 +26,10 @@ const Navbar = () => {
   )  
 }
 
-export default Navbar
+const mapStateToProps = state => {
+  return {
+    activeTab: state.activeTab
+  }
+}
+
+export default connect(mapStateToProps)(Navbar)

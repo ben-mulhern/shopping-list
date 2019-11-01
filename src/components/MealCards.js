@@ -2,6 +2,8 @@ import React from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import MealCard from './MealCard'
+import { connect } from 'react-redux'
+import { setTab } from '../state/actions'
 
 const mealQuery = gql`
   {
@@ -15,7 +17,10 @@ const mealQuery = gql`
   }
 `
 
-const MealCards = () => {
+const MealCards = (props) => {
+
+  props.setTab(1)
+
   const { loading, error, data } = useQuery(mealQuery);
 
   if (loading) return <p>Loading...</p>
@@ -23,9 +28,13 @@ const MealCards = () => {
 
   return (
     <div>
-      {data.meal.map(m => <MealCard meal={m} />)}  
+      {data.meal.map((m, i) => <MealCard meal={m} key={i} />)}  
     </div>
   )  
 }
 
-export default MealCards
+const mapDispatchToProps = dispatch => ({
+  setTab: index => dispatch(setTab(index))
+})
+
+export default connect(null, mapDispatchToProps)(MealCards)
