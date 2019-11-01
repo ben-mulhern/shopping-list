@@ -1,7 +1,7 @@
 import { createStore } from 'redux'
-import rootReducer from '../reducers'
+import appReducer from './appReducer'
 
 const configureStore = (initialState) => 
-  createStore(rootReducer, initialState)
+  createStore(appReducer, initialState)
 
 export default configureStore

@@ -9,6 +9,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import clsx from 'clsx'
 import Button from '@material-ui/core/Button'
+import { connect } from 'react-redux'
+import { setTab } from '../state/actions'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -19,8 +21,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Login = () => {
+const Login = (props) => {
   
+  props.setTab(0)
+
   const classes = useStyles()
   const [values, setValues] = React.useState({
     password: '',
@@ -70,4 +74,8 @@ const Login = () => {
   )
 }
 
-export default Login
+const mapDispatchToProps = dispatch => ({
+  setTab: index => dispatch(setTab(index))
+})
+
+export default connect(null, mapDispatchToProps)(Login)

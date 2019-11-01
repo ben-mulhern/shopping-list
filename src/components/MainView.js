@@ -21,6 +21,8 @@ const MainView = (props) => {
 
   if (!loggedIn && props.location.pathname !== '/login') {
     return <Redirect to='/login'/>
+  } else if (loggedIn && props.location.pathname === '/login') {
+    return <Redirect to='/list' />
   }
 
   return (
@@ -28,11 +30,11 @@ const MainView = (props) => {
       <Navbar />
       <div>
         <Switch>
-          <Route exact path="/" component={ShoppingList} /> 
           <Route exact path="/list" component={ShoppingList} />
           <Route exact path="/meals" component={MealCards} />
           <Route exact path="/ingredients" component={IngredientCards} />
           <Route exact path="/login" component={Login} />
+          <Route path="/" component={ShoppingList} />           
         </Switch>
       </div>   
     </div>

@@ -1,9 +1,20 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { setTab } from '../state/actions'
 
-const ShoppingList = () => (
-  <div>
-    <p>Shopping list goes here</p>
-  </div>
-)
+const ShoppingList = (props) => {
 
-export default ShoppingList
+  props.setTab(0)
+
+  return (
+    <div>
+      <p>Shopping list goes here</p>
+    </div>
+  )
+}
+
+const mapDispatchToProps = dispatch => ({
+  setTab: index => dispatch(setTab(index))
+})
+
+export default connect(null, mapDispatchToProps)(ShoppingList)
