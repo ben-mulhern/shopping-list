@@ -1,5 +1,9 @@
-export const login = (apiKey) => ({
-  type: 'LOGIN',
+export const logIn = () => ({
+  type: 'LOGIN'
+})
+
+export const saveApiKey = (apiKey) => ({
+  type: 'SAVE_API_KEY',
   apiKey
 })
 

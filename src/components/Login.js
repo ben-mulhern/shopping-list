@@ -10,7 +10,9 @@ import IconButton from '@material-ui/core/IconButton'
 import clsx from 'clsx'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import { setTab } from '../state/actions'
+import { setTab, logIn, saveApiKey } from '../state/actions'
+import { useLazyQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -21,8 +23,22 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const loginQuery = gql`
+{
+  unit {
+    unit_id
+  }
+}
+`
 const Login = (props) => {
   
+  const [attemptLogInCall, { called, loading, error }] = useLazyQuery(loginQuery)
+
+  const attemptLogin = (apiKey) => {
+    props.saveApiKey(apiKey)
+    attemptLogInCall()
+  }
+
   props.setTab(0)
 
   const classes = useStyles()
@@ -42,6 +58,14 @@ const Login = (props) => {
   const handleMouseDownPassword = event => {
     event.preventDefault();
   }
+
+  if (called && loading) return <p>Loading...</p>
+  if (called && error) return <p>Login failed :(</p>
+
+  // If we got here and we've already called, we're logged in
+  if (called) {
+    props.logIn()
+  }  
 
   return (
     <div>
@@ -66,7 +90,8 @@ const Login = (props) => {
           }
           labelWidth={70}
         />
-        <Button variant="contained" color="primary" className={classes.margin}>
+        <Button variant="contained" color="primary" className={classes.margin}
+                onClick={() => attemptLogin(values.password)}>
           Login
         </Button>
       </FormControl>              
@@ -75,7 +100,9 @@ const Login = (props) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  setTab: index => dispatch(setTab(index))
+  setTab: index => dispatch(setTab(index)),
+  logIn: () => dispatch(logIn()),
+  saveApiKey: apiKey => dispatch(saveApiKey(apiKey))
 })
 
 export default connect(null, mapDispatchToProps)(Login)
