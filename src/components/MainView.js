@@ -7,17 +7,24 @@ import IngredientCards from './IngredientCards'
 import Navbar from './Navbar'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
+import { logIn } from '../state/actions'
+import { connect } from 'react-redux'
 
 const useStyles = makeStyles(theme => ({
   margin: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(1)
   }
 }))
 
 const MainView = (props) => {
 
   const classes = useStyles()
-  const loggedIn = true
+  const apiKey = sessionStorage.getItem('API_KEY')
+  const loggedIn = (props.loggedIn || (apiKey && !props.loggedIn))
+
+  if (!props.loggedIn && apiKey) {
+    props.logIn()
+  }
 
   if (!loggedIn && props.location.pathname !== '/login') {
     return <Redirect to='/login'/>
@@ -41,4 +48,15 @@ const MainView = (props) => {
   )
 }
 
-export default withRouter(MainView)
+const mapStateToProps = state => {
+  return {
+    loggedIn: state.loggedIn
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  logIn: () => dispatch(logIn())
+})
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainView))

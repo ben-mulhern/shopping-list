@@ -1,10 +1,14 @@
 import ApolloClient from 'apollo-boost'
 
-
 const apiClient = new ApolloClient({
   uri: process.env.REACT_APP_API_URL,
-  headers: {
-    "x-hasura-admin-secret": process.env.REACT_APP_API_KEY
+  request: (operation) => {
+    const apiKey = sessionStorage.getItem('API_KEY')
+    operation.setContext({
+      headers: {
+        "x-hasura-admin-secret": apiKey || ''
+      }
+    })
   }
 })
 
