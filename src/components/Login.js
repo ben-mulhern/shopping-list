@@ -10,16 +10,16 @@ import IconButton from '@material-ui/core/IconButton'
 import clsx from 'clsx'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import { setTab, logIn, saveApiKey } from '../state/actions'
+import { setTab, logIn } from '../state/actions'
 import { useLazyQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
 const useStyles = makeStyles(theme => ({
   margin: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(1)
   },
   textField: {
-    width: 250,
+    width: 250
   }
 }))
 
@@ -35,7 +35,7 @@ const Login = (props) => {
   const [attemptLogInCall, { called, loading, error }] = useLazyQuery(loginQuery)
 
   const attemptLogin = (apiKey) => {
-    props.saveApiKey(apiKey)
+    sessionStorage.setItem('API_KEY', apiKey)
     attemptLogInCall()
   }
 
@@ -59,9 +59,11 @@ const Login = (props) => {
     event.preventDefault();
   }
 
-  if (called && loading) return <p>Loading...</p>
-  if (called && error) return <p>Login failed :(</p>
-
+  if (called && loading) return <p>Authenticating...</p>
+  if (called && error) {
+    sessionStorage.removeItem('API_KEY')
+    return <p>Login failed :( Please <a href="/">try again</a></p>
+  }
   // If we got here and we've already called, we're logged in
   if (called) {
     props.logIn()
@@ -101,8 +103,7 @@ const Login = (props) => {
 
 const mapDispatchToProps = dispatch => ({
   setTab: index => dispatch(setTab(index)),
-  logIn: () => dispatch(logIn()),
-  saveApiKey: apiKey => dispatch(saveApiKey(apiKey))
+  logIn: () => dispatch(logIn())
 })
 
 export default connect(null, mapDispatchToProps)(Login)

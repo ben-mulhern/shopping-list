@@ -1,5 +1,4 @@
 const initialState = {
-  apiKey: '',
   loggedIn: false,
   activeTab: 0
 }
@@ -13,12 +12,6 @@ const appReducer = (state = initialState, action) => {
         ...state,
         loggedIn: true
       }
-
-      case 'SAVE_API_KEY':
-        return {
-          ...state,
-          apiKey: action.apiKey
-        }
 
     case 'SET_TAB':
       return {
