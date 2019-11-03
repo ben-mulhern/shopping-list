@@ -11,11 +11,12 @@ import Chip from '@material-ui/core/Chip'
 
 const useStyles = makeStyles({
   card: {
-    minWidth: 275,
-    maxWidth: 345,
+    width: 300,
     display: 'inline-block',
-    margin: 10,
-    padding: 10
+    marginRight: 10,
+    marginBottom: 10,
+    padding: 10,
+    verticalAlign: 'top'
   },
   media: {
     height: 140

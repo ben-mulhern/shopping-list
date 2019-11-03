@@ -15,8 +15,9 @@ const useStyles = makeStyles(theme => ({
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
-    width: 400,
-    margin: theme.spacing(1)
+    maxWidth: 400,
+    marginTop: 10,
+    marginBottom: 10
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -60,8 +61,9 @@ const MealCards = (props) => {
           <SearchIcon />
         </IconButton>
       </Paper>
-
-      {data.meal.map((m, i) => <MealCard meal={m} key={i} />)}  
+      <div>
+        {data.meal.map((m, i) => <MealCard meal={m} key={i} />)}  
+      </div>
     </div>
   )  
 }
