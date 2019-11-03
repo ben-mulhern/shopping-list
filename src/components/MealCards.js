@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
 import IconButton from '@material-ui/core/IconButton'
 import SearchIcon from '@material-ui/icons/Search'
+import Button from '@material-ui/core/Button'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,6 +26,12 @@ const useStyles = makeStyles(theme => ({
   },
   iconButton: {
     padding: 10
+  },
+  button: {
+    marginTop: 10,
+    marginRight: 10,
+    marginBottom: 10
+
   }
 }))
 
@@ -61,6 +68,12 @@ const MealCards = (props) => {
           <SearchIcon />
         </IconButton>
       </Paper>
+      <Button variant="contained" color="primary" className={classes.button}>
+        New meal
+      </Button>
+      <Button variant="contained" color="primary" className={classes.button}>
+        Add meals to list
+      </Button>
       <div>
         {data.meal.map((m, i) => <MealCard meal={m} key={i} />)}  
       </div>

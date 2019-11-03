@@ -46,7 +46,7 @@ const MealCard = (props) => {
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary">
-          Add to list
+          Select
         </Button>
       </CardActions>
     </Card>
