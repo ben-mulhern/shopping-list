@@ -3,7 +3,6 @@ import {Route, Switch, Redirect, withRouter} from 'react-router-dom'
 import Login from './Login'
 import MealCards from './MealCards'
 import ShoppingList from './ShoppingList'
-import IngredientCards from './IngredientCards'
 import Navbar from './Navbar'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
@@ -39,7 +38,6 @@ const MainView = (props) => {
         <Switch>
           <Route exact path="/list" component={ShoppingList} />
           <Route exact path="/meals" component={MealCards} />
-          <Route exact path="/ingredients" component={IngredientCards} />
           <Route exact path="/login" component={Login} />
           <Route path="/" component={ShoppingList} />           
         </Switch>

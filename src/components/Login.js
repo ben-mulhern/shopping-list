@@ -72,31 +72,32 @@ const Login = (props) => {
   return (
     <div>
       <p>Welcome to Bolly's shopping list. Please enter the password to continue.</p>
-      <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-        <OutlinedInput className={classes.margin}
-          id="outlined-adornment-password"
-          type={values.showPassword ? 'text' : 'password'}
-          value={values.password}
-          onChange={handleChange('password')}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-              >
-                {values.showPassword ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            </InputAdornment>
-          }
-          labelWidth={70}
-        />
-        <Button variant="contained" color="primary" className={classes.margin}
-                onClick={() => attemptLogin(values.password)}>
-          Login
-        </Button>
-      </FormControl>              
+      <form onSubmit={() => attemptLogin(values.password)}>
+        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined" required>
+          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          <OutlinedInput className={classes.margin}
+            id="outlined-adornment-password"
+            type={values.showPassword ? 'text' : 'password'}
+            value={values.password}
+            onChange={handleChange('password')}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
+            labelWidth={70}
+          />
+          <Button variant="contained" color="primary" className={classes.margin} type="submit">
+            Login
+          </Button>
+        </FormControl>      
+      </form>        
     </div>
   )
 }

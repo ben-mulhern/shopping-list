@@ -20,7 +20,6 @@ const Navbar = (props) => {
       <Tabs value={props.activeTab}>
         <LinkTab label="Shopping list" href="/list" />
         <LinkTab label="Meals" href="/meals" />
-        <LinkTab label="Ingredients" href="/ingredients" />
       </Tabs>
     </AppBar>
   )  
