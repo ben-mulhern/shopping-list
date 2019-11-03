@@ -4,6 +4,28 @@ import { gql } from 'apollo-boost'
 import MealCard from './MealCard'
 import { connect } from 'react-redux'
 import { setTab } from '../state/actions'
+import { makeStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import InputBase from '@material-ui/core/InputBase'
+import IconButton from '@material-ui/core/IconButton'
+import SearchIcon from '@material-ui/icons/Search'
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 400,
+    margin: theme.spacing(1)
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1
+  },
+  iconButton: {
+    padding: 10
+  }
+}))
 
 const mealQuery = gql`
   {
@@ -18,7 +40,7 @@ const mealQuery = gql`
 `
 
 const MealCards = (props) => {
-
+  const classes = useStyles()
   props.setTab(1)
 
   const { loading, error, data } = useQuery(mealQuery);
@@ -28,6 +50,17 @@ const MealCards = (props) => {
 
   return (
     <div>
+      <Paper className={classes.root}>
+        <InputBase
+          className={classes.input}
+          placeholder="Search meals"
+          inputProps={{ 'aria-label': 'search meals' }}
+        />
+        <IconButton className={classes.iconButton} aria-label="search">
+          <SearchIcon />
+        </IconButton>
+      </Paper>
+
       {data.meal.map((m, i) => <MealCard meal={m} key={i} />)}  
     </div>
   )  
