@@ -8,6 +8,7 @@ import CardActionArea from '@material-ui/core/CardActionArea'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Chip from '@material-ui/core/Chip'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 
 const useStyles = makeStyles({
   card: {
@@ -23,6 +24,9 @@ const useStyles = makeStyles({
   },
   chip: {
     margin: 1
+  },
+  addIcon: {
+    fontSize: 30
   }
 })
 
@@ -45,7 +49,8 @@ const MealCard = (props) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
+        <Button size="small" color="secondary">
+          <AddCircleIcon className={classes.addIcon} color="secondary" /> 
           Select
         </Button>
       </CardActions>
