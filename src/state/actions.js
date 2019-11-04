@@ -12,12 +12,12 @@ export const setTab = (tabIndex) => ({
   tabIndex
 })
 
-export const selectMeal = (mealKey) => ({
+export const selectMeal = (mealId) => ({
   type: 'SELECT_MEAL',
-  mealKey
+  mealId
 })
 
-export const deselectMeal = (mealKey) => ({
+export const deselectMeal = (mealId) => ({
   type: 'DESELECT_MEAL',
-  mealKey
+  mealId
 })

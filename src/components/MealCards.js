@@ -38,6 +38,7 @@ const useStyles = makeStyles(theme => ({
 const mealQuery = gql`
   {
     meal {
+      meal_id,
       description,
       image_url,
       meal_tags {
@@ -75,7 +76,7 @@ const MealCards = (props) => {
         Add meals to list
       </Button>
       <div>
-        {data.meal.map((m, i) => <MealCard meal={m} key={i} />)}  
+        {data.meal.map(m => <MealCard meal={m} key={m.meal_id} />)}  
       </div>
     </div>
   )  

@@ -7,7 +7,6 @@ const initialState = {
 }
 
 const appReducer = (state = initialState, action) => {
-
   switch (action.type) {        
 
     case 'LOGIN':
@@ -23,16 +22,16 @@ const appReducer = (state = initialState, action) => {
       }  
       
     case 'SELECT_MEAL':
-        return {
-          ...state,
-          selectedMeals: state.selectedMeals.add(action.mealKey)
-        }   
+      return {
+        ...state,
+        selectedMeals: state.selectedMeals.add(action.mealId)
+      }   
 
     case 'DESELECT_MEAL':
-        return {
-          ...state,
-          selectedMeals: state.selectedMeals.delete(action.mealKey)          
-        }            
+      return {
+        ...state,
+        selectedMeals: state.selectedMeals.delete(action.mealId)          
+      }            
             
     default:
       return state
