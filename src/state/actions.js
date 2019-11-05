@@ -11,3 +11,13 @@ export const setTab = (tabIndex) => ({
   type: 'SET_TAB',
   tabIndex
 })
+
+export const selectMeal = (mealId) => ({
+  type: 'SELECT_MEAL',
+  mealId
+})
+
+export const deselectMeal = (mealId) => ({
+  type: 'DESELECT_MEAL',
+  mealId
+})

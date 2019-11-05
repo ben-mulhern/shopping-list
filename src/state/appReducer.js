@@ -1,10 +1,12 @@
+import Immutable from 'immutable'
+
 const initialState = {
   loggedIn: false,
-  activeTab: 0
+  activeTab: 0,
+  selectedMeals: Immutable.Set()
 }
 
 const appReducer = (state = initialState, action) => {
-
   switch (action.type) {        
 
     case 'LOGIN':
@@ -17,7 +19,19 @@ const appReducer = (state = initialState, action) => {
       return {
         ...state,
         activeTab: action.tabIndex
-      }      
+      }  
+      
+    case 'SELECT_MEAL':
+      return {
+        ...state,
+        selectedMeals: state.selectedMeals.add(action.mealId)
+      }   
+
+    case 'DESELECT_MEAL':
+      return {
+        ...state,
+        selectedMeals: state.selectedMeals.delete(action.mealId)          
+      }        
             
     default:
       return state
