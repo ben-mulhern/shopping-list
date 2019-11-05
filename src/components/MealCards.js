@@ -43,7 +43,12 @@ const mealQuery = gql`
       image_url,
       meal_tags {
         tag
-      }
+      },
+      meal_ingredients {
+        ingredient {
+          description        
+        }
+      }      
     }
   }
 `
