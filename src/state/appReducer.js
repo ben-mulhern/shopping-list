@@ -3,8 +3,7 @@ import Immutable from 'immutable'
 const initialState = {
   loggedIn: false,
   activeTab: 0,
-  selectedMeals: Immutable.Set(),
-  searchWords: Immutable.List()
+  selectedMeals: Immutable.Set()
 }
 
 const appReducer = (state = initialState, action) => {

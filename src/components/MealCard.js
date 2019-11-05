@@ -35,6 +35,9 @@ const useStyles = makeStyles({
   selected: {
     backgroundColor: '#d3d3d3',
     opacity: 0.6
+  },
+  hidden: {
+    display: 'none'
   }
 })
 
@@ -43,8 +46,8 @@ const MealCard = (props) => {
   const meal = props.meal
 
   const selected = props.selectedMeals.includes(meal.meal_id)
-  const cardClass = (selected ? clsx(classes.card, classes.selected) : classes.card)
-
+  const cardClass = clsx(classes.card, selected && classes.selected, props.hidden && classes.hidden)
+  console.log("" + props.hidden)
   const button = (selected ? 
     <Button size="small" color="primary" onClick={e => props.deselectMeal(meal.meal_id)}>
       <RemoveCircleIcon className={classes.icon} color="primary" /> 

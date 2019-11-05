@@ -10,6 +10,7 @@ import InputBase from '@material-ui/core/InputBase'
 import IconButton from '@material-ui/core/IconButton'
 import SearchIcon from '@material-ui/icons/Search'
 import Button from '@material-ui/core/Button'
+import mealSearch from '../domain/mealSearch'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,18 +60,7 @@ const MealCards = (props) => {
 
   const { loading, error, data } = useQuery(mealQuery)
 
-  const [searchTerms, setSearchTerms] = useState({
-    fullString: '',
-    terms: []
-  })  
-
-  const handleSearchBarChange = (newSearchString) => {
-    const newTerms = {
-      fullString: newSearchString,
-      terms: newSearchString.split(' ')
-    }
-    setSearchTerms(newTerms)
-  }
+  const [searchString, setSearchString] = useState('')  
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
@@ -81,11 +71,10 @@ const MealCards = (props) => {
         <InputBase
           className={classes.input}
           placeholder="Search meals"
-          inputProps={{ 'aria-label': 'search meals' }}
-          value={searchTerms.fullString}
-          onChange = {(e) => handleSearchBarChange(e.target.value)}
+          value={searchString}
+          onChange = {(e) => setSearchString(e.target.value)}
         />
-        <IconButton className={classes.iconButton} aria-label="search">
+        <IconButton className={classes.iconButton}>
           <SearchIcon />
         </IconButton>
       </Paper>
@@ -96,7 +85,8 @@ const MealCards = (props) => {
         Add meals to list
       </Button>
       <div>
-        {data.meal.map(m => <MealCard meal={m} key={m.meal_id} />)}  
+        {data.meal.map(m => <MealCard meal={m} key={m.meal_id}
+                                      hidden={!mealSearch(searchString, m)} />)}  
       </div>
     </div>
   )  
