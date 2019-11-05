@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import MealCard from './MealCard'
@@ -52,7 +52,20 @@ const MealCards = (props) => {
   const classes = useStyles()
   props.setTab(1)
 
-  const { loading, error, data } = useQuery(mealQuery);
+  const { loading, error, data } = useQuery(mealQuery)
+
+  const [searchTerms, setSearchTerms] = useState({
+    fullString: '',
+    terms: []
+  })  
+
+  const handleSearchBarChange = (newSearchString) => {
+    const newTerms = {
+      fullString: newSearchString,
+      terms: newSearchString.split(' ')
+    }
+    setSearchTerms(newTerms)
+  }
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
@@ -64,6 +77,8 @@ const MealCards = (props) => {
           className={classes.input}
           placeholder="Search meals"
           inputProps={{ 'aria-label': 'search meals' }}
+          value={searchTerms.fullString}
+          onChange = {(e) => handleSearchBarChange(e.target.value)}
         />
         <IconButton className={classes.iconButton} aria-label="search">
           <SearchIcon />

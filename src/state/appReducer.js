@@ -3,7 +3,8 @@ import Immutable from 'immutable'
 const initialState = {
   loggedIn: false,
   activeTab: 0,
-  selectedMeals: Immutable.Set()
+  selectedMeals: Immutable.Set(),
+  searchWords: Immutable.List()
 }
 
 const appReducer = (state = initialState, action) => {
@@ -31,7 +32,7 @@ const appReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedMeals: state.selectedMeals.delete(action.mealId)          
-      }            
+      }        
             
     default:
       return state
