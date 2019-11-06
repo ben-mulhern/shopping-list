@@ -54,11 +54,11 @@ CREATE TABLE ingredient (
   
   CONSTRAINT fk_ingredient_unit FOREIGN KEY (default_unit) REFERENCES unit(unit_id)
     ON DELETE RESTRICT
-	ON UPDATE RESTRICT,
+	  ON UPDATE RESTRICT,
 	
   CONSTRAINT fk_ingredient_store_location FOREIGN KEY (store_location_id) REFERENCES store_location(store_location_id)
     ON DELETE RESTRICT
-	ON UPDATE RESTRICT	
+	  ON UPDATE RESTRICT	
   
  );  
   	
@@ -73,15 +73,15 @@ CREATE TABLE meal_ingredient (
   
   CONSTRAINT fk_meal_ingredient_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
     ON DELETE RESTRICT
-	ON UPDATE RESTRICT,
+	  ON UPDATE RESTRICT,
 	
   CONSTRAINT fk_meal_ingredient_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
     ON DELETE RESTRICT
-	ON UPDATE RESTRICT,
+	  ON UPDATE RESTRICT,
 	
   CONSTRAINT fk_meal_ingredient_unit FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
     ON DELETE RESTRICT
-	ON UPDATE RESTRICT
+	  ON UPDATE RESTRICT
 
 );	
 	
@@ -97,7 +97,7 @@ CREATE TABLE meal_tag (
 
   CONSTRAINT fk_meal_tag_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
     ON DELETE RESTRICT
-	ON UPDATE RESTRICT								
+	  ON UPDATE RESTRICT								
 								
 );
 
@@ -118,7 +118,7 @@ CREATE TABLE shopping_list_item (
 
   CONSTRAINT fk_shopping_list_item_unit FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
     ON DELETE RESTRICT
-	ON UPDATE RESTRICT  
+	  ON UPDATE RESTRICT  
 
 );	
 	

@@ -11,6 +11,9 @@ import IconButton from '@material-ui/core/IconButton'
 import SearchIcon from '@material-ui/icons/Search'
 import Button from '@material-ui/core/Button'
 import mealSearch from '../domain/mealSearch'
+import AddIcon from '@material-ui/icons/Add'
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
+import {Redirect} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,12 +42,12 @@ const useStyles = makeStyles(theme => ({
 const mealQuery = gql`
   {
     meal {
-      meal_id,
-      description,
-      image_url,
+      meal_id
+      description
+      image_url
       meal_tags {
         tag
-      },
+      }
       meal_ingredients {
         ingredient {
           description        
@@ -61,9 +64,11 @@ const MealCards = (props) => {
   const { loading, error, data } = useQuery(mealQuery)
 
   const [searchString, setSearchString] = useState('')  
+  const [createNewMeal, setCreateNewMeal] = useState(false)    
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
+  if (createNewMeal) return <Redirect to="/meal/new" />
 
   return (
     <div>
@@ -78,11 +83,13 @@ const MealCards = (props) => {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Button variant="contained" color="primary" className={classes.button}>
+      <Button variant="contained" color="primary" className={classes.button} startIcon={<AddIcon />}
+              onClick={() => setCreateNewMeal(true)}>
         New meal
       </Button>
       <Button variant="contained" color="primary" className={classes.button}
-              disabled={(props.selectedMeals.size === 0)}>
+              disabled={(props.selectedMeals.size === 0)}
+              startIcon={<PlaylistAddIcon />}>
         Add meals to list
       </Button>
       <div>
