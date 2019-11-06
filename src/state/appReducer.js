@@ -21,18 +21,15 @@ const appReducer = (state = initialState, action) => {
         activeTab: action.tabIndex
       }  
       
-    case 'SELECT_MEAL':
-      return {
-        ...state,
-        selectedMeals: state.selectedMeals.add(action.mealId)
-      }   
+      case 'TOGGLE_MEAL':
+        const newMeals = ((state.selectedMeals.includes(action.mealId)) ?
+                          state.selectedMeals.delete(action.mealId) :
+                          state.selectedMeals.add(action.mealId))
+        return {
+          ...state,
+          selectedMeals: newMeals       
+        }  
 
-    case 'DESELECT_MEAL':
-      return {
-        ...state,
-        selectedMeals: state.selectedMeals.delete(action.mealId)          
-      }        
-            
     default:
       return state
   }
