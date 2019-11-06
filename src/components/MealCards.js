@@ -81,7 +81,8 @@ const MealCards = (props) => {
       <Button variant="contained" color="primary" className={classes.button}>
         New meal
       </Button>
-      <Button variant="contained" color="primary" className={classes.button}>
+      <Button variant="contained" color="primary" className={classes.button}
+              disabled={(props.selectedMeals.size === 0)}>
         Add meals to list
       </Button>
       <div>
@@ -92,8 +93,14 @@ const MealCards = (props) => {
   )  
 }
 
+const mapStateToProps = state => {
+  return {
+    selectedMeals: state.selectedMeals
+  }
+}
+
 const mapDispatchToProps = dispatch => ({
   setTab: index => dispatch(setTab(index))
 })
 
-export default connect(null, mapDispatchToProps)(MealCards)
+export default connect(mapStateToProps, mapDispatchToProps)(MealCards)
