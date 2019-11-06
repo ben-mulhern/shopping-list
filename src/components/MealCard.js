@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import { makeStyles } from '@material-ui/core/styles'
@@ -11,6 +11,9 @@ import Chip from '@material-ui/core/Chip'
 import { connect } from 'react-redux'
 import { toggleMeal } from '../state/actions'
 import clsx from 'clsx'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/Delete'
+import {Redirect} from 'react-router-dom'
 
 const useStyles = makeStyles({
   card: {
@@ -42,6 +45,9 @@ const MealCard = (props) => {
 
   const selected = props.selectedMeals.includes(meal.meal_id)
   const cardClass = clsx(classes.card, selected && classes.selected, props.hidden && classes.hidden)
+  const [goToMealDetail, setGoToMealDetail] = useState(false)   
+
+  if (goToMealDetail) return <Redirect to={`/meal/${meal.meal_id}`} />
 
   return (
     <Card raised={true} className={cardClass}>
@@ -59,9 +65,13 @@ const MealCard = (props) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color={(selected ? "primary" : "secondary")}>
+        <Button size="small" color={(selected ? "primary" : "secondary")} startIcon={<EditIcon />}
+                onClick={() => setGoToMealDetail(true)}>
           Edit
         </Button>
+        <Button size="small" color={(selected ? "primary" : "secondary")} startIcon={<DeleteIcon />}>
+          Delete
+        </Button>        
       </CardActions>
     </Card>
   )  
