@@ -42,12 +42,12 @@ const useStyles = makeStyles(theme => ({
 const mealQuery = gql`
   {
     meal {
-      meal_id,
-      description,
-      image_url,
+      meal_id
+      description
+      image_url
       meal_tags {
         tag
-      },
+      }
       meal_ingredients {
         ingredient {
           description        
