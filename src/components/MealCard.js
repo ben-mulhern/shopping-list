@@ -48,7 +48,7 @@ const MealCard = (props) => {
   const [goToMealDetail, setGoToMealDetail] = useState(false)   
 
   if (goToMealDetail) return <Redirect to={`/meal/${meal.meal_id}`} />
-
+  console.log(meal.image_url)
   return (
     <Card raised={true} className={cardClass}>
       <CardActionArea onClick={e => props.toggleMeal(meal.meal_id)}>
