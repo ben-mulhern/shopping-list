@@ -9,6 +9,7 @@ import FormLabel from '@material-ui/core/FormLabel'
 import Switch from '@material-ui/core/Switch'
 import Slider from '@material-ui/core/Slider'
 import MealIngredient from './MealIngredient'
+import Paper from '@material-ui/core/Paper'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -47,7 +48,7 @@ const MealDetailForm = (props) => {
   ]
 
   return (
-    <div className={classes.width300}>
+    <Paper className={classes.width300}>
       
       <FormControl className={classes.formControl}>
         <TextField required label="Description" value={description} autoFocus
@@ -111,7 +112,7 @@ const MealDetailForm = (props) => {
       <h2>Ingredients</h2>
       {meal.meal_ingredients.map(mi => <MealIngredient mealIngredient={mi} />)}
 
-    </div>
+    </Paper>
   )
 }
 
