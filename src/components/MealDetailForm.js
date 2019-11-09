@@ -10,6 +10,8 @@ import Switch from '@material-ui/core/Switch'
 import Slider from '@material-ui/core/Slider'
 import MealIngredient from './MealIngredient'
 import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
+import AddIcon from '@material-ui/icons/Add'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -19,7 +21,10 @@ const useStyles = makeStyles(theme => ({
   width300: {
     minWidth: 300,
     maxWidth: 600
-  }  
+  },
+  button: {
+    margin: theme.spacing(1)
+  }
 }))
 
 const MealDetailForm = (props) => {
@@ -109,8 +114,12 @@ const MealDetailForm = (props) => {
           placeholder="Tags" />
       </FormControl>  
 
-      <h2>Ingredients</h2>
+      <h2>Ingredients</h2>    
       {meal.meal_ingredients.map(mi => <MealIngredient mealIngredient={mi} />)}
+
+      <Button variant="contained" color="primary" className={classes.button} startIcon={<AddIcon />}>
+        Add ingredient
+      </Button>  
 
     </Paper>
   )
