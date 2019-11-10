@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { setTab, logIn } from '../state/actions'
 import { useLazyQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -59,7 +60,7 @@ const Login = (props) => {
     event.preventDefault();
   }
 
-  if (called && loading) return <p>Authenticating...</p>
+  if (called && loading) return <CircularProgress color="secondary" />
   if (called && error) {
     sessionStorage.removeItem('API_KEY')
     return <p>Login failed :( Please <a href="/">try again</a></p>

@@ -12,6 +12,8 @@ import MealIngredient from './MealIngredient'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
+import SaveIcon from '@material-ui/icons/Save'
+import CancelIcon from '@material-ui/icons/Cancel'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -22,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     minWidth: 300,
     maxWidth: 600
   },
-  button: {
+  margin: {
     margin: theme.spacing(1)
   }
 }))
@@ -114,13 +116,18 @@ const MealDetailForm = (props) => {
           placeholder="Tags" />
       </FormControl>  
 
-      <h2>Ingredients</h2>    
+      <h2 className={classes.margin}>Ingredients</h2>    
       {meal.meal_ingredients.map(mi => <MealIngredient mealIngredient={mi} />)}
 
-      <Button variant="contained" color="primary" className={classes.button} startIcon={<AddIcon />}>
+      <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
+        Save
+      </Button>  
+      <Button variant="contained" color="secondary" className={classes.margin} startIcon={<AddIcon />}>
         Add ingredient
       </Button>  
-
+      <Button variant="contained" color="default" className={classes.margin} startIcon={<CancelIcon />}>
+        Cancel
+      </Button>  
     </Paper>
   )
 }

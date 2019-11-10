@@ -4,6 +4,7 @@ import { setTab } from '../state/actions'
 import { gql } from 'apollo-boost'
 import { useLazyQuery } from '@apollo/react-hooks'
 import MealDetailForm from './MealDetailForm'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const mealQuery = gql`
   query getMealById($meal_id: Int!) {
@@ -57,7 +58,7 @@ const MealDetail = (props) => {
 
   if (!called && mealId !== "new") runMealQuery()
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <CircularProgress color="secondary" />
   if (error) return <p>Error :(</p>
 
   const meal = (called ? data.meal[0] : emptyMeal)

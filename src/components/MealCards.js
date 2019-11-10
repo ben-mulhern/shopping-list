@@ -14,6 +14,7 @@ import mealSearch from '../domain/mealSearch'
 import AddIcon from '@material-ui/icons/Add'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import {Redirect} from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -66,7 +67,7 @@ const MealCards = (props) => {
   const [searchString, setSearchString] = useState('')  
   const [createNewMeal, setCreateNewMeal] = useState(false)    
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <CircularProgress color="secondary" />
   if (error) return <p>Error :(</p>
   if (createNewMeal) return <Redirect to="/meal/new" />
 
