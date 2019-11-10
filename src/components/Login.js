@@ -60,7 +60,7 @@ const Login = (props) => {
     event.preventDefault();
   }
 
-  if (called && loading) return <CircularProgress color="secondary" />
+  if (called && loading) return <CircularProgress color="secondary" className={classes.margin} />
   if (called && error) {
     sessionStorage.removeItem('API_KEY')
     return <p>Login failed :( Please <a href="/">try again</a></p>

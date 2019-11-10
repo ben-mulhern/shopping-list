@@ -67,7 +67,7 @@ const MealCards = (props) => {
   const [searchString, setSearchString] = useState('')  
   const [createNewMeal, setCreateNewMeal] = useState(false)    
 
-  if (loading) return <CircularProgress color="secondary" />
+  if (loading) return <CircularProgress color="secondary" className={classes.input} />
   if (error) return <p>Error :(</p>
   if (createNewMeal) return <Redirect to="/meal/new" />
 

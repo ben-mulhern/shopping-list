@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import clsx from "clsx"
 import FormControl from "@material-ui/core/FormControl"
@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField"
 import Autocomplete from "@material-ui/lab/Autocomplete"
 import MenuItem from "@material-ui/core/MenuItem"
 import Select from "@material-ui/core/Select"
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -15,17 +16,24 @@ const useStyles = makeStyles(theme => ({
   quantity: {
     width: 60
   },
-  textField: {
-    width: 200
+  unit: {
+    width: 70
   },
-  zeroPadding: {
-    padding: 0
+  textField: {
+    width: 180
   }
 }))
 
 const MealIngredient = props => {
   const mi = props.mealIngredient
+  const units = props.units
+  const locations = props.locations
   const classes = useStyles()
+
+  const [quantity, setQuantity] = useState(mi.quantity)
+  const [unit, setUnit] = useState(mi.unit.unit_id)
+  const [ingredient, setIngredient] = useState(mi.ingredient.description)
+  const [location, setLocation] = useState(mi.ingredient.store_location.store_location_id)
 
   return (
     <div>
@@ -35,46 +43,40 @@ const MealIngredient = props => {
       >
         <Input
           required
-          className={classes.zeroPadding}
-          //value={mi.quantity}
-          //onChange={handleChange('weight')}
-          //endAdornment={<InputAdornment position="end">{unitPicker}</InputAdornment>}
+          value={quantity}
+          onChange={e => setQuantity(e.target.value)}
           label="Quantity"
           type="number"
           placeholder="Qty"
         />
       </FormControl>
       <FormControl
-        className={clsx(classes.margin, classes.quantity)}
+        className={clsx(classes.margin, classes.unit)}
         variant="standard"
       >
         <Select
           variant="standard"
           required
           label="Unit"
-          //alue={age}
-          //onChange={handleChange}
-          //labelWidth={50}
+          value={unit}
+          onChange={e => setUnit(e.target.value)}
         >
-          <MenuItem value="kg">kg</MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {units.map(u => <MenuItem value={u.unit_id}>{u.unit_id}</MenuItem>)}
         </Select>
       </FormControl>
 
       <FormControl className={clsx(classes.margin, classes.textField)}>
         <Autocomplete
           freeSolo
-          options={["Ingredient 1", "Ingredient 2", "Ingredient 3"]}
+          options={props.ingredients.map(i => i.description)}
+          value={ingredient}
+          onChange={(e, v) => setIngredient(v)}
           renderInput={params => (
             <TextField
               {...params}
               required
-              //value={mi.ingredient.description}
               fullWidth
               variant="standard"
-              //onChange={e => setDescription(e.target.value)}
               placeholder="Ingredient"
             />
           )}
@@ -88,17 +90,13 @@ const MealIngredient = props => {
           variant="standard"
           required
           label="Location"
-          placeholder="Location"
-          //alue={age}
-          //onChange={handleChange}
-          //labelWidth={50}
+          value={location}
+          onChange={e => setLocation(e.target.value)}
         >
-          <MenuItem value="kg">kg</MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {locations.map(l => <MenuItem value={l.store_location_id}>{l.store_location_id}</MenuItem>)}
         </Select>
       </FormControl>
+      <DeleteIcon className={classes.margin} />
     </div>
   ) 
 }
