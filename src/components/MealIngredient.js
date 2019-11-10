@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     width: 180
+  },
+  stripedRow: {
+    backgroundColor: '#d3d3d3'
   }
 }))
 
@@ -36,7 +39,7 @@ const MealIngredient = props => {
   const [location, setLocation] = useState(mi.ingredient.store_location.store_location_id)
 
   return (
-    <div>
+    <div key={props.rowIndex} className={((props.rowIndex % 2 === 0) ? classes.stripedRow : "")}>
       <FormControl
         className={clsx(classes.margin, classes.quantity)}
         variant="standard"

@@ -117,9 +117,10 @@ const MealDetailForm = (props) => {
       </FormControl>  
 
       <h2 className={classes.margin}>Ingredients</h2>    
-      {meal.meal_ingredients.map(mi => <MealIngredient mealIngredient={mi} 
+      {meal.meal_ingredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
                                           units={props.units} locations = {props.locations}
-                                          ingredients={props.ingredients} />)}
+                                          ingredients={props.ingredients} 
+                                          rowIndex={i} />)}
 
       <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
         Save
