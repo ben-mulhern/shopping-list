@@ -9,6 +9,11 @@ import FormLabel from '@material-ui/core/FormLabel'
 import Switch from '@material-ui/core/Switch'
 import Slider from '@material-ui/core/Slider'
 import MealIngredient from './MealIngredient'
+import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
+import AddIcon from '@material-ui/icons/Add'
+import SaveIcon from '@material-ui/icons/Save'
+import CancelIcon from '@material-ui/icons/Cancel'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -18,7 +23,10 @@ const useStyles = makeStyles(theme => ({
   width300: {
     minWidth: 300,
     maxWidth: 600
-  }  
+  },
+  margin: {
+    margin: theme.spacing(1)
+  }
 }))
 
 const MealDetailForm = (props) => {
@@ -47,7 +55,7 @@ const MealDetailForm = (props) => {
   ]
 
   return (
-    <div className={classes.width300}>
+    <Paper className={classes.width300}>
       
       <FormControl className={classes.formControl}>
         <TextField required label="Description" value={description} autoFocus
@@ -108,10 +116,22 @@ const MealDetailForm = (props) => {
           placeholder="Tags" />
       </FormControl>  
 
-      <h2>Ingredients</h2>
-      {meal.meal_ingredients.map(mi => <MealIngredient mealIngredient={mi} />)}
+      <h2 className={classes.margin}>Ingredients</h2>    
+      {meal.meal_ingredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
+                                          units={props.units} locations = {props.locations}
+                                          ingredients={props.ingredients} 
+                                          rowIndex={i} />)}
 
-    </div>
+      <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
+        Save
+      </Button>  
+      <Button variant="contained" color="secondary" className={classes.margin} startIcon={<AddIcon />}>
+        Add ingredient
+      </Button>  
+      <Button variant="contained" color="default" className={classes.margin} startIcon={<CancelIcon />}>
+        Cancel
+      </Button>  
+    </Paper>
   )
 }
 
