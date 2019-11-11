@@ -14,6 +14,7 @@ import clsx from 'clsx'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {Redirect} from 'react-router-dom'
+import ConfirmWindow from './ConfirmWindow'
 
 const useStyles = makeStyles({
   card: {
@@ -46,6 +47,7 @@ const MealCard = (props) => {
   const selected = props.selectedMeals.includes(meal.meal_id)
   const cardClass = clsx(classes.card, selected && classes.selected, props.hidden && classes.hidden)
   const [goToMealDetail, setGoToMealDetail] = useState(false)   
+  const [openDeleteWindow, setOpenDeleteWindow] = useState(false)
 
   if (goToMealDetail) return <Redirect to={`/meal/${meal.meal_id}`} />
   return (
@@ -68,9 +70,11 @@ const MealCard = (props) => {
                 onClick={() => setGoToMealDetail(true)}>
           Edit
         </Button>
-        <Button size="small" color={(selected ? "primary" : "secondary")} startIcon={<DeleteIcon />}>
+        <Button size="small" color={(selected ? "primary" : "secondary")} startIcon={<DeleteIcon />}
+                onClick={() => setOpenDeleteWindow(true)}>
           Delete
-        </Button>        
+        </Button> 
+        <ConfirmWindow activated={openDeleteWindow} deleteMessage={`Are you sure you want to delete ${meal.description}?`} />
       </CardActions>
     </Card>
   )  

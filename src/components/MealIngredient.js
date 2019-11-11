@@ -8,6 +8,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete"
 import MenuItem from "@material-ui/core/MenuItem"
 import Select from "@material-ui/core/Select"
 import DeleteIcon from '@material-ui/icons/Delete'
+import IconButton from '@material-ui/core/IconButton'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -19,8 +20,11 @@ const useStyles = makeStyles(theme => ({
   unit: {
     width: 70
   },
-  textField: {
-    width: 180
+  textField200: {
+    width: 200
+  },
+  textField130: {
+    width: 130
   },
   stripedRow: {
     backgroundColor: '#d3d3d3'
@@ -68,7 +72,7 @@ const MealIngredient = props => {
         </Select>
       </FormControl>
 
-      <FormControl className={clsx(classes.margin, classes.textField)}>
+      <FormControl className={clsx(classes.margin, classes.textField200)}>
         <Autocomplete
           freeSolo
           options={props.ingredients.map(i => i.description)}
@@ -86,7 +90,7 @@ const MealIngredient = props => {
         />
       </FormControl>
       <FormControl
-        className={clsx(classes.margin, classes.textField)}
+        className={clsx(classes.margin, classes.textField130)}
         variant="standard"
       >
         <Select
@@ -99,7 +103,15 @@ const MealIngredient = props => {
           {locations.map(l => <MenuItem key={l.store_location_id} value={l.store_location_id}>{l.store_location_id}</MenuItem>)}
         </Select>
       </FormControl>
-      <DeleteIcon className={classes.margin} />
+      <IconButton
+            key="close"
+            aria-label="close"
+            color="inherit"
+            //className={classes.close}
+            //onClick={handleClose}
+          >
+        <DeleteIcon className={classes.margin} />
+      </IconButton>  
     </div>
   ) 
 }
