@@ -120,7 +120,7 @@ const MealDetailForm = (props) => {
       {meal.meal_ingredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
                                           units={props.units} locations = {props.locations}
                                           ingredients={props.ingredients} 
-                                          rowIndex={i} />)}
+                                          key={i} rowIndex={i} />)}
 
       <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
         Save

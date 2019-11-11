@@ -48,7 +48,6 @@ const MealCard = (props) => {
   const [goToMealDetail, setGoToMealDetail] = useState(false)   
 
   if (goToMealDetail) return <Redirect to={`/meal/${meal.meal_id}`} />
-  console.log(meal.image_url)
   return (
     <Card raised={true} className={cardClass}>
       <CardActionArea onClick={e => props.toggleMeal(meal.meal_id)}>
@@ -61,7 +60,7 @@ const MealCard = (props) => {
           <Typography variant="h5" component="h2">
             {meal.description}
           </Typography>
-          {meal.meal_tags.map(t => <Chip label={t.tag} className={classes.chip} />)}
+          {meal.meal_tags.map((t, i) => <Chip label={t.tag} className={classes.chip} key={i} />)}
         </CardContent>
       </CardActionArea>
       <CardActions>

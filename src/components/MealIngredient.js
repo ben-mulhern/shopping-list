@@ -64,7 +64,7 @@ const MealIngredient = props => {
           value={unit}
           onChange={e => setUnit(e.target.value)}
         >
-          {units.map(u => <MenuItem value={u.unit_id}>{u.unit_id}</MenuItem>)}
+          {units.map(u => <MenuItem key={u.unit_id} value={u.unit_id}>{u.unit_id}</MenuItem>)}
         </Select>
       </FormControl>
 
@@ -96,7 +96,7 @@ const MealIngredient = props => {
           value={location}
           onChange={e => setLocation(e.target.value)}
         >
-          {locations.map(l => <MenuItem value={l.store_location_id}>{l.store_location_id}</MenuItem>)}
+          {locations.map(l => <MenuItem key={l.store_location_id} value={l.store_location_id}>{l.store_location_id}</MenuItem>)}
         </Select>
       </FormControl>
       <DeleteIcon className={classes.margin} />
