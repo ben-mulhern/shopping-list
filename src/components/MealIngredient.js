@@ -41,6 +41,13 @@ const MealIngredient = props => {
   const [unit, setUnit] = useState(mi.unit.unit_id)
   const [ingredient, setIngredient] = useState(mi.ingredient.description)
   const [location, setLocation] = useState(mi.ingredient.store_location.store_location_id)
+  const [quantityErrorText, setQuantityErrorText] = useState("")
+
+  const handleQuantity = qty => {
+    setQuantity(qty)
+    const errorMessage = ((qty <= 0) ? 'Quantity must be greater than zero' : '')
+    setQuantityErrorText(errorMessage)
+  }
 
   return (
     <div key={props.rowIndex} className={((props.rowIndex % 2 === 0) ? classes.stripedRow : "")}>
@@ -51,10 +58,12 @@ const MealIngredient = props => {
         <Input
           required
           value={quantity}
-          onChange={e => setQuantity(e.target.value)}
+          onChange={e => handleQuantity(e.target.value)}
           label="Quantity"
           type="number"
           placeholder="Qty"
+          error={quantityErrorText}
+          helperText={quantityErrorText}
         />
       </FormControl>
       <FormControl
@@ -105,10 +114,8 @@ const MealIngredient = props => {
       </FormControl>
       <IconButton
             key="close"
-            aria-label="close"
             color="inherit"
-            //className={classes.close}
-            //onClick={handleClose}
+            onClick={props.deleteIngredient}
           >
         <DeleteIcon className={classes.margin} />
       </IconButton>  

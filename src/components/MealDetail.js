@@ -53,7 +53,7 @@ const mealQuery = gql`
 const emptyMeal = {
   "meal_id": 0,
   "description": "",
-  "diet_type": "",
+  "diet_type": "OMNI",
   "leftovers": false,
   "image_url": "",
   "serves": 4,
@@ -86,8 +86,14 @@ const MealDetail = (props) => {
   const locations = (called ? data.store_location : [])
   const ingredients = (called ? data.ingredient : [])
 
+  const deleteIngredient = i => {
+    ingredients.splice(i)
+    console.log("After delete " + ingredients)
+  }
+
   return <MealDetailForm meal={meal} units={units} 
-            locations={locations} ingredients={ingredients} />
+            locations={locations} ingredients={ingredients} 
+            deleteIngredient={deleteIngredient} />
 
 }
 
