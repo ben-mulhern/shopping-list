@@ -15,6 +15,7 @@ import AddIcon from '@material-ui/icons/Add'
 import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import {withRouter} from 'react-router-dom'
+import Immutable from 'immutable'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -44,6 +45,7 @@ const MealDetailForm = (props) => {
   const [recipeBook, setRecipeBook] = useState(meal.recipe_book)
   const [tagString, setTagString] = useState(initTagString)
   const [descriptionErrorText, setDescriptionErrorText] = useState('')
+  const [mealIngredients, setMealIngredients] = useState(Immutable.List(meal.meal_ingredients))
 
   const handleDescription = desc => {
     setDescription(desc)
@@ -61,6 +63,11 @@ const MealDetailForm = (props) => {
     {value: 7, label: "7"},
     {value: 8, label: "8"}
   ]
+
+  const deleteIngredient = i => {
+    const ing = mealIngredients.delete(i)
+    setMealIngredients(ing)
+  }
 
   return (
     <Paper className={classes.width300}>
@@ -127,11 +134,11 @@ const MealDetailForm = (props) => {
       </FormControl>  
 
       <h2 className={classes.margin}>Ingredients</h2>    
-      {meal.meal_ingredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
+      {mealIngredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
                                           units={props.units} locations = {props.locations}
                                           ingredients={props.ingredients} 
                                           key={i} rowIndex={i} 
-                                          deleteIngredient={() => props.deleteIngredient(i)} />)}
+                                          deleteIngredient={() => deleteIngredient(i)} />)}
 
       <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
         Save
