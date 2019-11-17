@@ -14,6 +14,9 @@ import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
+import {withRouter} from 'react-router-dom'
+import Immutable from 'immutable'
+import cloneDeep from "lodash.clonedeep"
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -29,6 +32,21 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const emptyMealIngredient = {
+  quantity: 1,
+  unit: {
+    unit_id: 'x',
+    description: 'units'
+  },
+  ingredient: {
+    description: '',
+    store_location: {
+      store_location_id: 'CITRUS',
+      description: 'Citrus fruits'
+    }
+  }
+}
+
 const MealDetailForm = (props) => {
 
   const classes = useStyles()
@@ -42,6 +60,14 @@ const MealDetailForm = (props) => {
   const [serves, setServes] = useState(meal.serves)
   const [recipeBook, setRecipeBook] = useState(meal.recipe_book)
   const [tagString, setTagString] = useState(initTagString)
+  const [descriptionErrorText, setDescriptionErrorText] = useState('')
+  const [mealIngredients, setMealIngredients] = useState(Immutable.List(meal.meal_ingredients))
+
+  const handleDescription = desc => {
+    setDescription(desc)
+    const errorMessage = ((desc === '') ? 'Description cannot be blank' : '')
+    setDescriptionErrorText(errorMessage)
+  }
 
   const marks = [
     {value: 1, label: "1"},
@@ -54,14 +80,32 @@ const MealDetailForm = (props) => {
     {value: 8, label: "8"}
   ]
 
+  const deleteIngredient = i => {
+    const ing = mealIngredients.delete(i)
+    setMealIngredients(ing)
+  }
+
+  const editIngredient = (i, ing) => {
+    const ings = mealIngredients.set(i, ing)
+    setMealIngredients(ings)
+  }
+
+  const addIngredient = () => {
+    const newIngredient = cloneDeep(emptyMealIngredient)
+    const ings = mealIngredients.push(newIngredient)
+    setMealIngredients(ings)
+  }
+
   return (
     <Paper className={classes.width300}>
       
       <FormControl className={classes.formControl}>
         <TextField required label="Description" value={description} autoFocus
           fullWidth margin="normal" variant="outlined"
-          onChange={e => setDescription(e.target.value)}
-          placeholder="Description" />
+          onChange={e => handleDescription(e.target.value)}
+          placeholder="Description"
+          error={descriptionErrorText}
+          helperText={descriptionErrorText} />
       </FormControl>  
 
       <FormControl component="fieldset" className={classes.formControl}>
@@ -117,22 +161,28 @@ const MealDetailForm = (props) => {
       </FormControl>  
 
       <h2 className={classes.margin}>Ingredients</h2>    
-      {meal.meal_ingredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
+      {mealIngredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
                                           units={props.units} locations = {props.locations}
                                           ingredients={props.ingredients} 
-                                          rowIndex={i} />)}
+                                          key={i} rowIndex={i} 
+                                          deleteIngredient={() => deleteIngredient(i)}
+                                          editIngredient={editIngredient} />)}
 
       <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
         Save
       </Button>  
-      <Button variant="contained" color="secondary" className={classes.margin} startIcon={<AddIcon />}>
+      <Button variant="contained" color="secondary" className={classes.margin} 
+              startIcon={<AddIcon />}
+              onClick={() => addIngredient()}>
         Add ingredient
       </Button>  
-      <Button variant="contained" color="default" className={classes.margin} startIcon={<CancelIcon />}>
+      <Button variant="contained" color="default" className={classes.margin} 
+              startIcon={<CancelIcon />}
+              onClick={() => props.history.goBack()}>
         Cancel
       </Button>  
     </Paper>
   )
 }
 
-export default MealDetailForm
+export default withRouter(MealDetailForm)

@@ -53,7 +53,7 @@ const mealQuery = gql`
 const emptyMeal = {
   "meal_id": 0,
   "description": "",
-  "diet_type": "",
+  "diet_type": "OMNI",
   "leftovers": false,
   "image_url": "",
   "serves": 4,

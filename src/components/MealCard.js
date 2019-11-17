@@ -13,7 +13,8 @@ import { toggleMeal } from '../state/actions'
 import clsx from 'clsx'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
-import {Redirect} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import ConfirmWindow from './ConfirmWindow'
 
 const useStyles = makeStyles({
   card: {
@@ -45,10 +46,8 @@ const MealCard = (props) => {
 
   const selected = props.selectedMeals.includes(meal.meal_id)
   const cardClass = clsx(classes.card, selected && classes.selected, props.hidden && classes.hidden)
-  const [goToMealDetail, setGoToMealDetail] = useState(false)   
+  const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
 
-  if (goToMealDetail) return <Redirect to={`/meal/${meal.meal_id}`} />
-  console.log(meal.image_url)
   return (
     <Card raised={true} className={cardClass}>
       <CardActionArea onClick={e => props.toggleMeal(meal.meal_id)}>
@@ -61,17 +60,21 @@ const MealCard = (props) => {
           <Typography variant="h5" component="h2">
             {meal.description}
           </Typography>
-          {meal.meal_tags.map(t => <Chip label={t.tag} className={classes.chip} />)}
+          {meal.meal_tags.map((t, i) => <Chip label={t.tag} className={classes.chip} key={i} />)}
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Button size="small" color={(selected ? "primary" : "secondary")} startIcon={<EditIcon />}
-                onClick={() => setGoToMealDetail(true)}>
+                onClick={() => props.history.push(`/meal/${meal.meal_id}`)}>
           Edit
         </Button>
-        <Button size="small" color={(selected ? "primary" : "secondary")} startIcon={<DeleteIcon />}>
+        <Button size="small" color={(selected ? "primary" : "secondary")} startIcon={<DeleteIcon />}
+                onClick={() => setDeleteWindowOpen(true)}>
           Delete
-        </Button>        
+        </Button> 
+        <ConfirmWindow open={deleteWindowOpen} 
+          handleClose={() => setDeleteWindowOpen(false)}
+          deleteMessage={`Are you sure you want to delete ${meal.description}?`} />
       </CardActions>
     </Card>
   )  
@@ -87,4 +90,4 @@ const mapDispatchToProps = dispatch => ({
   toggleMeal: mealId => dispatch(toggleMeal(mealId))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MealCard)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MealCard))

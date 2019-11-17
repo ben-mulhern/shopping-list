@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import clsx from "clsx"
 import FormControl from "@material-ui/core/FormControl"
@@ -8,6 +8,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete"
 import MenuItem from "@material-ui/core/MenuItem"
 import Select from "@material-ui/core/Select"
 import DeleteIcon from '@material-ui/icons/Delete'
+import IconButton from '@material-ui/core/IconButton'
+import cloneDeep from "lodash.clonedeep"
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -19,24 +21,62 @@ const useStyles = makeStyles(theme => ({
   unit: {
     width: 70
   },
-  textField: {
-    width: 180
+  textField200: {
+    width: 200
+  },
+  textField130: {
+    width: 130
   },
   stripedRow: {
     backgroundColor: '#d3d3d3'
   }
 }))
 
+const emptyIngredient = {
+  description: '',
+  store_location: {
+    store_location_id: '',
+    description: ''
+  }
+}
+
 const MealIngredient = props => {
   const mi = props.mealIngredient
+  let ing = cloneDeep(mi)
   const units = props.units
   const locations = props.locations
+  const ingredients = props.ingredients
   const classes = useStyles()
 
-  const [quantity, setQuantity] = useState(mi.quantity)
-  const [unit, setUnit] = useState(mi.unit.unit_id)
-  const [ingredient, setIngredient] = useState(mi.ingredient.description)
-  const [location, setLocation] = useState(mi.ingredient.store_location.store_location_id)
+  const quantityErrorText = ((mi.quantity <= 0) ? 'Quantity must be greater than zero' : '')
+
+  const handleQuantity = qty => {
+    ing.quantity = qty
+    props.editIngredient(props.rowIndex, ing)
+  }
+
+  const handleUnit = unit => {
+    const newUnit = units.find(u => u.unit_id === unit)
+    ing.unit = newUnit
+    props.editIngredient(props.rowIndex, ing)
+  }
+
+  const handleIngredient = desc => {
+    let newIngredient = ingredients.find(i => i.description === desc)
+    if (!newIngredient) {
+      newIngredient = cloneDeep(emptyIngredient)
+      newIngredient.description = desc
+      newIngredient.store_location = mi.ingredient.store_location
+    }
+    ing.ingredient = newIngredient    
+    props.editIngredient(props.rowIndex, ing)
+  }
+
+  const handleLocation = loc => {
+    const newLocation = locations.find(l => l.store_location_id === loc)
+    ing.ingredient.store_location = newLocation
+    props.editIngredient(props.rowIndex, ing)
+  }
 
   return (
     <div key={props.rowIndex} className={((props.rowIndex % 2 === 0) ? classes.stripedRow : "")}>
@@ -46,11 +86,13 @@ const MealIngredient = props => {
       >
         <Input
           required
-          value={quantity}
-          onChange={e => setQuantity(e.target.value)}
+          value={mi.quantity}
+          onChange={e => handleQuantity(e.target.value)}
           label="Quantity"
           type="number"
           placeholder="Qty"
+          error={quantityErrorText}
+          helperText={quantityErrorText}
         />
       </FormControl>
       <FormControl
@@ -61,19 +103,19 @@ const MealIngredient = props => {
           variant="standard"
           required
           label="Unit"
-          value={unit}
-          onChange={e => setUnit(e.target.value)}
+          value={mi.unit.unit_id}
+          onChange={e => handleUnit(e.target.value)}
         >
-          {units.map(u => <MenuItem value={u.unit_id}>{u.unit_id}</MenuItem>)}
+          {units.map(u => <MenuItem key={u.unit_id} value={u.unit_id}>{u.unit_id}</MenuItem>)}
         </Select>
       </FormControl>
 
-      <FormControl className={clsx(classes.margin, classes.textField)}>
+      <FormControl className={clsx(classes.margin, classes.textField200)}>
         <Autocomplete
           freeSolo
-          options={props.ingredients.map(i => i.description)}
-          value={ingredient}
-          onChange={(e, v) => setIngredient(v)}
+          options={ingredients.map(i => i.description)}
+          value={mi.ingredient.description}
+          onChange={(e, v) => handleIngredient(v)}
           renderInput={params => (
             <TextField
               {...params}
@@ -86,20 +128,26 @@ const MealIngredient = props => {
         />
       </FormControl>
       <FormControl
-        className={clsx(classes.margin, classes.textField)}
+        className={clsx(classes.margin, classes.textField130)}
         variant="standard"
       >
         <Select
           variant="standard"
           required
           label="Location"
-          value={location}
-          onChange={e => setLocation(e.target.value)}
+          value={mi.ingredient.store_location.store_location_id}
+          onChange={e => handleLocation(e.target.value)}
         >
-          {locations.map(l => <MenuItem value={l.store_location_id}>{l.store_location_id}</MenuItem>)}
+          {locations.map(l => <MenuItem key={l.store_location_id} value={l.store_location_id}>{l.store_location_id}</MenuItem>)}
         </Select>
       </FormControl>
-      <DeleteIcon className={classes.margin} />
+      <IconButton
+            key="close"
+            color="inherit"
+            onClick={props.deleteIngredient}
+          >
+        <DeleteIcon className={classes.margin} />
+      </IconButton>  
     </div>
   ) 
 }

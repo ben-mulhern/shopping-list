@@ -36,7 +36,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: 10,
     marginRight: 10,
     marginBottom: 10
-
+  },
+  margin: {
+    margin: theme.spacing(1)
   }
 }))
 
@@ -67,7 +69,7 @@ const MealCards = (props) => {
   const [searchString, setSearchString] = useState('')  
   const [createNewMeal, setCreateNewMeal] = useState(false)    
 
-  if (loading) return <CircularProgress color="secondary" className={classes.input} />
+  if (loading) return <CircularProgress color="secondary" className={classes.margin} />
   if (error) return <p>Error :(</p>
   if (createNewMeal) return <Redirect to="/meal/new" />
 
