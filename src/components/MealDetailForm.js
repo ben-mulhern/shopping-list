@@ -16,6 +16,7 @@ import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import {withRouter} from 'react-router-dom'
 import Immutable from 'immutable'
+import cloneDeep from "lodash.clonedeep"
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -30,6 +31,21 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1)
   }
 }))
+
+const emptyMealIngredient = {
+  quantity: 1,
+  unit: {
+    unit_id: 'x',
+    description: 'units'
+  },
+  ingredient: {
+    description: '',
+    store_location: {
+      store_location_id: 'CITRUS',
+      description: 'Citrus fruits'
+    }
+  }
+}
 
 const MealDetailForm = (props) => {
 
@@ -71,6 +87,12 @@ const MealDetailForm = (props) => {
 
   const editIngredient = (i, ing) => {
     const ings = mealIngredients.set(i, ing)
+    setMealIngredients(ings)
+  }
+
+  const addIngredient = () => {
+    const newIngredient = cloneDeep(emptyMealIngredient)
+    const ings = mealIngredients.push(newIngredient)
     setMealIngredients(ings)
   }
 
@@ -149,7 +171,9 @@ const MealDetailForm = (props) => {
       <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
         Save
       </Button>  
-      <Button variant="contained" color="secondary" className={classes.margin} startIcon={<AddIcon />}>
+      <Button variant="contained" color="secondary" className={classes.margin} 
+              startIcon={<AddIcon />}
+              onClick={() => addIngredient()}>
         Add ingredient
       </Button>  
       <Button variant="contained" color="default" className={classes.margin} 
