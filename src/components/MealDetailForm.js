@@ -69,6 +69,11 @@ const MealDetailForm = (props) => {
     setMealIngredients(ing)
   }
 
+  const editIngredient = (i, ing) => {
+    const ings = mealIngredients.set(i, ing)
+    setMealIngredients(ings)
+  }
+
   return (
     <Paper className={classes.width300}>
       
@@ -138,7 +143,8 @@ const MealDetailForm = (props) => {
                                           units={props.units} locations = {props.locations}
                                           ingredients={props.ingredients} 
                                           key={i} rowIndex={i} 
-                                          deleteIngredient={() => deleteIngredient(i)} />)}
+                                          deleteIngredient={() => deleteIngredient(i)}
+                                          editIngredient={editIngredient} />)}
 
       <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
         Save

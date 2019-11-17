@@ -49,12 +49,7 @@ CREATE TABLE ingredient (
   ingredient_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
   description VARCHAR(200) NOT NULL
     CONSTRAINT ck_ingredient_description CHECK (description <> ''),
-  default_unit VARCHAR(5) NOT NULL,
   store_location_id VARCHAR(20) NOT NULL,
-  
-  CONSTRAINT fk_ingredient_unit FOREIGN KEY (default_unit) REFERENCES unit(unit_id)
-    ON DELETE RESTRICT
-	  ON UPDATE RESTRICT,
 	
   CONSTRAINT fk_ingredient_store_location FOREIGN KEY (store_location_id) REFERENCES store_location(store_location_id)
     ON DELETE RESTRICT
