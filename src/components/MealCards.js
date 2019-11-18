@@ -13,8 +13,9 @@ import Button from '@material-ui/core/Button'
 import mealSearch from '../domain/mealSearch'
 import AddIcon from '@material-ui/icons/Add'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
-import {Redirect} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Immutable from 'immutable'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,14 +65,16 @@ const MealCards = (props) => {
   const classes = useStyles()
   props.setTab(1)
 
-  const { loading, error, data } = useQuery(mealQuery)
+  const { loading, error, data, refetch } = useQuery(mealQuery)
 
   const [searchString, setSearchString] = useState('')  
-  const [createNewMeal, setCreateNewMeal] = useState(false)    
 
   if (loading) return <CircularProgress color="secondary" className={classes.margin} />
   if (error) return <p>Error :(</p>
-  if (createNewMeal) return <Redirect to="/meal/new" />
+
+  const handleListChange = () => refetch()
+
+  const meals = Immutable.List(data.meal)
 
   return (
     <div>
@@ -87,7 +90,7 @@ const MealCards = (props) => {
         </IconButton>
       </Paper>
       <Button variant="contained" color="primary" className={classes.button} startIcon={<AddIcon />}
-              onClick={() => setCreateNewMeal(true)}>
+              onClick={() => props.history.push('/meal/new')}>
         New meal
       </Button>
       <Button variant="contained" color="primary" className={classes.button}
@@ -96,8 +99,9 @@ const MealCards = (props) => {
         Add meals to list
       </Button>
       <div>
-        {data.meal.map(m => <MealCard meal={m} key={m.meal_id}
-                                      hidden={!mealSearch(searchString, m)} />)}  
+        {meals.map(m => <MealCard meal={m} key={m.meal_id}
+                                  hidden={!mealSearch(searchString, m)}
+                                  onDelete={handleListChange} />)}  
       </div>
     </div>
   )  
@@ -113,4 +117,4 @@ const mapDispatchToProps = dispatch => ({
   setTab: index => dispatch(setTab(index))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MealCards)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MealCards))

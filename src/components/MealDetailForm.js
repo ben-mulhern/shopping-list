@@ -122,8 +122,9 @@ const MealDetailForm = (props) => {
         <FormLabel component="legend">Leftovers</FormLabel>        
         <Switch
           value={leftovers}
+          checked={leftovers}
           color="primary"
-          onChange={e => setLeftovers(e.target.value)}
+          onChange={e => setLeftovers(e.target.checked)}
         />
       </FormControl>     
 

@@ -8,7 +8,7 @@ CREATE TABLE meal (
   serves SMALLINT NOT NULL
     CONSTRAINT ck_meal_serves CHECK (serves BETWEEN 1 AND 8),
   leftovers BOOLEAN NOT NULL,
-  diet_type VARCHAR(10) NOT NULL
+  diet_type VARCHAR(10) NOT NULL DEFAULT 'OMNI'
     CONSTRAINT ck_meal_diet_type CHECK (diet_type IN ('VEGAN', 'VEGETARIAN', 'OMNI')),
   recipe_book VARCHAR(500),
   image_url VARCHAR(1000)
@@ -67,7 +67,7 @@ CREATE TABLE meal_ingredient (
   unit_id VARCHAR(5) NOT NULL,
   
   CONSTRAINT fk_meal_ingredient_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
 	  ON UPDATE RESTRICT,
 	
   CONSTRAINT fk_meal_ingredient_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
@@ -91,7 +91,7 @@ CREATE TABLE meal_tag (
 			                         '                                    ')) = ''),  
 
   CONSTRAINT fk_meal_tag_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
 	  ON UPDATE RESTRICT								
 								
 );
