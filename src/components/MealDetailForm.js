@@ -12,11 +12,11 @@ import MealIngredient from './MealIngredient'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
-import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import {withRouter} from 'react-router-dom'
 import Immutable from 'immutable'
 import cloneDeep from "lodash.clonedeep"
+import CommitChangesButton from './CommitChangesButton'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -169,9 +169,16 @@ const MealDetailForm = (props) => {
                                           deleteIngredient={() => deleteIngredient(i)}
                                           editIngredient={editIngredient} />)}
 
-      <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
-        Save
-      </Button>  
+      <CommitChangesButton 
+        newMeal={!!meal.meal_id}
+        description={description} 
+        serves={serves}
+        leftovers={leftovers}
+        dietType={dietType}
+        recipeBook={recipeBook}
+        imageUrl={imageUrl}
+        tagString={tagString}
+        ingredients={mealIngredients} />
       <Button variant="contained" color="secondary" className={classes.margin} 
               startIcon={<AddIcon />}
               onClick={() => addIngredient()}>
