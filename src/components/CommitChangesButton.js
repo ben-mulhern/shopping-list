@@ -5,6 +5,7 @@ import { gql } from 'apollo-boost'
 import Button from '@material-ui/core/Button'
 import SaveIcon from '@material-ui/icons/Save'
 import { makeStyles } from '@material-ui/core/styles'
+import {withRouter} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
 
@@ -39,17 +40,64 @@ const CREATE_MEAL = gql`
   }
 `
 
-const CommitChangesButton = (props) => {
+const ADD_INGREDIENTS = gql`
+  mutation insert_ingredient($objects: [ingredient_insert_input!]!) {
+    insert_ingredient(objects: $objects) {
+      returning {
+        ingredient_id
+      }
+    }
+  }
+`
 
+const UPDATE_MEAL = gql`
+  mutation update_meal($mealId: Int!, $changes: meal_set_input!) {
+    update_meal(
+      where: {meal_id: {_eq: $mealId}},
+      _set: $changes
+    ) {
+      affected_rows
+    }  
+  }
+`
+const CommitChangesButton = (props) => {
   const classes = useStyles()
-  const [createMeal, { loading: creating, error: ceateError }] = useMutation(CREATE_MEAL)
+  const [createMeal, { loading: creatingMeal, error: createError, data: createMealData }] = useMutation(CREATE_MEAL)
+  const [updateMeal, { loading: updatingMeal, error: updateError }] = useMutation(UPDATE_MEAL)
+  const [addIngredientsQuery, { loading: addingIngredients, error: addIngredientsError, data: addIngredientsData }] = useMutation(ADD_INGREDIENTS)
 
   const saveChanges = () => {
-    
-    const tags = Immutable.Set(props.tagString.split(' '))
-    const tagObjs = tags.map(t => ({"tag": t})).toArray()
-    console.log(tags)
 
+    createNewIngredients()
+    if (!props.mealId) {
+      createNewMealHeader()
+    } else {
+      updateMealHeader()
+      deleteMealIngredients()
+      deleteMealTags()
+    }
+    addMealIngredients()
+    addMealTags()
+    // refresh main list here?
+    props.history.push(`/meals`)
+  }
+
+  const createNewIngredients = () => {  
+    const newIngs = props.mealIngredients.filter(mi => (!mi.ingredient.ingredient_id))
+    console.log(JSON.stringify(newIngs))
+    const newRows = newIngs.map(mi => ({
+      description: mi.ingredient.description, 
+      store_location_id: mi.ingredient.store_location.store_location_id
+    }))
+    console.log(JSON.stringify(newRows))
+    addIngredientsQuery({
+      variables: { 
+        objects: newRows
+      }
+    })
+
+  }
+  const createNewMealHeader = () => {
     createMeal({
       variables: { 
         description: props.description,
@@ -57,22 +105,33 @@ const CommitChangesButton = (props) => {
         leftovers: props.leftovers,
         dietType: props.dietType,
         recipeBook: props.recipeBook,
-        imageUrl: props.imageUrl,
-        tags: tags
+        imageUrl: props.imageUrl
       }
     })
-
-    // create new ingredients
-    // If new
-    //   insert meal record
-    // if update
-    //   update meal record
-    //   delete ingredient x-refs
-    //   delete tag records
-    // insert ingredient x-refs  
-    // insert tag records
-    // Go to list screen (refetch?)
   }
+  const updateMealHeader = () => {
+    updateMeal({
+      variables: { 
+        mealId: props.mealId,
+        changes: {
+          description: props.description,
+          serves: props.serves,
+          leftovers: props.leftovers,
+          diet_type: props.dietType,
+          recipe_book: props.recipeBook,
+          image_url: props.imageUrl
+        }
+      }
+    })  
+  }
+  const deleteMealIngredients = () => {}
+  const deleteMealTags = () => {}
+  const addMealIngredients = () => {}
+  const addMealTags = () => {
+    const tags = Immutable.Set(props.tagString.split(' '))
+    const tagObjs = tags.map(t => ({"tag": t})).toArray()
+  }
+
 
   return <Button variant="contained" color="primary" className={classes.margin} 
             startIcon={<SaveIcon />}
@@ -82,4 +141,4 @@ const CommitChangesButton = (props) => {
 
 }
 
-export default CommitChangesButton
+export default withRouter(CommitChangesButton)

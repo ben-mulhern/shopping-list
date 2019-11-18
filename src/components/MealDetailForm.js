@@ -170,7 +170,7 @@ const MealDetailForm = (props) => {
                                           editIngredient={editIngredient} />)}
 
       <CommitChangesButton 
-        newMeal={!!meal.meal_id}
+        mealId={meal.meal_id}
         description={description} 
         serves={serves}
         leftovers={leftovers}
@@ -178,7 +178,7 @@ const MealDetailForm = (props) => {
         recipeBook={recipeBook}
         imageUrl={imageUrl}
         tagString={tagString}
-        ingredients={mealIngredients} />
+        mealIngredients={mealIngredients}  />
       <Button variant="contained" color="secondary" className={classes.margin} 
               startIcon={<AddIcon />}
               onClick={() => addIngredient()}>

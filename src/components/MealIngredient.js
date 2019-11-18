@@ -62,6 +62,7 @@ const MealIngredient = props => {
   }
 
   const handleIngredient = desc => {
+    console.log(`desc is ${desc}`)
     let newIngredient = ingredients.find(i => i.description === desc)
     if (!newIngredient) {
       newIngredient = cloneDeep(emptyIngredient)
@@ -115,7 +116,7 @@ const MealIngredient = props => {
           freeSolo
           options={ingredients.map(i => i.description)}
           value={mi.ingredient.description}
-          onChange={(e, v) => handleIngredient(v)}
+          onInputChange={(e, v) => handleIngredient(v)}
           renderInput={params => (
             <TextField
               {...params}
