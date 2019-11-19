@@ -62,7 +62,6 @@ const MealIngredient = props => {
   }
 
   const handleIngredient = desc => {
-    console.log(`desc is ${desc}`)
     let newIngredient = ingredients.find(i => i.description === desc)
     if (!newIngredient) {
       newIngredient = cloneDeep(emptyIngredient)
@@ -120,10 +119,9 @@ const MealIngredient = props => {
           renderInput={params => (
             <TextField
               {...params}
-              required
               fullWidth
-              variant="standard"
               placeholder="Ingredient"
+              required
             />
           )}
         />

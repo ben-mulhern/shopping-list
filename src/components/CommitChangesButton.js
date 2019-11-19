@@ -40,11 +40,34 @@ const CREATE_MEAL = gql`
   }
 `
 
-const ADD_INGREDIENTS = gql`
-  mutation insert_ingredient($objects: [ingredient_insert_input!]!) {
-    insert_ingredient(objects: $objects) {
+const CREATE_NEW_INGREDIENTS = gql`
+  mutation create_new_ingredients($ingredients: [ingredient_insert_input!]!) {
+    insert_ingredient(objects: $ingredients) {
+      returning {
+        ingredient_id,
+        description
+      }
+    }    
+  }
+`
+const SET_INGREDIENTS_AND_TAGS = gql`
+  mutation set_meal_children($mealId: Int!,
+                             $mealIngredients: [meal_ingredient_insert_input!]!,
+                             $tags: [meal_tag_insert_input!]!) {
+    delete_meal_ingredient(where: {meal_id: {_eq: $mealId}}) {
+      affected_rows
+    }
+    insert_meal_ingredient(objects: $mealIngredients) {
       returning {
         ingredient_id
+      }
+    }    
+    delete_meal_tag(where: {meal_id: {_eq: $mealId}}) {
+      affected_rows
+    }
+    insert_meal_tag(objects: $tags) {
+      returning {
+        tag
       }
     }
   }
@@ -63,42 +86,59 @@ const UPDATE_MEAL = gql`
 const CommitChangesButton = (props) => {
   const classes = useStyles()
   const [createMeal, { loading: creatingMeal, error: createError, data: createMealData }] = useMutation(CREATE_MEAL)
+  const [createNewIngredientsQuery, { loading: creatingNewIngredients, error: newIngredientError, data: createIngredientData }] = useMutation(CREATE_NEW_INGREDIENTS)
   const [updateMeal, { loading: updatingMeal, error: updateError }] = useMutation(UPDATE_MEAL)
-  const [addIngredientsQuery, { loading: addingIngredients, error: addIngredientsError, data: addIngredientsData }] = useMutation(ADD_INGREDIENTS)
+  const [setIngredientsAndTagsQuery, { loading: settingIngredients, error: setIngredientsError }] = useMutation(SET_INGREDIENTS_AND_TAGS)
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
 
-    createNewIngredients()
+    let mealId
     if (!props.mealId) {
-      createNewMealHeader()
+      await createNewMealHeader()
     } else {
-      updateMealHeader()
-      deleteMealIngredients()
-      deleteMealTags()
+      mealId = props.mealId
+      await updateMealHeader()
     }
-    addMealIngredients()
-    addMealTags()
+    await createNewIngredients()
+    await setIngredientsAndTags(mealId)
     // refresh main list here?
-    props.history.push(`/meals`)
+    // Also need to update store location field on existing ingredients
+    props.history.push('/meals')
   }
 
-  const createNewIngredients = () => {  
+  const createNewIngredients = () => {
     const newIngs = props.mealIngredients.filter(mi => (!mi.ingredient.ingredient_id))
-    console.log(JSON.stringify(newIngs))
     const newRows = newIngs.map(mi => ({
       description: mi.ingredient.description, 
       store_location_id: mi.ingredient.store_location.store_location_id
     }))
-    console.log(JSON.stringify(newRows))
-    addIngredientsQuery({
+    createNewIngredientsQuery({
       variables: { 
-        objects: newRows
+        ingredients: newRows
       }
     })
-
   }
-  const createNewMealHeader = () => {
-    createMeal({
+  const setIngredientsAndTags = (mealId) => {  
+    const tags = Immutable.Set(props.tagString.split(' '))
+    const tagObjs = tags.map(t => ({
+      meal_id: mealId,
+      tag: t})).toArray()
+
+    // todo - set mealIngredients
+    // need to split out the query for new ingredient creation
+    const mealIngredients = []  
+
+    setIngredientsAndTagsQuery({
+      variables: { 
+        mealId: mealId,
+        mealIngredients: mealIngredients,
+        tags: tagObjs
+      }
+    })
+  }
+
+  const createNewMealHeader = async () => {
+    await createMeal({
       variables: { 
         description: props.description,
         serves: props.serves,
@@ -108,6 +148,7 @@ const CommitChangesButton = (props) => {
         imageUrl: props.imageUrl
       }
     })
+    // Need to return the meal id now
   }
   const updateMealHeader = () => {
     updateMeal({
@@ -124,14 +165,6 @@ const CommitChangesButton = (props) => {
       }
     })  
   }
-  const deleteMealIngredients = () => {}
-  const deleteMealTags = () => {}
-  const addMealIngredients = () => {}
-  const addMealTags = () => {
-    const tags = Immutable.Set(props.tagString.split(' '))
-    const tagObjs = tags.map(t => ({"tag": t})).toArray()
-  }
-
 
   return <Button variant="contained" color="primary" className={classes.margin} 
             startIcon={<SaveIcon />}
