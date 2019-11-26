@@ -9,7 +9,8 @@ export const UPSERT_INGREDIENTS = gql`
       }) {
       returning {
         ingredient_id,
-        description
+        description, 
+        store_location_id
       }
     }    
   }

@@ -18,24 +18,21 @@ const CommitChangesButton = (props) => {
   const classes = useStyles()
   
   const [upsertIngredients, 
-    { loading: loadingIngredients, error: ingredientsError, data: ingredientsData }] = 
-  useMutation(UPSERT_INGREDIENTS, {
-    onCompleted({ ingredientsData }) {
-      // Now do the meal header
-    }
-  })
+    { called: calledIngredients, loading: loadingIngredients, error: ingredientsError, data: ingredientsData }] = 
+      useMutation(UPSERT_INGREDIENTS)
 
   const [upsertMeal, 
-    { loading: loadingMeal, error: mealError, data: mealData }] = 
-  useMutation(UPSERT_MEAL, {
-    onCompleted({ mealData }) {
-      // Now do the meal tags & ingredients
-    }
-  })
+    { called: calledMeal, loading: loadingMeal, error: mealError, data: mealData }] = 
+      useMutation(UPSERT_MEAL)
+
+  const [setMealIngsTags, 
+    { called: calledMealIngsTags, loading: loadingMealIngsTags, error: mealIngsTagsError, data: mealIngsTagsData }] = 
+      useMutation(SET_INGREDIENTS_AND_TAGS)
 
   const saveChanges = () => {
     
     // Ingredients firt, the rest follows on once completed
+    console.log("Attepting ingredient upsert")
     const ingredients = props.mealIngredients.map(mi => mi.ingredient)
     upsertIngredients({
       variables: { 
@@ -45,26 +42,52 @@ const CommitChangesButton = (props) => {
 
   }
 
-  // Takes the ingredient info and passes it through
-  const saveMeal = (ingredients) => {
+  if (calledIngredients && !loadingIngredients && !ingredientsError && !calledMeal) {
+    console.log("Attepting meal upsert")
+    const meal = {
+      meal_id: props.mealId,
+      description: props.description,
+      serves: props.serves,
+      leftovers: props.leftovers,
+      diet_type: props.dietType,
+      recipe_book: props.recipeBook,
+      image_url: props.imageUrl      
+    }
+    console.log(JSON.stringify(meal))
     upsertMeal({
       variables: { 
-        meal: {
-          meal_id: props.mealId,
-          description: props.description,
-          serves: props.serves,
-          leftovers: props.leftovers,
-          diet_type: props.dietType,
-          recipe_book: props.recipeBook,
-          image_url: props.imageUrl
-        }
+        meal: meal
+      } 
+    }) 
+  }
+
+  if (calledMeal && !loadingMeal && !mealError && !calledMealIngsTags) {
+    console.log("Attepting mi & tags update")
+    const mealId = mealData.mealId
+    const tags = props.tagString.split(' ').map(t => ({meal_id: mealId, tag: t}))
+
+    const ingredients = Immutable.Set(ingredientsData)
+    const ingredientLookup = (desc) => ingredients.find(i => i.description === desc)
+    const mis = Immutable.Set(props.mealIngredients)
+    const newMealIngredients = mis.map(mi => ({...mi, meal_id: ingredientLookup(mi.description)}))
+
+    setMealIngsTags({
+      variables: { 
+        mealId: mealId,
+        mealIngredients: newMealIngredients,
+        tags: tags
       }
-    })  
+    }) 
+  }
+
+  if (calledMealIngsTags && !loadingMealIngsTags && !mealIngsTagsError) {
+    props.history.goBack()
   }
 
   return <Button variant="contained" color="primary" className={classes.margin} 
             startIcon={<SaveIcon />}
-            onClick={() => saveChanges()}>
+            onClick={() => saveChanges()}
+            disabled={loadingIngredients || loadingMeal || loadingMealIngsTags}>
            Save
          </Button>
 
