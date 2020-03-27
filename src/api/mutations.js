@@ -22,7 +22,7 @@ export const UPSERT_MEAL = gql`
       objects: [ $meal ],
       on_conflict: {
         constraint: pk_meal,
-        update_columns: [serves, leftovers, diet_type, recipe_book, image_url]
+        update_columns: [description, serves, leftovers, diet_type, recipe_book, image_url]
       }
     ) {
       returning {
