@@ -1,8 +1,10 @@
+CREATE SEQUENCE meal_seq;
+
 CREATE TABLE meal (
 
   CONSTRAINT pk_meal PRIMARY KEY (meal_id),
   
-  meal_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+  meal_id INT NOT NULL DEFAULT nextval('meal_seq'),
   description VARCHAR(200) NOT NULL UNIQUE
     CONSTRAINT ck_meal_description CHECK (description <> ''),
   serves SMALLINT NOT NULL
@@ -41,12 +43,14 @@ CREATE TABLE store_location (
     CONSTRAINT ck_shop_order CHECK (shop_order > 0)      
 
 ); 
- 
+
+CREATE SEQUENCE ingredient_seq;
+
 CREATE TABLE ingredient (
 
   CONSTRAINT pk_ingredient PRIMARY KEY (ingredient_id),
    
-  ingredient_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+  ingredient_id INT NOT NULL DEFAULT nextval('ingredient_seq'),
   description VARCHAR(200) NOT NULL
     CONSTRAINT ck_ingredient_description CHECK (description <> ''),
   store_location_id VARCHAR(20) NOT NULL,
