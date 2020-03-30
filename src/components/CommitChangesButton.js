@@ -26,13 +26,13 @@ const CommitChangesButton = (props) => {
       useMutation(UPSERT_MEAL)
 
   const [setMealIngsTags, 
-    { called: calledMealIngsTags, loading: loadingMealIngsTags, error: mealIngsTagsError, data: mealIngsTagsData }] = 
+    { called: calledMealIngsTags, loading: loadingMealIngsTags, error: mealIngsTagsError }] = 
       useMutation(SET_INGREDIENTS_AND_TAGS)
 
   const saveChanges = () => {
     
     // Ingredients firt, the rest follows on once completed
-    console.log("Attepting ingredient upsert")
+    console.log("Attempting ingredient upsert")
     const ingredients = props.mealIngredients.map(mi => mi.ingredient)
     upsertIngredients({
       variables: { 
@@ -43,7 +43,7 @@ const CommitChangesButton = (props) => {
   }
 
   if (calledIngredients && !loadingIngredients && !ingredientsError && !calledMeal) {
-    console.log("Attepting meal upsert")
+    console.log("Attempting meal upsert")
     const meal = {
       meal_id: props.mealId,
       description: props.description,
@@ -62,7 +62,7 @@ const CommitChangesButton = (props) => {
   }
 
   if (calledMeal && !loadingMeal && !mealError && !calledMealIngsTags) {
-    console.log("Attepting mi & tags update")
+    console.log("Attempting mi & tags update")
     const mealId = mealData.mealId
     const tags = props.tagString.split(' ').map(t => ({meal_id: mealId, tag: t}))
 
