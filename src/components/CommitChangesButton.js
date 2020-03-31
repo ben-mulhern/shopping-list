@@ -6,6 +6,7 @@ import SaveIcon from '@material-ui/icons/Save'
 import { makeStyles } from '@material-ui/core/styles'
 import {withRouter} from 'react-router-dom'
 import {UPSERT_INGREDIENTS, UPSERT_MEAL, SET_INGREDIENTS_AND_TAGS} from '../api/mutations'
+import omit from "lodash.omit"
 
 const useStyles = makeStyles(theme => ({
 
@@ -33,7 +34,8 @@ const CommitChangesButton = (props) => {
     
     // Ingredients firt, the rest follows on once completed
     console.log("Attempting ingredient upsert")
-    const ingredients = props.mealIngredients.map(mi => mi.ingredient)
+    const ingredients = props.mealIngredients.map(mi => mi.ingredient).map(i => omit(i, "__typename"))
+    console.log(JSON.stringify(ingredients))
     upsertIngredients({
       variables: { 
         ingredients: ingredients

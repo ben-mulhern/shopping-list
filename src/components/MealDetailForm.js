@@ -104,8 +104,7 @@ const MealDetailForm = (props) => {
           fullWidth margin="normal" variant="outlined"
           onChange={e => handleDescription(e.target.value)}
           placeholder="Description"
-          error={descriptionErrorText}
-          helperText={descriptionErrorText} />
+          error={!!descriptionErrorText} />
       </FormControl>  
 
       <FormControl component="fieldset" className={classes.formControl}>
