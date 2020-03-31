@@ -79,13 +79,13 @@ const MealDetail = (props) => {
   const mealId = props.match.params.id
   const classes = useStyles()
 
-  const [runMealQuery, { called, loading, error, data }] = 
+  const { loading: staticLoading, error: staticError, data: staticData } = useQuery(staticDataQuery, 
+    { fetchPolicy: 'no-cache'}) 
+
+    const [runMealQuery, { called, loading, error, data }] = 
     useLazyQuery(mealQuery, 
                  { variables: { "meal_id": mealId },
                    fetchPolicy: 'no-cache'})  
-
-  const { staticLoading, staticError, staticData } = useQuery(staticDataQuery, 
-                                                              { fetchPolicy: 'no-cache'}) 
 
   if (!called && mealId !== "new") runMealQuery()
 
