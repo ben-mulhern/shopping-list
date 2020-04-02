@@ -73,10 +73,14 @@ const CommitChangesButton = (props) => {
     const mealId = mealData.mealId
     const tags = props.tagString.split(' ').map(t => ({meal_id: mealId, tag: t}))
 
+    // This is the returned list of ids and descriptions from the API
     const ingredients = Immutable.Set(ingredientsData)
-    const ingredientLookup = (desc) => ingredients.find(i => i.description === desc)
+    // Now we have to merge that returned info with the quantity and unit info from the UI. 
+    // We try to match on either the id (exisitng ings) or the description (new ings)
+    const ingredientLookup = (idAndDesc) => ingredients.find(i => i.ingredient_id === idAndDesc.id || 
+                                                                  i.description === idAndDesc.desc)
     const mis = Immutable.Set(props.mealIngredients)
-    const newMealIngredients = mis.map(mi => ({...mi, meal_id: ingredientLookup(mi.description)}))
+    const newMealIngredients = mis.map(mi => ({...mi, meal_id: ingredientLookup({id: mi.ingredient_id, desc: mi.description})}))
 
     setMealIngsTags({
       variables: { 

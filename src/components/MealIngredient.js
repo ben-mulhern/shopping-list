@@ -91,8 +91,7 @@ const MealIngredient = props => {
           label="Quantity"
           type="number"
           placeholder="Qty"
-          error={quantityErrorText}
-          helperText={quantityErrorText}
+          error={!!quantityErrorText}
         />
       </FormControl>
       <FormControl

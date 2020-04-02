@@ -56,7 +56,6 @@ const staticDataQuery = gql`
 `
 
 const emptyMeal = {
-  "meal_id": 0,
   "description": "",
   "diet_type": "OMNI",
   "leftovers": false,
