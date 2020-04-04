@@ -154,7 +154,7 @@ const MealDetailForm = (props) => {
       </FormControl>  
 
       <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Tags" value={tagString}
+        <TextField label="Tags" value={tagString} required
           fullWidth margin="normal" variant="outlined"
           onChange={e => setTagString(e.target.value.toUpperCase())}
           placeholder="Tags" />

@@ -70,21 +70,25 @@ const CommitChangesButton = (props) => {
 
   if (calledMeal && !loadingMeal && !mealError && !calledMealIngsTags) {
     console.log("Attempting mi & tags update")
-    const mealId = mealData.mealId
-    const tags = props.tagString.split(' ').map(t => ({meal_id: mealId, tag: t}))
+    const mealId = mealData.insert_meal.returning[0].meal_id
+    const tags = (props.tagString.length === 0 ? [] : props.tagString.split(' ').map(t => ({meal_id: mealId, tag: t})))
     // This is the returned list of ids and descriptions from the API
     const ingResponse = Immutable.Set(ingredientsData.insert_ingredient.returning)
     // Now we have to merge that returned info with the quantity and unit info from the UI. 
     // We try to match on either the id (exisitng ings) or the description (new ings)
-    console.log(JSON.stringify(ingResponse))
     const getIngredientId = (desc) => ingResponse.find(i => i.description === desc).ingredient_id
     const mis = Immutable.Set(props.mealIngredients)
-    const newMealIngredients = mis.map(mi => (mi.ingredient_id ? mi : {...mi, ingredient_id: getIngredientId(mi.description)}))
-
+    const newMealIngredients = mis.map(mi => (mi.ingredient_id ? mi : {...mi, ingredient_id: getIngredientId(mi.ingredient.description)}))
+    const miInsert = newMealIngredients.map(nmi => ({
+      meal_id : mealId,
+      ingredient_id : nmi.ingredient.ingredient_id,
+      quantity : nmi.quantity,
+      unit_id : nmi.unit.unit_id
+    }))
     setMealIngsTags({
       variables: { 
         mealId: mealId,
-        mealIngredients: newMealIngredients,
+        mealIngredients: miInsert,
         tags: tags
       }
     }) 

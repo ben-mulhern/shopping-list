@@ -34,7 +34,7 @@ export const UPSERT_MEAL = gql`
 export const SET_INGREDIENTS_AND_TAGS = gql`
   mutation set_meal_children($mealId: Int!,
                              $mealIngredients: [meal_ingredient_insert_input!]!,
-                             $tags: [meal_tag_insert_input]) {
+                             $tags: [meal_tag_insert_input!]!) {
     delete_meal_ingredient(where: {meal_id: {_eq: $mealId}}) {
       affected_rows
     }
