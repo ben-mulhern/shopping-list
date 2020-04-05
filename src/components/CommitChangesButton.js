@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Immutable from 'immutable'
 import { useMutation } from '@apollo/react-hooks'
 import Button from '@material-ui/core/Button'
@@ -6,8 +6,10 @@ import SaveIcon from '@material-ui/icons/Save'
 import { makeStyles } from '@material-ui/core/styles'
 import {withRouter} from 'react-router-dom'
 import {UPSERT_INGREDIENTS, UPSERT_MEAL, SET_INGREDIENTS_AND_TAGS} from '../api/mutations'
-import omitDeep from "omit-deep-lodash"
-import set from "lodash.set"
+import omitDeep from 'omit-deep-lodash'
+import set from 'lodash.set'
+
+import { Redirect } from 'react-router'
 
 const useStyles = makeStyles(theme => ({
 
@@ -30,6 +32,10 @@ const CommitChangesButton = (props) => {
   const [setMealIngsTags, 
     { called: calledMealIngsTags, loading: loadingMealIngsTags, error: mealIngsTagsError }] = 
       useMutation(SET_INGREDIENTS_AND_TAGS)
+
+  const [redirect, setRedirect] = useState(false)
+
+  if (redirect) return <Redirect push to="/meals" />
 
   const saveChanges = () => {
     
@@ -94,9 +100,7 @@ const CommitChangesButton = (props) => {
     }) 
   }
 
-  if (calledMealIngsTags && !loadingMealIngsTags && !mealIngsTagsError) {
-    props.history.goBack()
-  }
+  if (calledMealIngsTags && !loadingMealIngsTags && !mealIngsTagsError) setRedirect(true)
 
   return <Button variant="contained" color="primary" className={classes.margin} 
             startIcon={<SaveIcon />}

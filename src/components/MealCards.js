@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery } from '@apollo/react-hooks'
+import { useSubscription } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import MealCard from './MealCard'
 import { connect } from 'react-redux'
@@ -43,8 +43,8 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const mealQuery = gql`
-  {
+const mealSubscription = gql`
+  subscription {
     meal {
       meal_id
       description
@@ -65,14 +65,12 @@ const MealCards = (props) => {
   const classes = useStyles()
   props.setTab(1)
 
-  const { loading, error, data, refetch } = useQuery(mealQuery)
+  const { loading, error, data} = useSubscription(mealSubscription)
 
   const [searchString, setSearchString] = useState('')  
 
   if (loading) return <CircularProgress color="secondary" className={classes.margin} />
   if (error) return <p>Error :(</p>
-
-  const handleListChange = () => refetch()
 
   const meals = Immutable.List(data.meal)
 
@@ -100,8 +98,7 @@ const MealCards = (props) => {
       </Button>
       <div>
         {meals.map(m => <MealCard meal={m} key={m.meal_id}
-                                  hidden={!mealSearch(searchString, m)}
-                                  onDelete={handleListChange} />)}  
+                                  hidden={!mealSearch(searchString, m)} />)}  
       </div>
     </div>
   )  

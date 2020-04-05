@@ -37,6 +37,7 @@ const Login = (props) => {
 
   const attemptLogin = (apiKey) => {
     sessionStorage.setItem('API_KEY', apiKey)
+    console.log("Attempting login")
     attemptLogInCall()
   }
 

@@ -4,7 +4,8 @@ CREATE TABLE meal (
 
   CONSTRAINT pk_meal PRIMARY KEY (meal_id),
   
-  meal_id INT NOT NULL DEFAULT nextval('meal_seq'),
+  meal_id INT NOT NULL DEFAULT nextval('meal_seq')
+    CONSTRAINT ck_meal_meal_id CHECK (meal_id > 0),
   description VARCHAR(200) NOT NULL UNIQUE
     CONSTRAINT ck_meal_description CHECK (description <> ''),
   serves SMALLINT NOT NULL
@@ -12,8 +13,10 @@ CREATE TABLE meal (
   leftovers BOOLEAN NOT NULL,
   diet_type VARCHAR(10) NOT NULL DEFAULT 'OMNI'
     CONSTRAINT ck_meal_diet_type CHECK (diet_type IN ('VEGAN', 'VEGETARIAN', 'OMNI')),
-  recipe_book VARCHAR(500),
+  recipe_book VARCHAR(500)
+    CONSTRAINT ck_meal_recipe_book CHECK (recipe_book <> ''),
   image_url VARCHAR(1000)
+    CONSTRAINT ck_meal_image_url CHECK (image_url <> '')
 );
 
 CREATE TABLE unit (
@@ -50,7 +53,8 @@ CREATE TABLE ingredient (
 
   CONSTRAINT pk_ingredient PRIMARY KEY (ingredient_id),
    
-  ingredient_id INT NOT NULL DEFAULT nextval('ingredient_seq'),
+  ingredient_id INT NOT NULL DEFAULT nextval('ingredient_seq')
+    CONSTRAINT ck_ingredient_ingredient_id CHECK (ingredient_id > 0),
   description VARCHAR(200) NOT NULL
     CONSTRAINT ck_ingredient_description CHECK (description <> ''),
   store_location_id VARCHAR(20) NOT NULL,

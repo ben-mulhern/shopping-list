@@ -59,9 +59,9 @@ const emptyMeal = {
   "description": "",
   "diet_type": "OMNI",
   "leftovers": false,
-  "image_url": "",
+  "image_url": null,
   "serves": 4,
-  "recipe_book": "",
+  "recipe_book": null,
   "meal_tags": [],
   "meal_ingredients": []
 }

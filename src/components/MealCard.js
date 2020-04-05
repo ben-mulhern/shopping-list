@@ -74,7 +74,6 @@ const MealCard = (props) => {
         </Button> 
         <ConfirmWindow open={deleteWindowOpen} 
           handleClose={() => setDeleteWindowOpen(false)}
-          onDelete={props.onDelete}
           mealId={meal.meal_id}
           description={meal.description} />
       </CardActions>

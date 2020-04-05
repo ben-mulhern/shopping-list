@@ -15,7 +15,8 @@ import AddIcon from '@material-ui/icons/Add'
 import CancelIcon from '@material-ui/icons/Cancel'
 import {withRouter} from 'react-router-dom'
 import Immutable from 'immutable'
-import cloneDeep from "lodash.clonedeep"
+import cloneDeep from 'lodash.clonedeep'
+import { Redirect } from 'react-router'
 import CommitChangesButton from './CommitChangesButton'
 
 const useStyles = makeStyles(theme => ({
@@ -53,6 +54,7 @@ const MealDetailForm = (props) => {
   const meal = props.meal
   const initTagString = meal.meal_tags.map(t => t.tag).join(" ")
 
+  const [redirect, setRedirect] = useState(false)
   const [description, setDescription] = useState(meal.description)
   const [dietType, setDietType] = useState(meal.diet_type)
   const [leftovers, setLeftovers] = useState(meal.leftovers)
@@ -62,6 +64,8 @@ const MealDetailForm = (props) => {
   const [tagString, setTagString] = useState(initTagString)
   const [descriptionErrorText, setDescriptionErrorText] = useState('')
   const [mealIngredients, setMealIngredients] = useState(Immutable.List(meal.meal_ingredients))
+
+  if (redirect) return <Redirect push to="/meals" />
 
   const handleDescription = desc => {
     setDescription(desc)
@@ -97,6 +101,7 @@ const MealDetailForm = (props) => {
   }
 
   return (
+
     <Paper className={classes.width300}>
       
       <FormControl className={classes.formControl}>
@@ -185,7 +190,7 @@ const MealDetailForm = (props) => {
       </Button>  
       <Button variant="contained" color="default" className={classes.margin} 
               startIcon={<CancelIcon />}
-              onClick={() => props.history.goBack()}>
+              onClick={() => setRedirect(true)}>
         Cancel
       </Button>  
     </Paper>
