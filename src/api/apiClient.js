@@ -24,7 +24,6 @@ const wsLink = new WebSocketLink({
 })
 
 const authLink = setContext((_, { headers }) => {
-  console.log("Authlink called")
   const apiKey = sessionStorage.getItem('API_KEY')
   return {
     headers: {
