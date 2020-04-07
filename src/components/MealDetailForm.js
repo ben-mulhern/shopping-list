@@ -63,6 +63,7 @@ const MealDetailForm = (props) => {
   const [recipeBook, setRecipeBook] = useState(meal.recipe_book)
   const [tagString, setTagString] = useState(initTagString)
   const [descriptionErrorText, setDescriptionErrorText] = useState('')
+  const [tagErrorText, setTagErrorText] = useState('')  
   const [mealIngredients, setMealIngredients] = useState(Immutable.List(meal.meal_ingredients))
 
   if (redirect) return <Redirect push to="/meals" />
@@ -72,6 +73,15 @@ const MealDetailForm = (props) => {
     const errorMessage = ((desc === '') ? 'Description cannot be blank' : '')
     setDescriptionErrorText(errorMessage)
   }
+
+  const handleTagString = str => {
+    const uc = str.toUpperCase()
+    setTagString(uc)
+    const strList = Immutable.List(uc.split("")) 
+    const e = strList.filterNot(c => (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c === ' ')
+    const errorMessage = (e.size > 0 || uc.trim().length === 0 ? 'At least one tag required, no symbols' : '')
+    setTagErrorText(errorMessage)
+  } 
 
   const marks = [
     {value: 1, label: "1"},
@@ -109,7 +119,8 @@ const MealDetailForm = (props) => {
           fullWidth margin="normal" variant="outlined"
           onChange={e => handleDescription(e.target.value)}
           placeholder="Description"
-          error={!!descriptionErrorText} />
+          error={!!descriptionErrorText}
+          helperText={descriptionErrorText} />
       </FormControl>  
 
       <FormControl component="fieldset" className={classes.formControl}>
@@ -161,13 +172,15 @@ const MealDetailForm = (props) => {
       <FormControl component="fieldset" className={classes.formControl}>
         <TextField label="Tags" value={tagString} required
           fullWidth margin="normal" variant="outlined"
-          onChange={e => setTagString(e.target.value.toUpperCase())}
+          onChange={e => handleTagString(e.target.value)}
+          error={!!tagErrorText}
+          helperText={tagErrorText}
           placeholder="Tags" />
       </FormControl>  
 
       <h2 className={classes.margin}>Ingredients</h2>    
       {mealIngredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
-                                          units={props.units} locations = {props.locations}
+                                          units={props.units} locations={props.locations}
                                           ingredients={props.ingredients} 
                                           key={i} rowIndex={i} 
                                           deleteIngredient={() => deleteIngredient(i)}
@@ -182,7 +195,8 @@ const MealDetailForm = (props) => {
         recipeBook={recipeBook}
         imageUrl={imageUrl}
         tagString={tagString}
-        mealIngredients={mealIngredients}  />
+        mealIngredients={mealIngredients}
+        errorsExist={!!descriptionErrorText || !!tagErrorText}  />
       <Button variant="contained" color="secondary" className={classes.margin} 
               startIcon={<AddIcon />}
               onClick={() => addIngredient()}>

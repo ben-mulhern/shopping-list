@@ -105,7 +105,7 @@ const CommitChangesButton = (props) => {
   return <Button variant="contained" color="primary" className={classes.margin} 
             startIcon={<SaveIcon />}
             onClick={() => saveChanges()}
-            disabled={loadingIngredients || loadingMeal || loadingMealIngsTags}>
+            disabled={props.errorsExist || loadingIngredients || loadingMeal || loadingMealIngsTags}>
            Save
          </Button>
 
