@@ -64,6 +64,7 @@ const MealDetailForm = (props) => {
   const [tagString, setTagString] = useState(initTagString)
   const [descriptionErrorText, setDescriptionErrorText] = useState('')
   const [tagErrorText, setTagErrorText] = useState('')  
+  const [ingredientErrorText, setIngredientErrorText] = useState('')
   const [mealIngredients, setMealIngredients] = useState(Immutable.List(meal.meal_ingredients))
 
   if (redirect) return <Redirect push to="/meals" />
@@ -95,19 +96,37 @@ const MealDetailForm = (props) => {
   ]
 
   const deleteIngredient = i => {
-    const ing = mealIngredients.delete(i)
-    setMealIngredients(ing)
+    const ings = mealIngredients.delete(i)
+    setMealIngredients(ings)
+    validateIngredients(ings)
   }
 
   const editIngredient = (i, ing) => {
     const ings = mealIngredients.set(i, ing)
     setMealIngredients(ings)
+    validateIngredients(ings)
   }
 
   const addIngredient = () => {
     const newIngredient = cloneDeep(emptyMealIngredient)
     const ings = mealIngredients.push(newIngredient)
     setMealIngredients(ings)
+    validateIngredients(ings)
+  }
+
+  const validateIngredients = (ings) => {
+    // Ingredient names must be non-blank
+    if (ings.findIndex(mi => !mi.ingredient.description) >= 0)
+      setIngredientErrorText('Ingredient name must be specified')
+    // No negative/zero quantities  
+    else if (ings.findIndex(mi => mi.quantity <= 0) >= 0)
+      setIngredientErrorText('Quantities must be positive')
+    // At least one ingredient
+    else if (ings.size === 0) setIngredientErrorText('Please specify at least one ingredient')
+    // Can't have the same ingredient twice
+    else if (ings.size !== ings.map(mi => mi.ingredient.description).toSet().size) 
+      setIngredientErrorText('Each ingredient must appear at most once')
+    else setIngredientErrorText('')
   }
 
   return (
@@ -185,6 +204,7 @@ const MealDetailForm = (props) => {
                                           key={i} rowIndex={i} 
                                           deleteIngredient={() => deleteIngredient(i)}
                                           editIngredient={editIngredient} />)}
+      <p>{ingredientErrorText}</p>                                    
 
       <CommitChangesButton 
         mealId={meal.meal_id}
@@ -196,7 +216,7 @@ const MealDetailForm = (props) => {
         imageUrl={imageUrl}
         tagString={tagString}
         mealIngredients={mealIngredients}
-        errorsExist={!!descriptionErrorText || !!tagErrorText}  />
+        errorsExist={!!descriptionErrorText || !!tagErrorText || !!ingredientErrorText} />
       <Button variant="contained" color="secondary" className={classes.margin} 
               startIcon={<AddIcon />}
               onClick={() => addIngredient()}>

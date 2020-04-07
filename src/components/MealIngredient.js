@@ -48,8 +48,6 @@ const MealIngredient = props => {
   const ingredients = props.ingredients
   const classes = useStyles()
 
-  const quantityErrorText = ((mi.quantity <= 0) ? 'Quantity must be greater than zero' : '')
-
   const handleQuantity = qty => {
     ing.quantity = qty
     props.editIngredient(props.rowIndex, ing)
@@ -91,7 +89,7 @@ const MealIngredient = props => {
           label="Quantity"
           type="number"
           placeholder="Qty"
-          error={!!quantityErrorText}
+          error={(mi.quantity <= 0)}
         />
       </FormControl>
       <FormControl
