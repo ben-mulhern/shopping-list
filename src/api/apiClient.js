@@ -23,8 +23,15 @@ const wsLink = new WebSocketLink({
   } 
 })
 
+export const reStartWsLink = () => {
+  console.log("Restarting ws link")
+  wsLink.subscriptionClient.close()
+  wsLink.subscriptionClient.connect()
+}
+
 const authLink = setContext((_, { headers }) => {
-  const apiKey = sessionStorage.getItem('API_KEY')
+  const apiKey = sessionStorage.getItem('API_KEY')    
+
   return {
     headers: {
       ...headers,
