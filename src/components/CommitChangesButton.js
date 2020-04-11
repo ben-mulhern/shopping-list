@@ -84,7 +84,7 @@ const CommitChangesButton = (props) => {
     // We try to match on either the id (exisitng ings) or the description (new ings)
     const getIngredientId = (desc) => ingResponse.find(i => i.description === desc).ingredient_id
     const mis = Immutable.Set(props.mealIngredients)
-    const newMealIngredients = mis.map(mi => (mi.ingredient_id ? mi : {...mi, ingredient_id: getIngredientId(mi.ingredient.description)}))
+    const newMealIngredients = mis.map(mi => (mi.ingredient_id ? mi : {...mi, ingredient: {...mi.ingredient, ingredient_id: getIngredientId(mi.ingredient.description)}}))
     const miInsert = newMealIngredients.map(nmi => ({
       meal_id : mealId,
       ingredient_id : nmi.ingredient.ingredient_id,
