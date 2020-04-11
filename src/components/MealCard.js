@@ -74,7 +74,8 @@ const MealCard = (props) => {
         </Button> 
         <ConfirmWindow open={deleteWindowOpen} 
           handleClose={() => setDeleteWindowOpen(false)}
-          deleteMessage={`Are you sure you want to delete ${meal.description}?`} />
+          mealId={meal.meal_id}
+          description={meal.description} />
       </CardActions>
     </Card>
   )  

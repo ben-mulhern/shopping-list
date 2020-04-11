@@ -14,6 +14,7 @@ import { setTab, logIn } from '../state/actions'
 import { useLazyQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import reStartWsLink from '../api/apiClient'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -37,6 +38,8 @@ const Login = (props) => {
 
   const attemptLogin = (apiKey) => {
     sessionStorage.setItem('API_KEY', apiKey)
+    reStartWsLink()
+    console.log("Attempting login")
     attemptLogInCall()
   }
 

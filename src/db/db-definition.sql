@@ -1,17 +1,22 @@
+CREATE SEQUENCE meal_seq;
+
 CREATE TABLE meal (
 
   CONSTRAINT pk_meal PRIMARY KEY (meal_id),
   
-  meal_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+  meal_id INT NOT NULL DEFAULT nextval('meal_seq')
+    CONSTRAINT ck_meal_meal_id CHECK (meal_id > 0),
   description VARCHAR(200) NOT NULL UNIQUE
     CONSTRAINT ck_meal_description CHECK (description <> ''),
   serves SMALLINT NOT NULL
     CONSTRAINT ck_meal_serves CHECK (serves BETWEEN 1 AND 8),
   leftovers BOOLEAN NOT NULL,
-  diet_type VARCHAR(10) NOT NULL
+  diet_type VARCHAR(10) NOT NULL DEFAULT 'OMNI'
     CONSTRAINT ck_meal_diet_type CHECK (diet_type IN ('VEGAN', 'VEGETARIAN', 'OMNI')),
-  recipe_book VARCHAR(500),
+  recipe_book VARCHAR(500)
+    CONSTRAINT ck_meal_recipe_book CHECK (recipe_book <> ''),
   image_url VARCHAR(1000)
+    CONSTRAINT ck_meal_image_url CHECK (image_url <> '')
 );
 
 CREATE TABLE unit (
@@ -41,12 +46,15 @@ CREATE TABLE store_location (
     CONSTRAINT ck_shop_order CHECK (shop_order > 0)      
 
 ); 
- 
+
+CREATE SEQUENCE ingredient_seq;
+
 CREATE TABLE ingredient (
 
   CONSTRAINT pk_ingredient PRIMARY KEY (ingredient_id),
    
-  ingredient_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+  ingredient_id INT NOT NULL DEFAULT nextval('ingredient_seq')
+    CONSTRAINT ck_ingredient_ingredient_id CHECK (ingredient_id > 0),
   description VARCHAR(200) NOT NULL
     CONSTRAINT ck_ingredient_description CHECK (description <> ''),
   store_location_id VARCHAR(20) NOT NULL,
@@ -67,7 +75,7 @@ CREATE TABLE meal_ingredient (
   unit_id VARCHAR(5) NOT NULL,
   
   CONSTRAINT fk_meal_ingredient_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
 	  ON UPDATE RESTRICT,
 	
   CONSTRAINT fk_meal_ingredient_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
@@ -91,28 +99,36 @@ CREATE TABLE meal_tag (
 			                         '                                    ')) = ''),  
 
   CONSTRAINT fk_meal_tag_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
 	  ON UPDATE RESTRICT								
 								
 );
 
 CREATE INDEX meal_tag_by_tag ON meal_tag(tag);	
 
+CREATE SEQUENCE shopping_list_seq;
+
 CREATE TABLE shopping_list_item (
 
   CONSTRAINT pk_shopping_list PRIMARY KEY (item_id),
   
-  item_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,  
+  item_id INT NOT NULL DEFAULT nextval('shopping_list_seq')
+    CONSTRAINT ck_shopping_list_item_item_id CHECK (item_id > 0),
   description VARCHAR(200) NOT NULL
     CONSTRAINT ck_ingredient_description CHECK (description <> ''),
   quantity DECIMAL (8, 2) NOT NULL
     CONSTRAINT ck_meal_ingredient_quantity CHECK (quantity > 0),
-  unit_id VARCHAR(5) NOT NULL DEFAULT '*',  
+  unit_id VARCHAR(5) NOT NULL DEFAULT 'x',  
+  ingredient_id INT,
   list_order SMALLINT UNIQUE
     CONSTRAINT ck_list_order CHECK (list_order > 0),
 
   CONSTRAINT fk_shopping_list_item_unit FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
     ON DELETE RESTRICT
-	  ON UPDATE RESTRICT  
+	  ON UPDATE RESTRICT, 
+
+  CONSTRAINT fk_shopping_list_item_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
+    ON DELETE RESTRICT
+	  ON UPDATE RESTRICT     
 
 );

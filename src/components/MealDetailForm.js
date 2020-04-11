@@ -12,11 +12,12 @@ import MealIngredient from './MealIngredient'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
-import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import {withRouter} from 'react-router-dom'
 import Immutable from 'immutable'
-import cloneDeep from "lodash.clonedeep"
+import cloneDeep from 'lodash.clonedeep'
+import { Redirect } from 'react-router'
+import CommitChangesButton from './CommitChangesButton'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -53,6 +54,7 @@ const MealDetailForm = (props) => {
   const meal = props.meal
   const initTagString = meal.meal_tags.map(t => t.tag).join(" ")
 
+  const [redirect, setRedirect] = useState(false)
   const [description, setDescription] = useState(meal.description)
   const [dietType, setDietType] = useState(meal.diet_type)
   const [leftovers, setLeftovers] = useState(meal.leftovers)
@@ -61,13 +63,26 @@ const MealDetailForm = (props) => {
   const [recipeBook, setRecipeBook] = useState(meal.recipe_book)
   const [tagString, setTagString] = useState(initTagString)
   const [descriptionErrorText, setDescriptionErrorText] = useState('')
+  const [tagErrorText, setTagErrorText] = useState('')  
+  const [ingredientErrorText, setIngredientErrorText] = useState('')
   const [mealIngredients, setMealIngredients] = useState(Immutable.List(meal.meal_ingredients))
+
+  if (redirect) return <Redirect push to="/meals" />
 
   const handleDescription = desc => {
     setDescription(desc)
     const errorMessage = ((desc === '') ? 'Description cannot be blank' : '')
     setDescriptionErrorText(errorMessage)
   }
+
+  const handleTagString = str => {
+    const uc = str.toUpperCase()
+    setTagString(uc)
+    const strList = Immutable.List(uc.split("")) 
+    const e = strList.filterNot(c => (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c === ' ')
+    const errorMessage = (e.size > 0 || uc.trim().length === 0 ? 'At least one tag required, no symbols' : '')
+    setTagErrorText(errorMessage)
+  } 
 
   const marks = [
     {value: 1, label: "1"},
@@ -81,22 +96,41 @@ const MealDetailForm = (props) => {
   ]
 
   const deleteIngredient = i => {
-    const ing = mealIngredients.delete(i)
-    setMealIngredients(ing)
+    const ings = mealIngredients.delete(i)
+    setMealIngredients(ings)
+    validateIngredients(ings)
   }
 
   const editIngredient = (i, ing) => {
     const ings = mealIngredients.set(i, ing)
     setMealIngredients(ings)
+    validateIngredients(ings)
   }
 
   const addIngredient = () => {
     const newIngredient = cloneDeep(emptyMealIngredient)
     const ings = mealIngredients.push(newIngredient)
     setMealIngredients(ings)
+    validateIngredients(ings)
+  }
+
+  const validateIngredients = (ings) => {
+    // Ingredient names must be non-blank
+    if (ings.findIndex(mi => !mi.ingredient.description) >= 0)
+      setIngredientErrorText('Ingredient name must be specified')
+    // No negative/zero quantities  
+    else if (ings.findIndex(mi => mi.quantity <= 0) >= 0)
+      setIngredientErrorText('Quantities must be positive')
+    // At least one ingredient
+    else if (ings.size === 0) setIngredientErrorText('Please specify at least one ingredient')
+    // Can't have the same ingredient twice
+    else if (ings.size !== ings.map(mi => mi.ingredient.description).toSet().size) 
+      setIngredientErrorText('Each ingredient must appear at most once')
+    else setIngredientErrorText('')
   }
 
   return (
+
     <Paper className={classes.width300}>
       
       <FormControl className={classes.formControl}>
@@ -104,7 +138,7 @@ const MealDetailForm = (props) => {
           fullWidth margin="normal" variant="outlined"
           onChange={e => handleDescription(e.target.value)}
           placeholder="Description"
-          error={descriptionErrorText}
+          error={!!descriptionErrorText}
           helperText={descriptionErrorText} />
       </FormControl>  
 
@@ -122,8 +156,9 @@ const MealDetailForm = (props) => {
         <FormLabel component="legend">Leftovers</FormLabel>        
         <Switch
           value={leftovers}
+          checked={leftovers}
           color="primary"
-          onChange={e => setLeftovers(e.target.value)}
+          onChange={e => setLeftovers(e.target.checked)}
         />
       </FormControl>     
 
@@ -154,23 +189,34 @@ const MealDetailForm = (props) => {
       </FormControl>  
 
       <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Tags" value={tagString}
+        <TextField label="Tags" value={tagString} required
           fullWidth margin="normal" variant="outlined"
-          onChange={e => setTagString(e.target.value.toUpperCase())}
+          onChange={e => handleTagString(e.target.value)}
+          error={!!tagErrorText}
+          helperText={tagErrorText}
           placeholder="Tags" />
       </FormControl>  
 
       <h2 className={classes.margin}>Ingredients</h2>    
       {mealIngredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
-                                          units={props.units} locations = {props.locations}
+                                          units={props.units} locations={props.locations}
                                           ingredients={props.ingredients} 
                                           key={i} rowIndex={i} 
                                           deleteIngredient={() => deleteIngredient(i)}
                                           editIngredient={editIngredient} />)}
+      <p>{ingredientErrorText}</p>                                    
 
-      <Button variant="contained" color="primary" className={classes.margin} startIcon={<SaveIcon />}>
-        Save
-      </Button>  
+      <CommitChangesButton 
+        mealId={meal.meal_id}
+        description={description} 
+        serves={serves}
+        leftovers={leftovers}
+        dietType={dietType}
+        recipeBook={recipeBook}
+        imageUrl={imageUrl}
+        tagString={tagString}
+        mealIngredients={mealIngredients}
+        errorsExist={!!descriptionErrorText || !!tagErrorText || !!ingredientErrorText} />
       <Button variant="contained" color="secondary" className={classes.margin} 
               startIcon={<AddIcon />}
               onClick={() => addIngredient()}>
@@ -178,7 +224,7 @@ const MealDetailForm = (props) => {
       </Button>  
       <Button variant="contained" color="default" className={classes.margin} 
               startIcon={<CancelIcon />}
-              onClick={() => props.history.goBack()}>
+              onClick={() => setRedirect(true)}>
         Cancel
       </Button>  
     </Paper>

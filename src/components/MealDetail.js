@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { setTab } from '../state/actions'
 import { gql } from 'apollo-boost'
-import { useLazyQuery } from '@apollo/react-hooks'
+import { useLazyQuery, useQuery } from '@apollo/react-hooks'
 import MealDetailForm from './MealDetailForm'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { makeStyles } from "@material-ui/core/styles"
@@ -34,6 +34,11 @@ const mealQuery = gql`
         }
       }
     }
+  }  
+`
+
+const staticDataQuery = gql`
+  query getStaticData {
     unit {
       unit_id
     }
@@ -47,17 +52,16 @@ const mealQuery = gql`
         store_location_id
       }
     }    
-  }
+  }  
 `
 
 const emptyMeal = {
-  "meal_id": 0,
   "description": "",
   "diet_type": "OMNI",
   "leftovers": false,
-  "image_url": "",
+  "image_url": null,
   "serves": 4,
-  "recipe_book": "",
+  "recipe_book": null,
   "meal_tags": [],
   "meal_ingredients": []
 }
@@ -74,17 +78,23 @@ const MealDetail = (props) => {
   const mealId = props.match.params.id
   const classes = useStyles()
 
-  const [runMealQuery, { called, loading, error, data }] = useLazyQuery(mealQuery, { variables: { "meal_id": mealId }})  
+  const { loading: staticLoading, error: staticError, data: staticData } = useQuery(staticDataQuery, 
+    { fetchPolicy: 'no-cache'}) 
+
+    const [runMealQuery, { called, loading, error, data }] = 
+    useLazyQuery(mealQuery, 
+                 { variables: { "meal_id": mealId },
+                   fetchPolicy: 'no-cache'})  
 
   if (!called && mealId !== "new") runMealQuery()
 
-  if (loading) return <CircularProgress color="secondary" className={classes.margin} />
-  if (error) return <p>Error :(</p>
+  if (loading || staticLoading) return <CircularProgress color="secondary" className={classes.margin} />
+  if (error || staticError) return <p>Error :(</p>
 
   const meal = (called ? data.meal[0] : emptyMeal)
-  const units = (called ? data.unit : [])
-  const locations = (called ? data.store_location : [])
-  const ingredients = (called ? data.ingredient : [])
+  const units = staticData.unit
+  const locations = staticData.store_location
+  const ingredients = staticData.ingredient
 
   return <MealDetailForm meal={meal} units={units} 
             locations={locations} ingredients={ingredients} />

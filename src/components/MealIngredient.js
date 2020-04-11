@@ -48,8 +48,6 @@ const MealIngredient = props => {
   const ingredients = props.ingredients
   const classes = useStyles()
 
-  const quantityErrorText = ((mi.quantity <= 0) ? 'Quantity must be greater than zero' : '')
-
   const handleQuantity = qty => {
     ing.quantity = qty
     props.editIngredient(props.rowIndex, ing)
@@ -91,8 +89,7 @@ const MealIngredient = props => {
           label="Quantity"
           type="number"
           placeholder="Qty"
-          error={quantityErrorText}
-          helperText={quantityErrorText}
+          error={(mi.quantity <= 0)}
         />
       </FormControl>
       <FormControl
@@ -115,14 +112,13 @@ const MealIngredient = props => {
           freeSolo
           options={ingredients.map(i => i.description)}
           value={mi.ingredient.description}
-          onChange={(e, v) => handleIngredient(v)}
+          onInputChange={(e, v) => handleIngredient(v)}
           renderInput={params => (
             <TextField
               {...params}
-              required
               fullWidth
-              variant="standard"
               placeholder="Ingredient"
+              required
             />
           )}
         />
