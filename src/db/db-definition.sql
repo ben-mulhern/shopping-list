@@ -106,21 +106,29 @@ CREATE TABLE meal_tag (
 
 CREATE INDEX meal_tag_by_tag ON meal_tag(tag);	
 
+CREATE SEQUENCE shopping_list_seq;
+
 CREATE TABLE shopping_list_item (
 
   CONSTRAINT pk_shopping_list PRIMARY KEY (item_id),
   
-  item_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,  
+  item_id INT NOT NULL DEFAULT nextval('shopping_list_seq')
+    CONSTRAINT ck_shopping_list_item_item_id CHECK (item_id > 0),
   description VARCHAR(200) NOT NULL
     CONSTRAINT ck_ingredient_description CHECK (description <> ''),
   quantity DECIMAL (8, 2) NOT NULL
     CONSTRAINT ck_meal_ingredient_quantity CHECK (quantity > 0),
-  unit_id VARCHAR(5) NOT NULL DEFAULT '*',  
+  unit_id VARCHAR(5) NOT NULL DEFAULT 'x',  
+  ingredient_id INT,
   list_order SMALLINT UNIQUE
     CONSTRAINT ck_list_order CHECK (list_order > 0),
 
   CONSTRAINT fk_shopping_list_item_unit FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
     ON DELETE RESTRICT
-	  ON UPDATE RESTRICT  
+	  ON UPDATE RESTRICT, 
+
+  CONSTRAINT fk_shopping_list_item_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
+    ON DELETE RESTRICT
+	  ON UPDATE RESTRICT     
 
 );
