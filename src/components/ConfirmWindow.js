@@ -25,7 +25,6 @@ const ConfirmWindow = props => {
     deleteMeal({
       variables: { meal_id: props.mealId }
     })
-    props.onDelete()
     props.handleClose()
   }
 
