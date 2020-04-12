@@ -9,7 +9,8 @@ import MenuItem from "@material-ui/core/MenuItem"
 import Select from "@material-ui/core/Select"
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
-import cloneDeep from "lodash.clonedeep"
+import cloneDeep from 'lodash.clonedeep'
+import Paper from '@material-ui/core/Paper'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -29,7 +30,12 @@ const useStyles = makeStyles(theme => ({
   },
   stripedRow: {
     backgroundColor: '#d3d3d3'
-  }
+  },
+  width300: {
+    minWidth: 300,
+    maxWidth: 600,
+    margin: theme.spacing(1)
+  } 
 }))
 
 const emptyIngredient = {
@@ -83,7 +89,8 @@ const MealIngredient = props => {
   }
 
   return (
-    <div key={props.rowIndex} className={((props.rowIndex % 2 === 0) ? classes.stripedRow : "")}>
+    <Paper className={classes.width300}>
+    {/* <div key={props.rowIndex} className={((props.rowIndex % 2 === 0) ? classes.stripedRow : "")}> */}
       <FormControl
         className={clsx(classes.margin, classes.quantity)}
         variant="standard"
@@ -150,7 +157,8 @@ const MealIngredient = props => {
           >
         <DeleteIcon className={classes.margin} />
       </IconButton>  
-    </div>
+    {/* </div> */}
+    </Paper>  
   ) 
 }
 

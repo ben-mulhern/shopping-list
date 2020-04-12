@@ -134,6 +134,7 @@ const MealDetailForm = (props) => {
 
   return (
 
+    <div>
     <Paper className={classes.width300}>
       
       <FormControl className={classes.formControl}>
@@ -200,6 +201,7 @@ const MealDetailForm = (props) => {
           placeholder="Tags" />
       </FormControl>  
 
+      </Paper>
       <h2 className={classes.margin}>Ingredients</h2>    
       {mealIngredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
                                           units={props.units} locations={props.locations}
@@ -219,7 +221,8 @@ const MealDetailForm = (props) => {
         imageUrl={imageUrl}
         tagString={tagString}
         mealIngredients={mealIngredients}
-        errorsExist={!!descriptionErrorText || !!tagErrorText || !!ingredientErrorText} />
+        errorsExist={!!descriptionErrorText || !!tagErrorText || !!ingredientErrorText ||
+                     !description || !tagString} />
       <Button variant="contained" color="secondary" className={classes.margin} 
               startIcon={<AddIcon />}
               onClick={() => addIngredient()}>
@@ -230,7 +233,7 @@ const MealDetailForm = (props) => {
               onClick={() => setRedirect(true)}>
         Cancel
       </Button>  
-    </Paper>
+    </div>
   )
 }
 
