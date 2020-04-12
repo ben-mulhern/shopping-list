@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from 'react'
 import { makeStyles } from "@material-ui/core/styles"
 import clsx from "clsx"
 import FormControl from "@material-ui/core/FormControl"
@@ -45,8 +45,13 @@ const MealIngredient = props => {
   let ing = cloneDeep(mi)
   const units = props.units
   const locations = props.locations
-  const ingredients = props.ingredients
   const classes = useStyles()
+  const [ingredients, setIngredients] = useState(props.ingredients)
+
+  const ingredientFilter = (str, ings) => {
+    if (!str) return ings
+    else return ings.filter(i => i.description.toUpperCase().includes(str.toUpperCase()))
+  }  
 
   const handleQuantity = qty => {
     ing.quantity = qty
@@ -66,7 +71,8 @@ const MealIngredient = props => {
       newIngredient.description = desc
       newIngredient.store_location = mi.ingredient.store_location
     }
-    ing.ingredient = newIngredient    
+    ing.ingredient = newIngredient
+    setIngredients(ingredientFilter(desc, props.ingredients))
     props.editIngredient(props.rowIndex, ing)
   }
 

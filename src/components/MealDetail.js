@@ -42,7 +42,9 @@ const staticDataQuery = gql`
     unit {
       unit_id
     }
-    store_location {
+    store_location (
+      order_by: {shop_order: asc}
+    ) {
       store_location_id
     }
     ingredient {

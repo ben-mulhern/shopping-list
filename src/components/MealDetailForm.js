@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
   },
   margin: {
     margin: theme.spacing(1)
+  },
+  errorText: {
+    color: '#ff0000'
   }
 }))
 
@@ -204,7 +207,7 @@ const MealDetailForm = (props) => {
                                           key={i} rowIndex={i} 
                                           deleteIngredient={() => deleteIngredient(i)}
                                           editIngredient={editIngredient} />)}
-      <p>{ingredientErrorText}</p>                                    
+      <p className={classes.errorText}>{ingredientErrorText}</p>                                    
 
       <CommitChangesButton 
         mealId={meal.meal_id}

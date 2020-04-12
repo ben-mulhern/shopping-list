@@ -32,7 +32,7 @@ const useStyles = makeStyles({
     margin: 1
   },
   selected: {
-    backgroundColor: '#d3d3d3',
+    backgroundColor: '#999999',
     opacity: 0.6
   },
   hidden: {
