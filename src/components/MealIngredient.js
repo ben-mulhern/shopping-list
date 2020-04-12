@@ -28,13 +28,11 @@ const useStyles = makeStyles(theme => ({
   textField130: {
     width: 130
   },
-  stripedRow: {
-    backgroundColor: '#d3d3d3'
-  },
   width300: {
     minWidth: 300,
     maxWidth: 600,
-    margin: theme.spacing(1)
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   } 
 }))
 
@@ -90,7 +88,6 @@ const MealIngredient = props => {
 
   return (
     <Paper className={classes.width300}>
-    {/* <div key={props.rowIndex} className={((props.rowIndex % 2 === 0) ? classes.stripedRow : "")}> */}
       <FormControl
         className={clsx(classes.margin, classes.quantity)}
         variant="standard"
@@ -157,7 +154,6 @@ const MealIngredient = props => {
           >
         <DeleteIcon className={classes.margin} />
       </IconButton>  
-    {/* </div> */}
     </Paper>  
   ) 
 }

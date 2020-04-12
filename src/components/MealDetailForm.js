@@ -135,71 +135,71 @@ const MealDetailForm = (props) => {
   return (
 
     <div>
-    <Paper className={classes.width300}>
-      
-      <FormControl className={classes.formControl}>
-        <TextField required label="Description" value={description} autoFocus
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => handleDescription(e.target.value)}
-          placeholder="Description"
-          error={!!descriptionErrorText}
-          helperText={descriptionErrorText} />
-      </FormControl>  
+      <Paper className={classes.width300}>
+        
+        <FormControl className={classes.formControl}>
+          <TextField required label="Description" value={description} autoFocus
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => handleDescription(e.target.value)}
+            placeholder="Description"
+            error={!!descriptionErrorText}
+            helperText={descriptionErrorText} />
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Diet type</FormLabel>  
-        <RadioGroup row name="diet_type" value={dietType}
-                    onChange={e => setDietType(e.target.value)}>
-          <FormControlLabel value="OMNI" control={<Radio />} label="Omni" />
-          <FormControlLabel value="VEGETARIAN" control={<Radio />} label="Vegetarian" />
-          <FormControlLabel value="VEGAN" control={<Radio />} label="Vegan" />
-        </RadioGroup>
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">Diet type</FormLabel>  
+          <RadioGroup row name="diet_type" value={dietType}
+                      onChange={e => setDietType(e.target.value)}>
+            <FormControlLabel value="OMNI" control={<Radio />} label="Omni" />
+            <FormControlLabel value="VEGETARIAN" control={<Radio />} label="Vegetarian" />
+            <FormControlLabel value="VEGAN" control={<Radio />} label="Vegan" />
+          </RadioGroup>
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Leftovers</FormLabel>        
-        <Switch
-          value={leftovers}
-          checked={leftovers}
-          color="primary"
-          onChange={e => setLeftovers(e.target.checked)}
-        />
-      </FormControl>     
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">Leftovers</FormLabel>        
+          <Switch
+            value={leftovers}
+            checked={leftovers}
+            color="primary"
+            onChange={e => setLeftovers(e.target.checked)}
+          />
+        </FormControl>     
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Image URL" value={imageUrl}
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => setImageUrl(e.target.value)}
-          placeholder="Image URL" />
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <TextField label="Image URL" value={imageUrl}
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => setImageUrl(e.target.value)}
+            placeholder="Image URL" />
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Serves</FormLabel>   
-        <Slider step={1}
-                marks={marks}
-                min={1}
-                max={8}
-                value={serves}
-                valueLabelDisplay="on"
-                onChange={(e, v) => setServes(v)}
-        />
-      </FormControl>   
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">Serves</FormLabel>   
+          <Slider step={1}
+                  marks={marks}
+                  min={1}
+                  max={8}
+                  value={serves}
+                  valueLabelDisplay="on"
+                  onChange={(e, v) => setServes(v)}
+          />
+        </FormControl>   
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Recipe book" value={recipeBook}
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => setRecipeBook(e.target.value)}
-          placeholder="Recipe book" />
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <TextField label="Recipe book" value={recipeBook}
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => setRecipeBook(e.target.value)}
+            placeholder="Recipe book" />
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Tags" value={tagString} required
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => handleTagString(e.target.value)}
-          error={!!tagErrorText}
-          helperText={tagErrorText}
-          placeholder="Tags" />
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <TextField label="Tags" value={tagString} required
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => handleTagString(e.target.value)}
+            error={!!tagErrorText}
+            helperText={tagErrorText}
+            placeholder="Tags" />
+        </FormControl>  
 
       </Paper>
       <h2 className={classes.margin}>Ingredients</h2>    

@@ -49,9 +49,10 @@ const ShoppingList = (props) => {
   const items = Immutable.List(data.shopping_list_item)
 
   return (
-    <div>
-      {items.map(i => <ListItem item={i} />)}
-    </div>
+    <p>Shopping list will go here</p>
+    // <div>
+    //   {items.map(i => <ListItem item={i} />)}
+    // </div>
   )
 }
 
