@@ -6,6 +6,7 @@ import { useLazyQuery, useQuery } from '@apollo/react-hooks'
 import MealDetailForm from './MealDetailForm'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { makeStyles } from "@material-ui/core/styles"
+import {QUERY_STATIC_DATA} from '../api/queries'
 
 const mealQuery = gql`
   query getMealById($meal_id: Int!) {
@@ -37,26 +38,6 @@ const mealQuery = gql`
   }  
 `
 
-const staticDataQuery = gql`
-  query getStaticData {
-    unit {
-      unit_id
-    }
-    store_location (
-      order_by: {shop_order: asc}
-    ) {
-      store_location_id
-    }
-    ingredient {
-      ingredient_id
-      description
-      store_location {
-        store_location_id
-      }
-    }    
-  }  
-`
-
 const emptyMeal = {
   "description": "",
   "diet_type": "OMNI",
@@ -80,7 +61,7 @@ const MealDetail = (props) => {
   const mealId = props.match.params.id
   const classes = useStyles()
 
-  const { loading: staticLoading, error: staticError, data: staticData } = useQuery(staticDataQuery, 
+  const { loading: staticLoading, error: staticError, data: staticData } = useQuery(QUERY_STATIC_DATA, 
     { fetchPolicy: 'no-cache'}) 
 
     const [runMealQuery, { called, loading, error, data }] = 

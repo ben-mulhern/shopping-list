@@ -34,7 +34,13 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 600,
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1)
-  } 
+  },
+  hidden: {
+    display: 'none'
+  },
+  visible: {
+    display: 'inline-block'
+  }
 }))
 
 const emptyIngredient = {
@@ -92,7 +98,8 @@ const ListItem = props => {
 
   return (
     <Paper className={classes.width300}>
-      <Checkbox
+      <Checkbox 
+        className={(props.trashCan ? classes.hidden : classes.visible)}
         checked={checked}
         onChange={handleCheckbox}
       />
@@ -159,6 +166,7 @@ const ListItem = props => {
             key="close"
             color="inherit"
             onClick={props.deleteIngredient}
+            className={(props.trashCan ? classes.visisble : classes.hidden)}
           >
         <DeleteIcon className={classes.margin} />
       </IconButton>  
