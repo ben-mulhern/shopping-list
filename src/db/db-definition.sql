@@ -114,14 +114,11 @@ CREATE TABLE shopping_list_item (
   
   item_id INT NOT NULL DEFAULT nextval('shopping_list_seq')
     CONSTRAINT ck_shopping_list_item_item_id CHECK (item_id > 0),
-  description VARCHAR(200) NOT NULL
-    CONSTRAINT ck_ingredient_description CHECK (description <> ''),
   quantity DECIMAL (8, 2) NOT NULL
     CONSTRAINT ck_meal_ingredient_quantity CHECK (quantity > 0),
   unit_id VARCHAR(5) NOT NULL DEFAULT 'x',  
-  ingredient_id INT,
-  list_order SMALLINT UNIQUE
-    CONSTRAINT ck_list_order CHECK (list_order > 0),
+  ingredient_id INT NOT NULL,
+  ticked BOOLEAN NOT NULL DEFAULT false,
 
   CONSTRAINT fk_shopping_list_item_unit FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
     ON DELETE RESTRICT

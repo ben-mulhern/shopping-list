@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
   },
   margin: {
     margin: theme.spacing(1)
+  },
+  errorText: {
+    color: '#ff0000'
   }
 }))
 
@@ -131,72 +134,74 @@ const MealDetailForm = (props) => {
 
   return (
 
-    <Paper className={classes.width300}>
-      
-      <FormControl className={classes.formControl}>
-        <TextField required label="Description" value={description} autoFocus
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => handleDescription(e.target.value)}
-          placeholder="Description"
-          error={!!descriptionErrorText}
-          helperText={descriptionErrorText} />
-      </FormControl>  
+    <div>
+      <Paper className={classes.width300}>
+        
+        <FormControl className={classes.formControl}>
+          <TextField required label="Description" value={description} autoFocus
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => handleDescription(e.target.value)}
+            placeholder="Description"
+            error={!!descriptionErrorText}
+            helperText={descriptionErrorText} />
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Diet type</FormLabel>  
-        <RadioGroup row name="diet_type" value={dietType}
-                    onChange={e => setDietType(e.target.value)}>
-          <FormControlLabel value="OMNI" control={<Radio />} label="Omni" />
-          <FormControlLabel value="VEGETARIAN" control={<Radio />} label="Vegetarian" />
-          <FormControlLabel value="VEGAN" control={<Radio />} label="Vegan" />
-        </RadioGroup>
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">Diet type</FormLabel>  
+          <RadioGroup row name="diet_type" value={dietType}
+                      onChange={e => setDietType(e.target.value)}>
+            <FormControlLabel value="OMNI" control={<Radio />} label="Omni" />
+            <FormControlLabel value="VEGETARIAN" control={<Radio />} label="Vegetarian" />
+            <FormControlLabel value="VEGAN" control={<Radio />} label="Vegan" />
+          </RadioGroup>
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Leftovers</FormLabel>        
-        <Switch
-          value={leftovers}
-          checked={leftovers}
-          color="primary"
-          onChange={e => setLeftovers(e.target.checked)}
-        />
-      </FormControl>     
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">Leftovers</FormLabel>        
+          <Switch
+            value={leftovers}
+            checked={leftovers}
+            color="primary"
+            onChange={e => setLeftovers(e.target.checked)}
+          />
+        </FormControl>     
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Image URL" value={imageUrl}
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => setImageUrl(e.target.value)}
-          placeholder="Image URL" />
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <TextField label="Image URL" value={imageUrl}
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => setImageUrl(e.target.value)}
+            placeholder="Image URL" />
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Serves</FormLabel>   
-        <Slider step={1}
-                marks={marks}
-                min={1}
-                max={8}
-                value={serves}
-                valueLabelDisplay="on"
-                onChange={(e, v) => setServes(v)}
-        />
-      </FormControl>   
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">Serves</FormLabel>   
+          <Slider step={1}
+                  marks={marks}
+                  min={1}
+                  max={8}
+                  value={serves}
+                  valueLabelDisplay="on"
+                  onChange={(e, v) => setServes(v)}
+          />
+        </FormControl>   
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Recipe book" value={recipeBook}
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => setRecipeBook(e.target.value)}
-          placeholder="Recipe book" />
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <TextField label="Recipe book" value={recipeBook}
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => setRecipeBook(e.target.value)}
+            placeholder="Recipe book" />
+        </FormControl>  
 
-      <FormControl component="fieldset" className={classes.formControl}>
-        <TextField label="Tags" value={tagString} required
-          fullWidth margin="normal" variant="outlined"
-          onChange={e => handleTagString(e.target.value)}
-          error={!!tagErrorText}
-          helperText={tagErrorText}
-          placeholder="Tags" />
-      </FormControl>  
+        <FormControl component="fieldset" className={classes.formControl}>
+          <TextField label="Tags" value={tagString} required
+            fullWidth margin="normal" variant="outlined"
+            onChange={e => handleTagString(e.target.value)}
+            error={!!tagErrorText}
+            helperText={tagErrorText}
+            placeholder="Tags" />
+        </FormControl>  
 
+      </Paper>
       <h2 className={classes.margin}>Ingredients</h2>    
       {mealIngredients.map((mi, i) => <MealIngredient mealIngredient={mi} 
                                           units={props.units} locations={props.locations}
@@ -204,7 +209,7 @@ const MealDetailForm = (props) => {
                                           key={i} rowIndex={i} 
                                           deleteIngredient={() => deleteIngredient(i)}
                                           editIngredient={editIngredient} />)}
-      <p>{ingredientErrorText}</p>                                    
+      <p className={classes.errorText}>{ingredientErrorText}</p>                                    
 
       <CommitChangesButton 
         mealId={meal.meal_id}
@@ -216,7 +221,8 @@ const MealDetailForm = (props) => {
         imageUrl={imageUrl}
         tagString={tagString}
         mealIngredients={mealIngredients}
-        errorsExist={!!descriptionErrorText || !!tagErrorText || !!ingredientErrorText} />
+        errorsExist={!!descriptionErrorText || !!tagErrorText || !!ingredientErrorText ||
+                     !description || !tagString} />
       <Button variant="contained" color="secondary" className={classes.margin} 
               startIcon={<AddIcon />}
               onClick={() => addIngredient()}>
@@ -227,7 +233,7 @@ const MealDetailForm = (props) => {
               onClick={() => setRedirect(true)}>
         Cancel
       </Button>  
-    </Paper>
+    </div>
   )
 }
 

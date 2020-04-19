@@ -7,10 +7,11 @@ import TextField from "@material-ui/core/TextField"
 import Autocomplete from "@material-ui/lab/Autocomplete"
 import MenuItem from "@material-ui/core/MenuItem"
 import Select from "@material-ui/core/Select"
-import DeleteIcon from '@material-ui/icons/Delete'
-import IconButton from '@material-ui/core/IconButton'
+import Checkbox from '@material-ui/core/Checkbox'
 import cloneDeep from 'lodash.clonedeep'
 import Paper from '@material-ui/core/Paper'
+import DeleteIcon from '@material-ui/icons/Delete'
+import IconButton from '@material-ui/core/IconButton'
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -33,7 +34,13 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 600,
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1)
-  } 
+  },
+  hidden: {
+    display: 'none'
+  },
+  visible: {
+    display: 'inline-block'
+  }
 }))
 
 const emptyIngredient = {
@@ -44,13 +51,16 @@ const emptyIngredient = {
   }
 }
 
-const MealIngredient = props => {
-  const mi = props.mealIngredient
-  let ing = cloneDeep(mi)
+const ListItem = props => {
+  const li = props.listItem
+  let item = cloneDeep(li)
   const units = props.units
   const locations = props.locations
   const classes = useStyles()
   const [ingredients, setIngredients] = useState(props.ingredients)
+  const [checked, setChecked] = React.useState(false)
+
+  const handleCheckbox = (event) => setChecked(event.target.checked)
 
   const ingredientFilter = (str, ings) => {
     if (!str) return ings
@@ -58,14 +68,14 @@ const MealIngredient = props => {
   }  
 
   const handleQuantity = qty => {
-    ing.quantity = qty
-    props.editIngredient(props.rowIndex, ing)
+    item.quantity = qty
+    props.editIngredient(props.rowIndex, item)
   }
 
   const handleUnit = unit => {
     const newUnit = units.find(u => u.unit_id === unit)
-    ing.unit = newUnit
-    props.editIngredient(props.rowIndex, ing)
+    item.unit = newUnit
+    props.editIngredient(props.rowIndex, item)
   }
 
   const handleIngredient = desc => {
@@ -73,33 +83,38 @@ const MealIngredient = props => {
     if (!newIngredient) {
       newIngredient = cloneDeep(emptyIngredient)
       newIngredient.description = desc
-      newIngredient.store_location = mi.ingredient.store_location
+      newIngredient.store_location = li.ingredient.store_location
     }
-    ing.ingredient = newIngredient
+    item.ingredient = newIngredient
     setIngredients(ingredientFilter(desc, props.ingredients))
-    props.editIngredient(props.rowIndex, ing)
+    props.editIngredient(props.rowIndex, item)
   }
 
   const handleLocation = loc => {
     const newLocation = locations.find(l => l.store_location_id === loc)
-    ing.ingredient.store_location = newLocation
-    props.editIngredient(props.rowIndex, ing)
+    item.ingredient.store_location = newLocation
+    props.editIngredient(props.rowIndex, item)
   }
 
   return (
     <Paper className={classes.width300}>
+      <Checkbox 
+        className={(props.trashCan ? classes.hidden : classes.visible)}
+        checked={checked}
+        onChange={handleCheckbox}
+      />
       <FormControl
         className={clsx(classes.margin, classes.quantity)}
         variant="standard"
       >
         <Input
           required
-          value={mi.quantity}
+          value={li.quantity}
           onChange={e => handleQuantity(e.target.value)}
           label="Quantity"
           type="number"
           placeholder="Qty"
-          error={(mi.quantity <= 0)}
+          error={(li.quantity <= 0)}
         />
       </FormControl>
       <FormControl
@@ -110,7 +125,7 @@ const MealIngredient = props => {
           variant="standard"
           required
           label="Unit"
-          value={mi.unit.unit_id}
+          value={li.unit.unit_id}
           onChange={e => handleUnit(e.target.value)}
         >
           {units.map(u => <MenuItem key={u.unit_id} value={u.unit_id}>{u.unit_id}</MenuItem>)}
@@ -121,7 +136,7 @@ const MealIngredient = props => {
         <Autocomplete
           freeSolo
           options={ingredients.map(i => i.description)}
-          value={mi.ingredient.description}
+          value={li.ingredient.description}
           onInputChange={(e, v) => handleIngredient(v)}
           renderInput={params => (
             <TextField
@@ -141,7 +156,7 @@ const MealIngredient = props => {
           variant="standard"
           required
           label="Location"
-          value={mi.ingredient.store_location.store_location_id}
+          value={li.ingredient.store_location.store_location_id}
           onChange={e => handleLocation(e.target.value)}
         >
           {locations.map(l => <MenuItem key={l.store_location_id} value={l.store_location_id}>{l.store_location_id}</MenuItem>)}
@@ -151,6 +166,7 @@ const MealIngredient = props => {
             key="close"
             color="inherit"
             onClick={props.deleteIngredient}
+            className={(props.trashCan ? classes.visisble : classes.hidden)}
           >
         <DeleteIcon className={classes.margin} />
       </IconButton>  
@@ -158,4 +174,4 @@ const MealIngredient = props => {
   ) 
 }
 
-export default MealIngredient
+export default ListItem
