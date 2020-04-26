@@ -8,6 +8,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Immutable from 'immutable'
 import ListItem from './ListItem'
 import {QUERY_STATIC_DATA} from '../api/queries'
+import IconButton from '@material-ui/core/IconButton'
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
+import Avatar from '@material-ui/core/Avatar'
 
 const listSubscription = gql`
   subscription {
@@ -58,11 +61,16 @@ const ShoppingList = (props) => {
 
   return (
     <div>
-    {items.map((li, i) => <ListItem listItem={li} 
-      units={staticData.unit} locations={staticData.store_location}
-      ingredients={staticData.ingredient} 
-      key={i} rowIndex={i}
-      editIngredient={editListItem} />)}
+      <Avatar className={classes.margin}>
+        <IconButton variant="contained" color="secondary">
+          <PlaylistAddIcon />
+        </IconButton>  
+      </Avatar>  
+      {items.map((li, i) => <ListItem listItem={li} 
+        units={staticData.unit} locations={staticData.store_location}
+        ingredients={staticData.ingredient} 
+        key={i} rowIndex={i}
+        editIngredient={editListItem} />)}
     </div>  
   )
 }
