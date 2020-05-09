@@ -1,0 +1,104 @@
+import React from "react"
+import { connect } from "react-redux"
+import { setTab } from "../state/actions"
+import { gql } from "apollo-boost"
+import { useLazyQuery, useQuery } from "@apollo/react-hooks"
+//import MealDetailForm from "./MealDetailForm"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { makeStyles } from "@material-ui/core/styles"
+import { QUERY_STATIC_DATA } from "../api/queries"
+
+const mealQuery = gql`
+  query getMealById($meal_id: Int!) {
+    meal(where: { meal_id: { _eq: $meal_id } }) {
+      meal_id
+      description
+      diet_type
+      leftovers
+      image_url
+      serves
+      recipe_book
+      meal_tags {
+        tag
+      }
+      meal_ingredients {
+        quantity
+        unit {
+          unit_id
+        }
+        ingredient {
+          ingredient_id
+          description
+          store_location {
+            store_location_id
+          }
+        }
+      }
+    }
+  }
+`
+
+const emptyMeal = {
+  description: "",
+  diet_type: "OMNI",
+  leftovers: false,
+  image_url: null,
+  serves: 4,
+  recipe_book: null,
+  meal_tags: [],
+  meal_ingredients: [],
+}
+
+const useStyles = makeStyles((theme) => ({
+  margin: {
+    margin: theme.spacing(1),
+  },
+}))
+
+const MealDetail = (props) => {
+  props.setTab(1)
+  const mealId = props.match.params.id
+  const classes = useStyles()
+
+  const {
+    loading: staticLoading,
+    error: staticError,
+    data: staticData,
+  } = useQuery(QUERY_STATIC_DATA, { fetchPolicy: "no-cache" })
+
+  const [runMealQuery, { called, loading, error, data }] = useLazyQuery(
+    mealQuery,
+    {
+      variables: { meal_id: mealId },
+      fetchPolicy: "no-cache",
+    }
+  )
+
+  if (!called && mealId !== "new") runMealQuery()
+
+  if (loading || staticLoading)
+    return <CircularProgress color="secondary" className={classes.margin} />
+  if (error || staticError) return <p>Error :(</p>
+
+  const meal = called ? data.meal[0] : emptyMeal
+  const units = staticData.unit
+  const locations = staticData.store_location
+  const ingredients = staticData.ingredient
+
+  return <p>This is the meal detail form</p>
+
+  //   return (
+  //     <MealDetailForm
+  //       meal={meal}
+  //       units={units}
+  //       locations={locations}
+  //       ingredients={ingredients}
+  //     />
+  //   )
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  setTab: (index) => dispatch(setTab(index)),
+})
+
+export default connect(null, mapDispatchToProps)(MealDetail)

@@ -2,7 +2,7 @@ import React from "react"
 import { Route, Switch, Redirect, withRouter } from "react-router-dom"
 import Login from "./Login"
 //import MealCards from "./MealCards"
-//import MealDetail from "./MealDetail"
+import MealDetail from "./MealDetail"
 import ShoppingList from "./ShoppingList"
 import Navbar from "./Navbar"
 import { makeStyles } from "@material-ui/core/styles"
@@ -39,8 +39,8 @@ const MainView = (props) => {
           <Route exact path="/list" component={ShoppingList} />
           {
             // <Route exact path="/meals" component={MealCards} />
-            //<Route exact path="/meal/:id" component={MealDetail} />
           }
+          <Route exact path="/meal/:id" component={MealDetail} />
           <Route exact path="/login" component={Login} />
           <Route path="/" component={ShoppingList} />
         </Switch>
