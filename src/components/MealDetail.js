@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { setTab } from "../state/actions"
 import { gql } from "apollo-boost"
 import { useLazyQuery, useQuery } from "@apollo/react-hooks"
-//import MealDetailForm from "./MealDetailForm"
+import MealDetailForm from "./MealDetailForm"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import { QUERY_STATIC_DATA } from "../api/queries"
@@ -85,16 +85,14 @@ const MealDetail = (props) => {
   const locations = staticData.store_location
   const ingredients = staticData.ingredient
 
-  return <p>This is the meal detail form</p>
-
-  //   return (
-  //     <MealDetailForm
-  //       meal={meal}
-  //       units={units}
-  //       locations={locations}
-  //       ingredients={ingredients}
-  //     />
-  //   )
+  return (
+    <MealDetailForm
+      meal={meal}
+      units={units}
+      locations={locations}
+      ingredients={ingredients}
+    />
+  )
 }
 
 const mapDispatchToProps = (dispatch) => ({
