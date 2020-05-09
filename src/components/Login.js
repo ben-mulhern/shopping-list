@@ -41,7 +41,9 @@ const Login = (props) => {
   const attemptLogin = (apiKey) => {
     console.log("Attempting login")
     sessionStorage.setItem("API_KEY", apiKey)
+    console.log("Key has been set")
     reStartWsLink()
+    console.log("WS link has been restarted")
     attemptLogInCall()
   }
 
