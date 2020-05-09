@@ -32,6 +32,9 @@ const loginQuery = gql`
     }
   }
 `
+
+console.log("Loaded login component")
+
 const Login = (props) => {
   const [attemptLogInCall, { called, loading, error }] = useLazyQuery(
     loginQuery
