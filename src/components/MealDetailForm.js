@@ -8,7 +8,7 @@ import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
 import Switch from "@material-ui/core/Switch"
 import Slider from "@material-ui/core/Slider"
-//import MealIngredient from "./MealIngredient"
+import MealIngredient from "./MealIngredient"
 import Paper from "@material-ui/core/Paper"
 import Button from "@material-ui/core/Button"
 import AddIcon from "@material-ui/icons/Add"
@@ -241,7 +241,7 @@ const MealDetailForm = (props) => {
         </FormControl>
       </Paper>
       <h2 className={classes.margin}>Ingredients</h2>
-      {/* {mealIngredients.map((mi, i) => (
+      {mealIngredients.map((mi, i) => (
         <MealIngredient
           mealIngredient={mi}
           units={props.units}
@@ -252,7 +252,7 @@ const MealDetailForm = (props) => {
           deleteIngredient={() => deleteIngredient(i)}
           editIngredient={editIngredient}
         />
-      ))} */}
+      ))}
       <p className={classes.errorText}>{ingredientErrorText}</p>
 
       {/* <CommitChangesButton
