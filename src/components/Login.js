@@ -33,17 +33,15 @@ const loginQuery = gql`
   }
 `
 
-console.log("Loaded login component")
-
 const Login = (props) => {
   const [attemptLogInCall, { called, loading, error }] = useLazyQuery(
     loginQuery
   )
 
   const attemptLogin = (apiKey) => {
+    console.log("Attempting login")
     sessionStorage.setItem("API_KEY", apiKey)
     reStartWsLink()
-    console.log("Attempting login")
     attemptLogInCall()
   }
 
