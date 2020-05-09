@@ -26,9 +26,9 @@ const MainView = (props) => {
   }
 
   if (!loggedIn && props.location.pathname !== "/login") {
-    return <Redirect to="%PUBLIC_URL%/login" />
+    return <Redirect to="/login" />
   } else if (loggedIn && props.location.pathname === "/login") {
-    return <Redirect to="%PUBLIC_URL%/list" />
+    return <Redirect to="/list" />
   }
 
   return (
