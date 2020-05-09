@@ -1,7 +1,7 @@
 import React from "react"
 import { Route, Switch, Redirect, withRouter } from "react-router-dom"
 import Login from "./Login"
-//import MealCards from "./MealCards"
+import MealCards from "./MealCards"
 import MealDetail from "./MealDetail"
 import ShoppingList from "./ShoppingList"
 import Navbar from "./Navbar"
@@ -37,9 +37,7 @@ const MainView = (props) => {
       <div>
         <Switch>
           <Route exact path="/list" component={ShoppingList} />
-          {
-            // <Route exact path="/meals" component={MealCards} />
-          }
+          <Route exact path="/meals" component={MealCards} />
           <Route exact path="/meal/:id" component={MealDetail} />
           <Route exact path="/login" component={Login} />
           <Route path="/" component={ShoppingList} />
