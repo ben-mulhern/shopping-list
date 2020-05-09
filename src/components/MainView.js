@@ -39,7 +39,7 @@ const MainView = (props) => {
           <Route exact path="/list" component={ShoppingList} />
           <Route exact path="/meals" component={MealCards} />
           <Route exact path="/meal/:id" component={MealDetail} />
-          <Route exact path="/login" component={Login} />
+          <Route path="/login" component={Login} />
           <Route path="/" component={ShoppingList} />
         </Switch>
       </div>
