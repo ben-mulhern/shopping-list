@@ -6,8 +6,8 @@ import { gql } from "apollo-boost"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import Immutable from "immutable"
-//import ListItem from "./ListItem"
-//import { QUERY_STATIC_DATA } from "../api/queries"
+import ListItem from "./ListItem"
+import { QUERY_STATIC_DATA } from "../api/queries"
 import IconButton from "@material-ui/core/IconButton"
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd"
 import Avatar from "@material-ui/core/Avatar"
@@ -40,49 +40,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ShoppingList = (props) => <p>This is the shopping list</p>
+const ShoppingList = (props) => {
+  const classes = useStyles()
+  props.setTab(0)
 
-// const ShoppingList = (props) => {
-//   const classes = useStyles()
-//   props.setTab(0)
+  const { loading, error, data } = useSubscription(listSubscription)
 
-//   const { loading, error, data } = useSubscription(listSubscription)
+  const {
+    loading: staticLoading,
+    error: staticError,
+    data: staticData,
+  } = useQuery(QUERY_STATIC_DATA, { fetchPolicy: "no-cache" })
 
-//   const {
-//     loading: staticLoading,
-//     error: staticError,
-//     data: staticData,
-//   } = useQuery(QUERY_STATIC_DATA, { fetchPolicy: "no-cache" })
+  if (loading || staticLoading)
+    return <CircularProgress color="secondary" className={classes.margin} />
+  if (error || staticError) return <p>Error :(</p>
 
-//   if (loading || staticLoading)
-//     return <CircularProgress color="secondary" className={classes.margin} />
-//   if (error || staticError) return <p>Error :(</p>
+  const items = Immutable.List(data.shopping_list_item)
 
-//   const items = Immutable.List(data.shopping_list_item)
+  const editListItem = () => {}
 
-//   const editListItem = () => {}
-
-//   return (
-//     <div>
-//       <Avatar className={classes.margin}>
-//         <IconButton variant="contained" color="secondary">
-//           <PlaylistAddIcon />
-//         </IconButton>
-//       </Avatar>
-//       {items.map((li, i) => (
-//         <ListItem
-//           listItem={li}
-//           units={staticData.unit}
-//           locations={staticData.store_location}
-//           ingredients={staticData.ingredient}
-//           key={i}
-//           rowIndex={i}
-//           editIngredient={editListItem}
-//         />
-//       ))}
-//     </div>
-//   )
-// }
+  return (
+    <div>
+      <Avatar className={classes.margin}>
+        <IconButton variant="contained" color="secondary">
+          <PlaylistAddIcon />
+        </IconButton>
+      </Avatar>
+      {items.map((li, i) => (
+        <ListItem
+          listItem={li}
+          units={staticData.unit}
+          locations={staticData.store_location}
+          ingredients={staticData.ingredient}
+          key={i}
+          rowIndex={i}
+          editIngredient={editListItem}
+        />
+      ))}
+    </div>
+  )
+}
 
 const mapDispatchToProps = (dispatch) => ({
   setTab: (index) => dispatch(setTab(index)),
