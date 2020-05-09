@@ -17,7 +17,7 @@ import { withRouter } from "react-router-dom"
 import Immutable from "immutable"
 import cloneDeep from "lodash.clonedeep"
 import { Redirect } from "react-router"
-//import CommitChangesButton from "./CommitChangesButton"
+import CommitChangesButton from "./CommitChangesButton"
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -255,7 +255,7 @@ const MealDetailForm = (props) => {
       ))}
       <p className={classes.errorText}>{ingredientErrorText}</p>
 
-      {/* <CommitChangesButton
+      <CommitChangesButton
         mealId={meal.meal_id}
         description={description}
         serves={serves}
@@ -272,7 +272,7 @@ const MealDetailForm = (props) => {
           !description ||
           !tagString
         }
-      /> */}
+      />
       <Button
         variant="contained"
         color="secondary"
