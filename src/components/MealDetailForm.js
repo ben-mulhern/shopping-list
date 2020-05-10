@@ -45,8 +45,8 @@ const emptyMealIngredient = {
   ingredient: {
     description: "",
     store_location: {
-      store_location_id: "CITRUS",
-      description: "Citrus fruits",
+      store_location_id: "OTHER",
+      description: "Other",
     },
   },
 }

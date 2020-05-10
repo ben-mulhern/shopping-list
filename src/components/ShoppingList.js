@@ -6,11 +6,16 @@ import { gql } from "apollo-boost"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import Immutable from "immutable"
-import ListItem from "./ListItem"
 import { QUERY_STATIC_DATA } from "../api/queries"
 import IconButton from "@material-ui/core/IconButton"
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd"
 import Avatar from "@material-ui/core/Avatar"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import ListItemText from "@material-ui/core/ListItemText"
+import Checkbox from "@material-ui/core/Checkbox"
+import Paper from "@material-ui/core/Paper"
 
 const listSubscription = gql`
   subscription {
@@ -38,6 +43,12 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
+  width300: {
+    minWidth: 300,
+    maxWidth: 600,
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
 }))
 
 const ShoppingList = (props) => {
@@ -58,8 +69,6 @@ const ShoppingList = (props) => {
 
   const items = Immutable.List(data.shopping_list_item)
 
-  const editListItem = () => {}
-
   return (
     <div>
       <Avatar className={classes.margin}>
@@ -67,17 +76,20 @@ const ShoppingList = (props) => {
           <PlaylistAddIcon />
         </IconButton>
       </Avatar>
-      {items.map((li, i) => (
-        <ListItem
-          listItem={li}
-          units={staticData.unit}
-          locations={staticData.store_location}
-          ingredients={staticData.ingredient}
-          key={i}
-          rowIndex={i}
-          editIngredient={editListItem}
-        />
-      ))}
+      <Paper className={classes.width300}>
+        <List>
+          {items.map((li, i) => (
+            <ListItem dense button>
+              <ListItemIcon>
+                <Checkbox edge="start" tabIndex={-1} disableRipple />
+              </ListItemIcon>
+              <ListItemText
+                primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
     </div>
   )
 }

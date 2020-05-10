@@ -91,6 +91,23 @@ const MealIngredient = (props) => {
 
   return (
     <Paper className={classes.width300}>
+      <FormControl className={clsx(classes.margin, classes.textField200)}>
+        <Autocomplete
+          freeSolo
+          options={ingredients.map((i) => i.description)}
+          value={mi.ingredient.description}
+          onInputChange={(e, v) => handleIngredient(v)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              fullWidth
+              placeholder="Ingredient"
+              required
+            />
+          )}
+        />
+      </FormControl>
+
       <FormControl
         className={clsx(classes.margin, classes.quantity)}
         variant="standard"
@@ -124,22 +141,6 @@ const MealIngredient = (props) => {
         </Select>
       </FormControl>
 
-      <FormControl className={clsx(classes.margin, classes.textField200)}>
-        <Autocomplete
-          freeSolo
-          options={ingredients.map((i) => i.description)}
-          value={mi.ingredient.description}
-          onInputChange={(e, v) => handleIngredient(v)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              fullWidth
-              placeholder="Ingredient"
-              required
-            />
-          )}
-        />
-      </FormControl>
       <FormControl
         className={clsx(classes.margin, classes.textField130)}
         variant="standard"
