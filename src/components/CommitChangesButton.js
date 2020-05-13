@@ -8,7 +8,7 @@ import {
   UPSERT_INGREDIENTS,
   UPSERT_MEAL,
   SET_INGREDIENTS_AND_TAGS,
-} from "../api/mutations"
+} from "../api/mealMutations"
 import omitDeep from "omit-deep-lodash"
 import set from "lodash.set"
 
