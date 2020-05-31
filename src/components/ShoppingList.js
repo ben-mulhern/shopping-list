@@ -1,29 +1,34 @@
 import React from "react"
 import { connect } from "react-redux"
 import { setTab } from "../state/actions"
-import { useSubscription, useQuery } from "@apollo/react-hooks"
+import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import Immutable from "immutable"
 import { QUERY_STATIC_DATA } from "../api/queries"
+import { TICK_ITEM, UNTICK_ITEM } from "../api/listMutations"
 import IconButton from "@material-ui/core/IconButton"
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd"
-import Avatar from "@material-ui/core/Avatar"
+import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
 import Checkbox from "@material-ui/core/Checkbox"
 import Paper from "@material-ui/core/Paper"
+import UndoIcon from "@material-ui/icons/Undo"
 
 const listSubscription = gql`
   subscription {
     shopping_list_item(
-      order_by: { ingredient: { store_location: { shop_order: asc } } }
+      order_by: [
+        { ingredient: { store_location: { shop_order: asc } } }
+        { ingredient: { ingredient_id: asc } }
+      ]
     ) {
       item_id
       quantity
+      ticked_at
       unit {
         unit_id
       }
@@ -57,6 +62,9 @@ const ShoppingList = (props) => {
 
   const { loading, error, data } = useSubscription(listSubscription)
 
+  const [tickItem, { error: tickError }] = useMutation(TICK_ITEM)
+  const [untickItem, { error: untickError }] = useMutation(UNTICK_ITEM)
+
   const {
     loading: staticLoading,
     error: staticError,
@@ -65,23 +73,47 @@ const ShoppingList = (props) => {
 
   if (loading || staticLoading)
     return <CircularProgress color="secondary" className={classes.margin} />
-  if (error || staticError) return <p>Error :(</p>
+  if (error || staticError || tickError || untickError) return <p>Error :(</p>
 
   const items = Immutable.List(data.shopping_list_item)
 
+  const toggleItem = (id, checked) => {
+    if (checked) {
+      const now = new Date()
+      tickItem({
+        variables: {
+          itemId: id,
+          ts: now.toJSON(),
+        },
+      })
+    } else {
+      untickItem({
+        variables: {
+          itemId: id,
+        },
+      })
+    }
+  }
+
   return (
     <div>
-      <Avatar className={classes.margin}>
-        <IconButton variant="contained" color="secondary">
-          <PlaylistAddIcon />
-        </IconButton>
-      </Avatar>
+      <IconButton variant="outlined" color="primary">
+        <AddCircleIcon fontSize="large" />
+      </IconButton>
+      <IconButton variant="outlined" color="secondary">
+        <UndoIcon fontSize="large" />
+      </IconButton>
       <Paper className={classes.width300}>
         <List>
           {items.map((li, i) => (
-            <ListItem dense button>
+            <ListItem dense button key={i}>
               <ListItemIcon>
-                <Checkbox edge="start" tabIndex={-1} disableRipple />
+                <Checkbox
+                  edge="start"
+                  disableRipple
+                  checked={!!li.ticked_at}
+                  onChange={(e) => toggleItem(li.item_id, e.target.checked)}
+                />
               </ListItemIcon>
               <ListItemText
                 primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
