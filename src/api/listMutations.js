@@ -20,6 +20,7 @@ export const ADD_LIST_ITEMS = gql`
 //   "items" : [{
 //     "quantity": 2,
 //     "unit_id": "g",
+//     "question_mark": false,
 //     "ingredient": {
 //       "data": {
 //         "description": "Bananas",

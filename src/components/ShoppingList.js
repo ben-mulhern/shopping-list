@@ -17,6 +17,8 @@ import ListItemText from "@material-ui/core/ListItemText"
 import Checkbox from "@material-ui/core/Checkbox"
 import Paper from "@material-ui/core/Paper"
 import UndoIcon from "@material-ui/icons/Undo"
+import HelpIcon from "@material-ui/icons/Help"
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 
 const listSubscription = gql`
   subscription {
@@ -29,6 +31,7 @@ const listSubscription = gql`
       item_id
       quantity
       ticked_at
+      question_mark
       unit {
         unit_id
       }
@@ -103,6 +106,9 @@ const ShoppingList = (props) => {
       <IconButton variant="outlined" color="secondary">
         <UndoIcon fontSize="large" />
       </IconButton>
+      <IconButton variant="outlined" color="secondary">
+        <HelpIcon fontSize="large" />
+      </IconButton>
       <Paper className={classes.width300}>
         <List>
           {items.map((li, i) => (
@@ -110,11 +116,19 @@ const ShoppingList = (props) => {
               <ListItemIcon>
                 <Checkbox
                   edge="start"
+                  color="primary"
                   disableRipple
                   checked={!!li.ticked_at}
                   onChange={(e) => toggleItem(li.item_id, e.target.checked)}
                 />
               </ListItemIcon>
+              <IconButton>
+                {li.question_mark ? (
+                  <HelpIcon color="secondary" />
+                ) : (
+                  <HelpOutlineIcon color="default" />
+                )}
+              </IconButton>
               <ListItemText
                 primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
               />

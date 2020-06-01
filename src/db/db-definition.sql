@@ -119,6 +119,7 @@ CREATE TABLE shopping_list_item (
   unit_id VARCHAR(5) NOT NULL DEFAULT 'x',  
   ingredient_id INT NOT NULL,
   ticked_at TIMESTAMP,
+  question_mark BOOLEAN NOT NULL DEFAULT false,
 
   CONSTRAINT fk_shopping_list_item_unit FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
     ON DELETE RESTRICT
