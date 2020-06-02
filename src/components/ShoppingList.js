@@ -19,6 +19,8 @@ import Paper from "@material-ui/core/Paper"
 import UndoIcon from "@material-ui/icons/Undo"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
+import MealIngredient from "./MealIngredient"
+import { emptyMealIngredient } from "../domain/sharedValues"
 
 const listSubscription = gql`
   subscription {
@@ -78,6 +80,9 @@ const ShoppingList = (props) => {
     data: staticData,
   } = useQuery(QUERY_STATIC_DATA, { fetchPolicy: "no-cache" })
 
+  const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
+  const [addMode, setAddMode] = useState(false)
+
   const toggleItem = (id, checked) => {
     if (checked) {
       const now = new Date()
@@ -105,8 +110,6 @@ const ShoppingList = (props) => {
     })
   }
 
-  const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
-
   if (loading || staticLoading)
     return <CircularProgress color="secondary" className={classes.margin} />
   if (error || staticError || tickError || untickError || questionMarkError)
@@ -114,27 +117,46 @@ const ShoppingList = (props) => {
 
   const items = Immutable.List(data.shopping_list_item)
 
-  return (
+  const buttons = (
     <div>
-      <IconButton variant="outlined" color="primary">
+      <IconButton
+        variant="outlined"
+        color="primary"
+        onClick={() => setAddMode(true)}
+      >
         <AddCircleIcon />
       </IconButton>
       <IconButton variant="outlined" color="secondary">
         <UndoIcon />
       </IconButton>
-      <IconButton variant="outlined" color="secondary">
+      <IconButton
+        variant="outlined"
+        onClick={() => setQuestionMarksOnly(!questionMarksOnly)}
+      >
         {questionMarksOnly ? (
-          <HelpIcon
-            color="secondary"
-            onClick={() => setQuestionMarksOnly(false)}
-          />
+          <HelpIcon color="secondary" />
         ) : (
-          <HelpOutlineIcon
-            color="default"
-            onClick={() => setQuestionMarksOnly(true)}
-          />
+          <HelpOutlineIcon />
         )}
       </IconButton>
+    </div>
+  )
+
+  const mealIngredient = (
+    <MealIngredient
+      mealIngredient={emptyMealIngredient}
+      units={staticData.unit}
+      locations={staticData.store_location}
+      ingredients={staticData.ingredient}
+      deleteIngredient={() => setAddMode(false)}
+      editIngredient={() => {}}
+    />
+  )
+
+  return (
+    <div>
+      {addMode ? mealIngredient : buttons}
+
       <Paper className={classes.width300}>
         <List>
           {items
@@ -158,7 +180,7 @@ const ShoppingList = (props) => {
                   {li.question_mark ? (
                     <HelpIcon color="secondary" />
                   ) : (
-                    <HelpOutlineIcon color="default" />
+                    <HelpOutlineIcon />
                   )}
                 </IconButton>
                 <ListItemText

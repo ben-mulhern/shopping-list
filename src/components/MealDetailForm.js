@@ -18,6 +18,7 @@ import Immutable from "immutable"
 import cloneDeep from "lodash.clonedeep"
 import { Redirect } from "react-router"
 import CommitChangesButton from "./CommitChangesButton"
+import { emptyMealIngredient } from "../domain/sharedValues"
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -35,21 +36,6 @@ const useStyles = makeStyles((theme) => ({
     color: "#ff0000",
   },
 }))
-
-const emptyMealIngredient = {
-  quantity: 1,
-  unit: {
-    unit_id: "x",
-    description: "units",
-  },
-  ingredient: {
-    description: "",
-    store_location: {
-      store_location_id: "OTHER",
-      description: "Other",
-    },
-  },
-}
 
 const MealDetailForm = (props) => {
   const classes = useStyles()
