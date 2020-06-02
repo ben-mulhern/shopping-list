@@ -79,7 +79,8 @@ const ShoppingList = (props) => {
 
   if (loading || staticLoading)
     return <CircularProgress color="secondary" className={classes.margin} />
-  if (error || staticError || tickError || untickError) return <p>Error :(</p>
+  if (error || staticError || tickError || untickError || questionMarkError)
+    return <p>Error :(</p>
 
   const items = Immutable.List(data.shopping_list_item)
 
