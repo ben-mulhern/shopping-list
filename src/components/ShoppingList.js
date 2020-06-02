@@ -7,7 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import Immutable from "immutable"
 import { QUERY_STATIC_DATA } from "../api/queries"
-import { TICK_ITEM, UNTICK_ITEM } from "../api/listMutations"
+import { TICK_ITEM, UNTICK_ITEM, SET_QUESTION_MARK } from "../api/listMutations"
 import IconButton from "@material-ui/core/IconButton"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
@@ -67,6 +67,9 @@ const ShoppingList = (props) => {
 
   const [tickItem, { error: tickError }] = useMutation(TICK_ITEM)
   const [untickItem, { error: untickError }] = useMutation(UNTICK_ITEM)
+  const [setQuestionMark, { error: questionMarkError }] = useMutation(
+    SET_QUESTION_MARK
+  )
 
   const {
     loading: staticLoading,
@@ -98,6 +101,15 @@ const ShoppingList = (props) => {
     }
   }
 
+  const toggleQuestionMark = (id, qm) => {
+    setQuestionMark({
+      variables: {
+        itemId: id,
+        questionMark: qm,
+      },
+    })
+  }
+
   return (
     <div>
       <IconButton variant="outlined" color="primary">
@@ -122,7 +134,11 @@ const ShoppingList = (props) => {
                   onChange={(e) => toggleItem(li.item_id, e.target.checked)}
                 />
               </ListItemIcon>
-              <IconButton>
+              <IconButton
+                onClick={() =>
+                  toggleQuestionMark(li.item_id, !li.question_mark)
+                }
+              >
                 {li.question_mark ? (
                   <HelpIcon color="secondary" />
                 ) : (

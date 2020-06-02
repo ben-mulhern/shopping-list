@@ -58,6 +58,20 @@ export const UNTICK_ITEM = gql`
   }
 `
 
+export const SET_QUESTION_MARK = gql`
+  mutation set_question_mark($itemId: Int!, $questionMark: Boolean!) {
+    update_shopping_list_item(
+      where: { item_id: { _eq: $itemId } }
+      _set: { question_mark: $questionMark }
+    ) {
+      affected_rows
+      returning {
+        item_id
+      }
+    }
+  }
+`
+
 export const DELETE_UNTICKED_ITEMS = gql`
   mutation delete_unticked_items {
     delete_shopping_list_item(where: { ticked_at: { _eq: null } }) {
