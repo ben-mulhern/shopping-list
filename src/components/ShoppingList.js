@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { connect } from "react-redux"
 import { setTab } from "../state/actions"
 import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks"
@@ -23,6 +23,7 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 const listSubscription = gql`
   subscription {
     shopping_list_item(
+      where: { ticked_at: { _is_null: true } }
       order_by: [
         { ingredient: { store_location: { shop_order: asc } } }
         { ingredient: { ingredient_id: asc } }
@@ -77,13 +78,6 @@ const ShoppingList = (props) => {
     data: staticData,
   } = useQuery(QUERY_STATIC_DATA, { fetchPolicy: "no-cache" })
 
-  if (loading || staticLoading)
-    return <CircularProgress color="secondary" className={classes.margin} />
-  if (error || staticError || tickError || untickError || questionMarkError)
-    return <p>Error :(</p>
-
-  const items = Immutable.List(data.shopping_list_item)
-
   const toggleItem = (id, checked) => {
     if (checked) {
       const now = new Date()
@@ -111,46 +105,67 @@ const ShoppingList = (props) => {
     })
   }
 
+  const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
+
+  if (loading || staticLoading)
+    return <CircularProgress color="secondary" className={classes.margin} />
+  if (error || staticError || tickError || untickError || questionMarkError)
+    return <p>Error :(</p>
+
+  const items = Immutable.List(data.shopping_list_item)
+
   return (
     <div>
       <IconButton variant="outlined" color="primary">
-        <AddCircleIcon fontSize="large" />
+        <AddCircleIcon />
       </IconButton>
       <IconButton variant="outlined" color="secondary">
-        <UndoIcon fontSize="large" />
+        <UndoIcon />
       </IconButton>
       <IconButton variant="outlined" color="secondary">
-        <HelpIcon fontSize="large" />
+        {questionMarksOnly ? (
+          <HelpIcon
+            color="secondary"
+            onClick={() => setQuestionMarksOnly(false)}
+          />
+        ) : (
+          <HelpOutlineIcon
+            color="default"
+            onClick={() => setQuestionMarksOnly(true)}
+          />
+        )}
       </IconButton>
       <Paper className={classes.width300}>
         <List>
-          {items.map((li, i) => (
-            <ListItem dense button key={i}>
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  color="primary"
-                  disableRipple
-                  checked={!!li.ticked_at}
-                  onChange={(e) => toggleItem(li.item_id, e.target.checked)}
+          {items
+            .filter((i) => !questionMarksOnly || i.question_mark)
+            .map((li, i) => (
+              <ListItem dense button key={i}>
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    color="primary"
+                    disableRipple
+                    checked={!!li.ticked_at}
+                    onChange={(e) => toggleItem(li.item_id, e.target.checked)}
+                  />
+                </ListItemIcon>
+                <IconButton
+                  onClick={() =>
+                    toggleQuestionMark(li.item_id, !li.question_mark)
+                  }
+                >
+                  {li.question_mark ? (
+                    <HelpIcon color="secondary" />
+                  ) : (
+                    <HelpOutlineIcon color="default" />
+                  )}
+                </IconButton>
+                <ListItemText
+                  primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
                 />
-              </ListItemIcon>
-              <IconButton
-                onClick={() =>
-                  toggleQuestionMark(li.item_id, !li.question_mark)
-                }
-              >
-                {li.question_mark ? (
-                  <HelpIcon color="secondary" />
-                ) : (
-                  <HelpOutlineIcon color="default" />
-                )}
-              </IconButton>
-              <ListItemText
-                primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
-              />
-            </ListItem>
-          ))}
+              </ListItem>
+            ))}
         </List>
       </Paper>
     </div>
