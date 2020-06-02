@@ -16,10 +16,10 @@ import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
 import Checkbox from "@material-ui/core/Checkbox"
 import Paper from "@material-ui/core/Paper"
-import UndoIcon from "@material-ui/icons/Undo"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import MealIngredient from "./MealIngredient"
+import UndoButton from "./UndoButton"
 import { emptyMealIngredient } from "../domain/sharedValues"
 
 const listSubscription = gql`
@@ -126,9 +126,7 @@ const ShoppingList = (props) => {
       >
         <AddCircleIcon />
       </IconButton>
-      <IconButton variant="outlined" color="secondary">
-        <UndoIcon />
-      </IconButton>
+      <UndoButton />
       <IconButton
         variant="outlined"
         onClick={() => setQuestionMarksOnly(!questionMarksOnly)}

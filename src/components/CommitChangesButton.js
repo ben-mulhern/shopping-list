@@ -162,5 +162,4 @@ const CommitChangesButton = (props) => {
   )
 }
 
-//export default withRouter(CommitChangesButton)
 export default CommitChangesButton
