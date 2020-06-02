@@ -81,7 +81,7 @@ export const DELETE_UNTICKED_ITEMS = gql`
 `
 
 export const GET_LAST_TICKED_ITEM = gql`
-  query getLastTickedItem {
+  subscription getLastTickedItem {
     shopping_list_item(
       where: { ticked_at: { _is_null: false } }
       order_by: { ticked_at: desc }
