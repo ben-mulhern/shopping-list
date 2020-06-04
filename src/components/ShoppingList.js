@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
   width300: {
     minWidth: 300,
-    maxWidth: 600,
+    maxWidth: 700,
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },

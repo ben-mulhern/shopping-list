@@ -11,6 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import IconButton from "@material-ui/core/IconButton"
 import cloneDeep from "lodash.clonedeep"
 import Paper from "@material-ui/core/Paper"
+import AddCircleIcon from "@material-ui/icons/AddCircle"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   width300: {
     minWidth: 300,
-    maxWidth: 600,
+    maxWidth: 700,
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
@@ -159,8 +160,11 @@ const MealIngredient = (props) => {
           ))}
         </Select>
       </FormControl>
-      <IconButton key="close" color="inherit" onClick={props.deleteIngredient}>
-        <DeleteIcon className={classes.margin} />
+      <IconButton color="primary">
+        <AddCircleIcon />
+      </IconButton>
+      <IconButton color="inherit" onClick={props.deleteIngredient}>
+        <DeleteIcon />
       </IconButton>
     </Paper>
   )
