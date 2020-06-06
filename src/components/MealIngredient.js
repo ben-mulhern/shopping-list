@@ -11,6 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import IconButton from "@material-ui/core/IconButton"
 import cloneDeep from "lodash.clonedeep"
 import Paper from "@material-ui/core/Paper"
+import AddCircleIcon from "@material-ui/icons/AddCircle"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   width300: {
     minWidth: 300,
-    maxWidth: 600,
+    maxWidth: 700,
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
@@ -91,6 +92,23 @@ const MealIngredient = (props) => {
 
   return (
     <Paper className={classes.width300}>
+      <FormControl className={clsx(classes.margin, classes.textField200)}>
+        <Autocomplete
+          freeSolo
+          options={ingredients.map((i) => i.description)}
+          value={mi.ingredient.description}
+          onInputChange={(e, v) => handleIngredient(v)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              fullWidth
+              placeholder="Ingredient"
+              required
+            />
+          )}
+        />
+      </FormControl>
+
       <FormControl
         className={clsx(classes.margin, classes.quantity)}
         variant="standard"
@@ -124,22 +142,6 @@ const MealIngredient = (props) => {
         </Select>
       </FormControl>
 
-      <FormControl className={clsx(classes.margin, classes.textField200)}>
-        <Autocomplete
-          freeSolo
-          options={ingredients.map((i) => i.description)}
-          value={mi.ingredient.description}
-          onInputChange={(e, v) => handleIngredient(v)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              fullWidth
-              placeholder="Ingredient"
-              required
-            />
-          )}
-        />
-      </FormControl>
       <FormControl
         className={clsx(classes.margin, classes.textField130)}
         variant="standard"
@@ -158,8 +160,13 @@ const MealIngredient = (props) => {
           ))}
         </Select>
       </FormControl>
-      <IconButton key="close" color="inherit" onClick={props.deleteIngredient}>
-        <DeleteIcon className={classes.margin} />
+      {props.listMode ? (
+        <IconButton color="primary" onClick={props.setItem}>
+          <AddCircleIcon />
+        </IconButton>
+      ) : null}
+      <IconButton color="inherit" onClick={props.deleteIngredient}>
+        <DeleteIcon />
       </IconButton>
     </Paper>
   )

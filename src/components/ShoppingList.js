@@ -1,24 +1,46 @@
-import React from "react"
+import React, { useState } from "react"
 import { connect } from "react-redux"
 import { setTab } from "../state/actions"
-import { useSubscription, useQuery } from "@apollo/react-hooks"
+import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import Immutable from "immutable"
-import ListItem from "./ListItem"
 import { QUERY_STATIC_DATA } from "../api/queries"
+import {
+  TICK_ITEM,
+  UNTICK_ITEM,
+  SET_QUESTION_MARK,
+  UPSERT_LIST_ITEM,
+} from "../api/listMutations"
+import { UPSERT_INGREDIENTS } from "../api/mealMutations"
 import IconButton from "@material-ui/core/IconButton"
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd"
-import Avatar from "@material-ui/core/Avatar"
+import AddCircleIcon from "@material-ui/icons/AddCircle"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import ListItemText from "@material-ui/core/ListItemText"
+import Checkbox from "@material-ui/core/Checkbox"
+import Paper from "@material-ui/core/Paper"
+import HelpIcon from "@material-ui/icons/Help"
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
+import MealIngredient from "./MealIngredient"
+import UndoButton from "./UndoButton"
+import { emptyMealIngredient } from "../domain/sharedValues"
 
 const listSubscription = gql`
   subscription {
     shopping_list_item(
-      order_by: { ingredient: { store_location: { shop_order: asc } } }
+      where: { ticked_at: { _is_null: true } }
+      order_by: [
+        { ingredient: { store_location: { shop_order: asc } } }
+        { ingredient: { ingredient_id: asc } }
+      ]
     ) {
       item_id
       quantity
+      ticked_at
+      question_mark
       unit {
         unit_id
       }
@@ -38,6 +60,12 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
+  width300: {
+    minWidth: 300,
+    maxWidth: 700,
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
 }))
 
 const ShoppingList = (props) => {
@@ -46,38 +74,207 @@ const ShoppingList = (props) => {
 
   const { loading, error, data } = useSubscription(listSubscription)
 
+  const [tickItem, { error: tickError }] = useMutation(TICK_ITEM)
+  const [untickItem, { error: untickError }] = useMutation(UNTICK_ITEM)
+  const [saveEditItem, { error: saveError }] = useMutation(UPSERT_LIST_ITEM)
+  const [setQuestionMark, { error: questionMarkError }] = useMutation(
+    SET_QUESTION_MARK
+  )
+  const [updateIngredient, { error: ingError }] = useMutation(
+    UPSERT_INGREDIENTS
+  )
+
   const {
     loading: staticLoading,
     error: staticError,
     data: staticData,
   } = useQuery(QUERY_STATIC_DATA, { fetchPolicy: "no-cache" })
 
+  const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
+  const [addMode, setAddMode] = useState(false)
+  const [editItem, setEditItem] = useState(emptyMealIngredient)
+
+  const toggleItem = (id, checked) => {
+    if (checked) {
+      const now = new Date()
+      tickItem({
+        variables: {
+          itemId: id,
+          ts: now.toJSON(),
+        },
+      })
+    } else {
+      untickItem({
+        variables: {
+          itemId: id,
+        },
+      })
+    }
+  }
+
+  const toggleQuestionMark = (id, qm) => {
+    setQuestionMark({
+      variables: {
+        itemId: id,
+        questionMark: qm,
+      },
+    })
+  }
+
+  const handleItemEdit = (i, ing) => {
+    setEditItem(ing)
+  }
+
+  const handleSetItem = () => {
+    const id = editItem.ingredient.ingredient_id
+    // If the ingredient is pre-existing but has changed store location - update store location
+    if (!!id) {
+      // Lookup the current location
+      const id = editItem.ingredient.ingredient_id
+      const ings = Immutable.List(staticData.ingredient)
+      const originalLocationId = ings.find((i) => i.ingredient_id === id)
+        .store_location.store_location_id
+      if (
+        originalLocationId !==
+        editItem.ingredient.store_location.store_location_id
+      ) {
+        const ing = {
+          ingredient_id: id,
+          description: editItem.ingredient.description,
+          store_location_id:
+            editItem.ingredient.store_location.store_location_id,
+        }
+        updateIngredient({
+          variables: {
+            ingredients: [ing],
+          },
+        })
+      }
+    }
+
+    // Build the item
+    const item = id
+      ? {
+          item_id: editItem.item_id,
+          quantity: editItem.quantity,
+          unit_id: editItem.unit.unit_id,
+          question_mark: editItem.question_mark,
+          ingredient_id: id,
+        }
+      : {
+          item_id: editItem.item_id,
+          quantity: editItem.quantity,
+          unit_id: editItem.unit.unit_id,
+          question_mark: editItem.question_mark,
+          ingredient: {
+            data: {
+              description: editItem.ingredient.description,
+              store_location_id:
+                editItem.ingredient.store_location.store_location_id,
+            },
+          },
+        }
+
+    // Upsert the item
+    saveEditItem({
+      variables: {
+        item: item,
+      },
+    })
+
+    // Restore the add entry to blank and re-show the buttons
+    setEditItem(emptyMealIngredient)
+    setAddMode(false)
+  }
+
   if (loading || staticLoading)
     return <CircularProgress color="secondary" className={classes.margin} />
-  if (error || staticError) return <p>Error :(</p>
+  if (
+    error ||
+    staticError ||
+    tickError ||
+    untickError ||
+    questionMarkError ||
+    saveError ||
+    ingError
+  )
+    return <p>Error :(</p>
 
   const items = Immutable.List(data.shopping_list_item)
 
-  const editListItem = () => {}
+  const buttons = (
+    <div>
+      <IconButton
+        variant="outlined"
+        color="primary"
+        onClick={() => setAddMode(true)}
+      >
+        <AddCircleIcon />
+      </IconButton>
+      <UndoButton />
+      <IconButton
+        variant="outlined"
+        onClick={() => setQuestionMarksOnly(!questionMarksOnly)}
+      >
+        {questionMarksOnly ? (
+          <HelpIcon color="secondary" />
+        ) : (
+          <HelpOutlineIcon />
+        )}
+      </IconButton>
+    </div>
+  )
+
+  const mealIngredient = (
+    <MealIngredient
+      mealIngredient={editItem}
+      units={staticData.unit}
+      locations={staticData.store_location}
+      ingredients={staticData.ingredient}
+      deleteIngredient={() => setAddMode(false)}
+      editIngredient={handleItemEdit}
+      listMode={true}
+      setItem={handleSetItem}
+    />
+  )
 
   return (
     <div>
-      <Avatar className={classes.margin}>
-        <IconButton variant="contained" color="secondary">
-          <PlaylistAddIcon />
-        </IconButton>
-      </Avatar>
-      {items.map((li, i) => (
-        <ListItem
-          listItem={li}
-          units={staticData.unit}
-          locations={staticData.store_location}
-          ingredients={staticData.ingredient}
-          key={i}
-          rowIndex={i}
-          editIngredient={editListItem}
-        />
-      ))}
+      {addMode ? mealIngredient : buttons}
+
+      <Paper className={classes.width300}>
+        <List>
+          {items
+            .filter((i) => !questionMarksOnly || i.question_mark)
+            .map((li, i) => (
+              <ListItem dense button key={i}>
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    color="primary"
+                    disableRipple
+                    checked={!!li.ticked_at}
+                    onChange={(e) => toggleItem(li.item_id, e.target.checked)}
+                  />
+                </ListItemIcon>
+                <IconButton
+                  onClick={() =>
+                    toggleQuestionMark(li.item_id, !li.question_mark)
+                  }
+                >
+                  {li.question_mark ? (
+                    <HelpIcon color="secondary" />
+                  ) : (
+                    <HelpOutlineIcon />
+                  )}
+                </IconButton>
+                <ListItemText
+                  primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
+                />
+              </ListItem>
+            ))}
+        </List>
+      </Paper>
     </div>
   )
 }
