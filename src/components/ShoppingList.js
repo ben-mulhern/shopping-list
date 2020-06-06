@@ -13,6 +13,7 @@ import {
   SET_QUESTION_MARK,
   UPSERT_LIST_ITEM,
 } from "../api/listMutations"
+import { UPSERT_INGREDIENTS } from "../api/mealMutations"
 import IconButton from "@material-ui/core/IconButton"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
@@ -79,6 +80,9 @@ const ShoppingList = (props) => {
   const [setQuestionMark, { error: questionMarkError }] = useMutation(
     SET_QUESTION_MARK
   )
+  const [updateIngredient, { error: ingError }] = useMutation(
+    UPSERT_INGREDIENTS
+  )
 
   const {
     loading: staticLoading,
@@ -122,8 +126,63 @@ const ShoppingList = (props) => {
   }
 
   const handleSetItem = () => {
-    // Do the mutation over editItem
+    const id = editItem.ingredient.ingredient_id
+    // If the ingredient is pre-existing but has changed store location - update store location
+    if (!!id) {
+      // Lookup the current location
+      const id = editItem.ingredient.ingredient_id
+      const ings = Immutable.List(staticData.ingredient)
+      const originalLocationId = ings.find((i) => i.ingredient_id === id)
+        .store_location.store_location_id
+      if (
+        originalLocationId !==
+        editItem.ingredient.store_location.store_location_id
+      ) {
+        const ing = {
+          ingredient_id: id,
+          description: editItem.ingredient.description,
+          store_location_id:
+            editItem.ingredient.store_location.store_location_id,
+        }
+        updateIngredient({
+          variables: {
+            ingredients: [ing],
+          },
+        })
+      }
+    }
 
+    // Build the item
+    const item = id
+      ? {
+          item_id: editItem.item_id,
+          quantity: editItem.quantity,
+          unit_id: editItem.unit.unit_id,
+          question_mark: editItem.question_mark,
+          ingredient_id: id,
+        }
+      : {
+          item_id: editItem.item_id,
+          quantity: editItem.quantity,
+          unit_id: editItem.unit.unit_id,
+          question_mark: editItem.question_mark,
+          ingredient: {
+            data: {
+              description: editItem.ingredient.description,
+              store_location_id:
+                editItem.ingredient.store_location.store_location_id,
+            },
+          },
+        }
+
+    // Upsert the item
+    saveEditItem({
+      variables: {
+        item: item,
+      },
+    })
+
+    // Restore the add entry to blank and re-show the buttons
     setEditItem(emptyMealIngredient)
     setAddMode(false)
   }
@@ -136,7 +195,8 @@ const ShoppingList = (props) => {
     tickError ||
     untickError ||
     questionMarkError ||
-    saveError
+    saveError ||
+    ingError
   )
     return <p>Error :(</p>
 
