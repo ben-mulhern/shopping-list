@@ -237,6 +237,7 @@ const MealDetailForm = (props) => {
           rowIndex={i}
           deleteIngredient={() => deleteIngredient(i)}
           editIngredient={editIngredient}
+          listMode={false}
         />
       ))}
       <p className={classes.errorText}>{ingredientErrorText}</p>

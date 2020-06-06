@@ -4,9 +4,15 @@ import { gql } from "apollo-boost"
 // Update a particular entry, which could entail creating a new ingredient
 // What about changing the store location on an existing ingredient?
 
-export const ADD_LIST_ITEMS = gql`
-  mutation add_list_items($items: [shopping_list_item_insert_input!]!) {
-    insert_shopping_list_item(objects: $items) {
+export const UPSERT_LIST_ITEM = gql`
+  mutation add_list_items($item: shopping_list_item_insert_input!) {
+    insert_shopping_list_item(
+      objects: [$item]
+      on_conflict: {
+        constraint: pk_shopping_list
+        update_columns: [quantity, unit_id, ingredient_id]
+      }
+    ) {
       returning {
         item_id
       }
@@ -17,7 +23,7 @@ export const ADD_LIST_ITEMS = gql`
 // Here's how the variable would look for inserting an item with a new ingredient on the fly:
 // Todo - Maybe we could change how meals are committed?
 // {
-//   "items" : [{
+//   "item" : {
 //     "quantity": 2,
 //     "unit_id": "g",
 //     "question_mark": false,
@@ -27,7 +33,7 @@ export const ADD_LIST_ITEMS = gql`
 //         "store_location_id": "CITRUS"
 //       }
 //     }
-//   }]
+//   }
 // }
 
 export const TICK_ITEM = gql`

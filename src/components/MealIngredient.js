@@ -160,9 +160,11 @@ const MealIngredient = (props) => {
           ))}
         </Select>
       </FormControl>
-      <IconButton color="primary">
-        <AddCircleIcon />
-      </IconButton>
+      {props.listMode ? (
+        <IconButton color="primary" onClick={props.setItem}>
+          <AddCircleIcon />
+        </IconButton>
+      ) : null}
       <IconButton color="inherit" onClick={props.deleteIngredient}>
         <DeleteIcon />
       </IconButton>

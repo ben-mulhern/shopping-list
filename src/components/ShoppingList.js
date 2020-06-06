@@ -7,7 +7,12 @@ import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import Immutable from "immutable"
 import { QUERY_STATIC_DATA } from "../api/queries"
-import { TICK_ITEM, UNTICK_ITEM, SET_QUESTION_MARK } from "../api/listMutations"
+import {
+  TICK_ITEM,
+  UNTICK_ITEM,
+  SET_QUESTION_MARK,
+  UPSERT_LIST_ITEM,
+} from "../api/listMutations"
 import IconButton from "@material-ui/core/IconButton"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
@@ -70,6 +75,7 @@ const ShoppingList = (props) => {
 
   const [tickItem, { error: tickError }] = useMutation(TICK_ITEM)
   const [untickItem, { error: untickError }] = useMutation(UNTICK_ITEM)
+  const [saveEditItem, { error: saveError }] = useMutation(UPSERT_LIST_ITEM)
   const [setQuestionMark, { error: questionMarkError }] = useMutation(
     SET_QUESTION_MARK
   )
@@ -82,6 +88,7 @@ const ShoppingList = (props) => {
 
   const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
   const [addMode, setAddMode] = useState(false)
+  const [editItem, setEditItem] = useState(emptyMealIngredient)
 
   const toggleItem = (id, checked) => {
     if (checked) {
@@ -110,9 +117,27 @@ const ShoppingList = (props) => {
     })
   }
 
+  const handleItemEdit = (i, ing) => {
+    setEditItem(ing)
+  }
+
+  const handleSetItem = () => {
+    // Do the mutation over editItem
+
+    setEditItem(emptyMealIngredient)
+    setAddMode(false)
+  }
+
   if (loading || staticLoading)
     return <CircularProgress color="secondary" className={classes.margin} />
-  if (error || staticError || tickError || untickError || questionMarkError)
+  if (
+    error ||
+    staticError ||
+    tickError ||
+    untickError ||
+    questionMarkError ||
+    saveError
+  )
     return <p>Error :(</p>
 
   const items = Immutable.List(data.shopping_list_item)
@@ -142,12 +167,14 @@ const ShoppingList = (props) => {
 
   const mealIngredient = (
     <MealIngredient
-      mealIngredient={emptyMealIngredient}
+      mealIngredient={editItem}
       units={staticData.unit}
       locations={staticData.store_location}
       ingredients={staticData.ingredient}
       deleteIngredient={() => setAddMode(false)}
-      editIngredient={() => {}}
+      editIngredient={handleItemEdit}
+      listMode={true}
+      setItem={handleSetItem}
     />
   )
 
