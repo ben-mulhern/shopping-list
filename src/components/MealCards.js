@@ -12,10 +12,10 @@ import SearchIcon from "@material-ui/icons/Search"
 import Button from "@material-ui/core/Button"
 import mealSearch from "../domain/mealSearch"
 import AddIcon from "@material-ui/icons/Add"
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd"
 import { withRouter } from "react-router-dom"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import Immutable from "immutable"
+import AddMealsButton from "./AddMealsButton"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,15 +97,7 @@ const MealCards = (props) => {
       >
         New meal
       </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        className={classes.button}
-        disabled={props.selectedMeals.size === 0}
-        startIcon={<PlaylistAddIcon />}
-      >
-        Add meals to list
-      </Button>
+      <AddMealsButton meals={props.selectedMeals} />
       <div>
         {meals.map((m) => (
           <MealCard

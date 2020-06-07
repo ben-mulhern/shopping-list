@@ -89,7 +89,6 @@ const ShoppingList = (props) => {
 
   const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
   const [addMode, setAddMode] = useState(false)
-  const [editMode, setEditMode] = useState(false)
   const [editItem, setEditItem] = useState(emptyMealIngredient)
 
   const toggleItem = (id, checked) => {
@@ -126,7 +125,6 @@ const ShoppingList = (props) => {
   const stopEdits = () => {
     setEditItem(emptyMealIngredient)
     setAddMode(false)
-    setEditMode(false)
   }
 
   const handleSetItem = () => {
@@ -187,14 +185,11 @@ const ShoppingList = (props) => {
     })
 
     // Restore the add entry to blank and re-show the buttons
-    setEditItem(emptyMealIngredient)
-    setAddMode(false)
-    setEditMode(false)
+    stopEdits()
   }
 
   const editListItem = (i) => {
     setEditItem(i)
-    setEditMode(true)
   }
 
   if (loading || staticLoading)
