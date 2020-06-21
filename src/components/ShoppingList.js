@@ -24,6 +24,8 @@ import MealIngredient from "./MealIngredient"
 import UndoButton from "./UndoButton"
 import { emptyMealIngredient } from "../domain/sharedValues"
 import ShoppingListItem from "./ShoppingListItem"
+import ClearIcon from "@material-ui/icons/Clear"
+import ConfirmClearWindow from "./ConfirmClearWindow"
 
 const listSubscription = gql`
   subscription {
@@ -90,6 +92,7 @@ const ShoppingList = (props) => {
   const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
   const [addMode, setAddMode] = useState(false)
   const [editItem, setEditItem] = useState(emptyMealIngredient)
+  const [clearAllWindowOpen, setClearAllWindowOpen] = useState(false)
 
   const toggleItem = (id, checked) => {
     if (checked) {
@@ -227,6 +230,13 @@ const ShoppingList = (props) => {
           <HelpOutlineIcon />
         )}
       </IconButton>
+      <IconButton onClick={() => setClearAllWindowOpen(true)}>
+        <ClearIcon color="secondary" />
+      </IconButton>
+      <ConfirmClearWindow
+        open={clearAllWindowOpen}
+        handleClose={() => setClearAllWindowOpen(false)}
+      />
     </div>
   )
 
@@ -256,6 +266,7 @@ const ShoppingList = (props) => {
                 mealIngredient
               ) : (
                 <ShoppingListItem
+                  key={i}
                   index={i}
                   item={li}
                   toggleItem={toggleItem}

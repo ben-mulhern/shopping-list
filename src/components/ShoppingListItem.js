@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import Checkbox from "@material-ui/core/Checkbox"
@@ -10,9 +10,17 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 const ShoppingListItem = (props) => {
   const i = props.index
   const li = props.item
-  const toggleItem = props.toggleItem
+  const toggleItemApi = props.toggleItem
   const toggleQuestionMark = props.toggleQuestionMark
   const editListItem = props.editListItem
+
+  const [ticked, setTicked] = useState(!!li.ticked_at)
+
+  const toggleItem = (id, checked) => {
+    console.log(`Setting tickbox to ${checked} for ${id}`)
+    setTicked(checked)
+    toggleItemApi(id, checked)
+  }
 
   return (
     <ListItem dense button key={i}>
@@ -21,7 +29,7 @@ const ShoppingListItem = (props) => {
           edge="start"
           color="primary"
           disableRipple
-          checked={!!li.ticked_at}
+          checked={ticked}
           onChange={(e) => toggleItem(li.item_id, e.target.checked)}
         />
       </ListItemIcon>
