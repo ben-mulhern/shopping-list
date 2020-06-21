@@ -16,3 +16,7 @@ export const toggleMeal = (mealId) => ({
   type: "TOGGLE_MEAL",
   mealId,
 })
+
+export const clearSelectedMeals = () => ({
+  type: "CLEAR_SELECTED_MEALS",
+})

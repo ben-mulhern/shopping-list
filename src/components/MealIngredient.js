@@ -161,7 +161,11 @@ const MealIngredient = (props) => {
         </Select>
       </FormControl>
       {props.listMode ? (
-        <IconButton color="primary" onClick={props.setItem}>
+        <IconButton
+          color="primary"
+          onClick={props.setItem}
+          disabled={!mi.ingredient.description}
+        >
           <AddCircleIcon />
         </IconButton>
       ) : null}

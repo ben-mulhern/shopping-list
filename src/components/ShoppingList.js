@@ -17,16 +17,13 @@ import { UPSERT_INGREDIENTS } from "../api/mealMutations"
 import IconButton from "@material-ui/core/IconButton"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
-import Checkbox from "@material-ui/core/Checkbox"
 import Paper from "@material-ui/core/Paper"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import MealIngredient from "./MealIngredient"
 import UndoButton from "./UndoButton"
 import { emptyMealIngredient } from "../domain/sharedValues"
+import ShoppingListItem from "./ShoppingListItem"
 
 const listSubscription = gql`
   subscription {
@@ -125,6 +122,11 @@ const ShoppingList = (props) => {
     setEditItem(ing)
   }
 
+  const stopEdits = () => {
+    setEditItem(emptyMealIngredient)
+    setAddMode(false)
+  }
+
   const handleSetItem = () => {
     const id = editItem.ingredient.ingredient_id
     // If the ingredient is pre-existing but has changed store location - update store location
@@ -183,8 +185,11 @@ const ShoppingList = (props) => {
     })
 
     // Restore the add entry to blank and re-show the buttons
-    setEditItem(emptyMealIngredient)
-    setAddMode(false)
+    stopEdits()
+  }
+
+  const editListItem = (i) => {
+    setEditItem(i)
   }
 
   if (loading || staticLoading)
@@ -231,7 +236,7 @@ const ShoppingList = (props) => {
       units={staticData.unit}
       locations={staticData.store_location}
       ingredients={staticData.ingredient}
-      deleteIngredient={() => setAddMode(false)}
+      deleteIngredient={stopEdits}
       editIngredient={handleItemEdit}
       listMode={true}
       setItem={handleSetItem}
@@ -246,33 +251,19 @@ const ShoppingList = (props) => {
         <List>
           {items
             .filter((i) => !questionMarksOnly || i.question_mark)
-            .map((li, i) => (
-              <ListItem dense button key={i}>
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    color="primary"
-                    disableRipple
-                    checked={!!li.ticked_at}
-                    onChange={(e) => toggleItem(li.item_id, e.target.checked)}
-                  />
-                </ListItemIcon>
-                <IconButton
-                  onClick={() =>
-                    toggleQuestionMark(li.item_id, !li.question_mark)
-                  }
-                >
-                  {li.question_mark ? (
-                    <HelpIcon color="secondary" />
-                  ) : (
-                    <HelpOutlineIcon />
-                  )}
-                </IconButton>
-                <ListItemText
-                  primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
+            .map((li, i) =>
+              li.item_id === editItem.item_id ? (
+                mealIngredient
+              ) : (
+                <ShoppingListItem
+                  index={i}
+                  item={li}
+                  toggleItem={toggleItem}
+                  toggleQuestionMark={toggleQuestionMark}
+                  editListItem={editListItem}
                 />
-              </ListItem>
-            ))}
+              )
+            )}
         </List>
       </Paper>
     </div>
