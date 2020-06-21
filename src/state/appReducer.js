@@ -29,6 +29,13 @@ const appReducer = (state = initialState, action) => {
         selectedMeals: newMeals,
       }
 
+    case "CLEAR_SELECTED_MEALS":
+      const noMeals = Immutable.Set()
+      return {
+        ...state,
+        selectedMeals: noMeals,
+      }
+
     default:
       return state
   }
