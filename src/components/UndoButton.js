@@ -20,7 +20,6 @@ const UndoButton = () => {
   if (!disableButton && (loadingSub || loadingUti)) setDisableButton(true)
 
   const restoreLastItem = () => {
-    console.log(`Attempting untick`)
     if (!loadingSub && dataSub.shopping_list_item.length !== 0) {
       const itemId = dataSub.shopping_list_item[0].item_id
       untickItem({

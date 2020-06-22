@@ -17,7 +17,6 @@ const ShoppingListItem = (props) => {
   const [ticked, setTicked] = useState(!!li.ticked_at)
 
   const toggleItem = (id, checked) => {
-    console.log(`Setting tickbox to ${checked} for ${id}`)
     setTicked(checked)
     toggleItemApi(id, checked)
   }
