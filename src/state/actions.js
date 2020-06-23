@@ -20,3 +20,8 @@ export const toggleMeal = (mealId) => ({
 export const clearSelectedMeals = () => ({
   type: "CLEAR_SELECTED_MEALS",
 })
+
+export const setLastTickedItem = (id) => ({
+  type: "SET_LAST_TICKED_ITEM",
+  id,
+})

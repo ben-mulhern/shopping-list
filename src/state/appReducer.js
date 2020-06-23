@@ -4,6 +4,7 @@ const initialState = {
   loggedIn: false,
   activeTab: 0,
   selectedMeals: Immutable.Set(),
+  lastTickedId: 0,
 }
 
 const appReducer = (state = initialState, action) => {
@@ -34,6 +35,12 @@ const appReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedMeals: noMeals,
+      }
+
+    case "SET_LAST_TICKED_ITEM":
+      return {
+        ...state,
+        lastTickedId: action.id,
       }
 
     default:

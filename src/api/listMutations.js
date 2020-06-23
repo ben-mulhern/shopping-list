@@ -82,3 +82,11 @@ export const GET_LAST_TICKED_ITEM = gql`
     }
   }
 `
+
+export const TICK_ALL = gql`
+  mutation reinsert_list {
+    delete_shopping_list_item(where: { ticked_at: { _eq: null } }) {
+      affected_rows
+    }
+  }
+`

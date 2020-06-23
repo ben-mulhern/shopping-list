@@ -6,7 +6,6 @@ import MealDetail from "./MealDetail"
 import ShoppingList from "./ShoppingList"
 import Navbar from "./Navbar"
 import { makeStyles } from "@material-ui/core/styles"
-import clsx from "clsx"
 import { logIn } from "../state/actions"
 import { connect } from "react-redux"
 
@@ -32,7 +31,7 @@ const MainView = (props) => {
   }
 
   return (
-    <div className={clsx(classes.margin, "App")}>
+    <div className={classes.margin}>
       <Navbar />
       <div>
         <Switch>
