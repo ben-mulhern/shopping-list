@@ -32,7 +32,7 @@ const MainView = (props) => {
   }
 
   return (
-    <div className={clsx(classes.margin, "App")}>
+    <div className={classes.margin}>
       <Navbar />
       <div>
         <Switch>
