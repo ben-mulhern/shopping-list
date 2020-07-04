@@ -1,44 +1,14 @@
 import React from "react"
 import { connect } from "react-redux"
 import { setTab } from "../state/actions"
-import { gql } from "apollo-boost"
 import { useLazyQuery, useQuery } from "@apollo/react-hooks"
 import MealDetailForm from "./MealDetailForm"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
-import { QUERY_STATIC_DATA } from "../api/queries"
+import { QUERY_STATIC_DATA } from "../api/staticDataApiOperations"
+import { MEAL_QUERY } from "../api/mealListApiOperations"
 
-const mealQuery = gql`
-  query getMealById($meal_id: Int!) {
-    meal(where: { meal_id: { _eq: $meal_id } }) {
-      meal_id
-      description
-      diet_type
-      leftovers
-      image_url
-      serves
-      recipe_book
-      meal_tags {
-        tag
-      }
-      meal_ingredients {
-        quantity
-        unit {
-          unit_id
-        }
-        ingredient {
-          ingredient_id
-          description
-          store_location {
-            store_location_id
-          }
-        }
-      }
-    }
-  }
-`
-
-const emptyMeal = {
+const EMPTY_MEAL = {
   description: "",
   diet_type: "OMNI",
   leftovers: false,
@@ -67,7 +37,7 @@ const MealDetail = (props) => {
   } = useQuery(QUERY_STATIC_DATA, { fetchPolicy: "no-cache" })
 
   const [runMealQuery, { called, loading, error, data }] = useLazyQuery(
-    mealQuery,
+    MEAL_QUERY,
     {
       variables: { meal_id: mealId },
       fetchPolicy: "no-cache",
@@ -80,7 +50,7 @@ const MealDetail = (props) => {
     return <CircularProgress color="secondary" className={classes.margin} />
   if (error || staticError) return <p>Error :(</p>
 
-  const meal = called ? data.meal[0] : emptyMeal
+  const meal = called ? data.meal[0] : EMPTY_MEAL
   const units = staticData.unit
   const locations = staticData.store_location
   const ingredients = staticData.ingredient

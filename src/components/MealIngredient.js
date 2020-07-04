@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const emptyIngredient = {
+const EMPTY_INGREDIENT = {
   description: "",
   store_location: {
     store_location_id: "",
@@ -76,7 +76,7 @@ const MealIngredient = (props) => {
   const handleIngredient = (desc) => {
     let newIngredient = ingredients.find((i) => i.description === desc)
     if (!newIngredient) {
-      newIngredient = cloneDeep(emptyIngredient)
+      newIngredient = cloneDeep(EMPTY_INGREDIENT)
       newIngredient.description = desc
       newIngredient.store_location = mi.ingredient.store_location
     }

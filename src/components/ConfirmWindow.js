@@ -6,16 +6,8 @@ import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import { useMutation } from "@apollo/react-hooks"
-import { gql } from "apollo-boost"
+import { DELETE_MEAL } from "../api/mealListApiOperations"
 import CircularProgress from "@material-ui/core/CircularProgress"
-
-const DELETE_MEAL = gql`
-  mutation delete_meal($meal_id: Int!) {
-    delete_meal(where: { meal_id: { _eq: $meal_id } }) {
-      affected_rows
-    }
-  }
-`
 
 const ConfirmWindow = (props) => {
   const [deleteMeal, { loading: deleting, error: deleteError }] = useMutation(

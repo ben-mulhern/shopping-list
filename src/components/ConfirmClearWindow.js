@@ -7,7 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import { useMutation } from "@apollo/react-hooks"
 import CircularProgress from "@material-ui/core/CircularProgress"
-import { TICK_ALL } from "../api/listMutations"
+import { TICK_ALL } from "../api/shoppingListApiOperations"
 
 const ConfirmWindow = (props) => {
   const [tickAll, { loading: deleting, error: deleteError }] = useMutation(

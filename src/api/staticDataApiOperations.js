@@ -17,3 +17,11 @@ export const QUERY_STATIC_DATA = gql`
     }
   }
 `
+
+export const LOGIN_TEST = gql`
+  {
+    unit {
+      unit_id
+    }
+  }
+`

@@ -2,18 +2,18 @@ import React, { useState } from "react"
 import { connect } from "react-redux"
 import { setTab } from "../state/actions"
 import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks"
-import { gql } from "apollo-boost"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import Immutable from "immutable"
-import { QUERY_STATIC_DATA } from "../api/queries"
+import { QUERY_STATIC_DATA } from "../api/staticDataApiOperations"
 import {
   TICK_ITEM,
   UNTICK_ITEM,
   SET_QUESTION_MARK,
   UPSERT_LIST_ITEM,
-} from "../api/listMutations"
-import { UPSERT_INGREDIENTS } from "../api/mealMutations"
+  SHOPPING_LIST_SUBSCRIPTION,
+} from "../api/shoppingListApiOperations"
+import { UPSERT_INGREDIENTS } from "../api/mealListApiOperations"
 import IconButton from "@material-ui/core/IconButton"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
@@ -22,38 +22,10 @@ import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import MealIngredient from "./MealIngredient"
 import UndoButton from "./UndoButton"
-import { emptyMealIngredient } from "../domain/sharedValues"
+import { EMPTY_MEAL_INGREDIENT } from "../domain/sharedValues"
 import ShoppingListItem from "./ShoppingListItem"
 import ClearIcon from "@material-ui/icons/Clear"
 import ConfirmClearWindow from "./ConfirmClearWindow"
-
-const listSubscription = gql`
-  subscription {
-    shopping_list_item(
-      where: { ticked_at: { _is_null: true } }
-      order_by: [
-        { ingredient: { store_location: { shop_order: asc } } }
-        { ingredient: { ingredient_id: asc } }
-      ]
-    ) {
-      item_id
-      quantity
-      ticked_at
-      question_mark
-      unit {
-        unit_id
-      }
-      ingredient {
-        ingredient_id
-        description
-        store_location {
-          store_location_id
-          shop_order
-        }
-      }
-    }
-  }
-`
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -71,7 +43,7 @@ const ShoppingList = (props) => {
   const classes = useStyles()
   props.setTab(0)
 
-  const { loading, error, data } = useSubscription(listSubscription)
+  const { loading, error, data } = useSubscription(SHOPPING_LIST_SUBSCRIPTION)
 
   const [tickItem, { error: tickError }] = useMutation(TICK_ITEM)
   const [untickItem, { error: untickError }] = useMutation(UNTICK_ITEM)
@@ -91,7 +63,7 @@ const ShoppingList = (props) => {
 
   const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
   const [addMode, setAddMode] = useState(false)
-  const [editItem, setEditItem] = useState(emptyMealIngredient)
+  const [editItem, setEditItem] = useState(EMPTY_MEAL_INGREDIENT)
   const [clearAllWindowOpen, setClearAllWindowOpen] = useState(false)
 
   const toggleItem = (id, checked) => {
@@ -126,7 +98,7 @@ const ShoppingList = (props) => {
   }
 
   const stopEdits = () => {
-    setEditItem(emptyMealIngredient)
+    setEditItem(EMPTY_MEAL_INGREDIENT)
     setAddMode(false)
   }
 

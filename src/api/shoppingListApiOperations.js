@@ -90,3 +90,31 @@ export const TICK_ALL = gql`
     }
   }
 `
+
+export const SHOPPING_LIST_SUBSCRIPTION = gql`
+  subscription {
+    shopping_list_item(
+      where: { ticked_at: { _is_null: true } }
+      order_by: [
+        { ingredient: { store_location: { shop_order: asc } } }
+        { ingredient: { ingredient_id: asc } }
+      ]
+    ) {
+      item_id
+      quantity
+      ticked_at
+      question_mark
+      unit {
+        unit_id
+      }
+      ingredient {
+        ingredient_id
+        description
+        store_location {
+          store_location_id
+          shop_order
+        }
+      }
+    }
+  }
+`

@@ -12,9 +12,9 @@ import Button from "@material-ui/core/Button"
 import { connect } from "react-redux"
 import { setTab, logIn } from "../state/actions"
 import { useLazyQuery } from "@apollo/react-hooks"
-import { gql } from "apollo-boost"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import reStartWsLink from "../api/apiClient"
+import { LOGIN_TEST } from "../api/staticDataApiOperations"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -25,17 +25,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const loginQuery = gql`
-  {
-    unit {
-      unit_id
-    }
-  }
-`
-
 const Login = (props) => {
   const [attemptLogInCall, { called, loading, error }] = useLazyQuery(
-    loginQuery
+    LOGIN_TEST
   )
 
   const attemptLogin = (apiKey) => {

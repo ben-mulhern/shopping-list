@@ -2,7 +2,10 @@ import React, { useState } from "react"
 import UndoIcon from "@material-ui/icons/Undo"
 import IconButton from "@material-ui/core/IconButton"
 import { useMutation, useSubscription } from "@apollo/react-hooks"
-import { GET_LAST_TICKED_ITEM, UNTICK_ITEM } from "../api/listMutations"
+import {
+  GET_LAST_TICKED_ITEM,
+  UNTICK_ITEM,
+} from "../api/shoppingListApiOperations"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { connect } from "react-redux"
 import { setLastTickedItem } from "../state/actions"
