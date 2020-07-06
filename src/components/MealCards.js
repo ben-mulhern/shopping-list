@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { useSubscription } from "@apollo/react-hooks"
-import { gql } from "apollo-boost"
 import MealCard from "./MealCard"
 import { connect } from "react-redux"
 import { setTab } from "../state/actions"
@@ -16,6 +15,7 @@ import { withRouter } from "react-router-dom"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import Immutable from "immutable"
 import AddMealsButton from "./AddMealsButton"
+import { MEAL_SUBSCRIPTION } from "../api/mealListApiOperations"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,29 +43,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const mealSubscription = gql`
-  subscription {
-    meal {
-      meal_id
-      description
-      image_url
-      meal_tags {
-        tag
-      }
-      meal_ingredients {
-        ingredient {
-          description
-        }
-      }
-    }
-  }
-`
-
 const MealCards = (props) => {
   const classes = useStyles()
   props.setTab(1)
 
-  const { loading, error, data } = useSubscription(mealSubscription)
+  const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
 
   const [searchString, setSearchString] = useState("")
 

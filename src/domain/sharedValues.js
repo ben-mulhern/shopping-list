@@ -1,4 +1,4 @@
-export const emptyMealIngredient = {
+export const EMPTY_MEAL_INGREDIENT = {
   quantity: 1,
   unit: {
     unit_id: "x",

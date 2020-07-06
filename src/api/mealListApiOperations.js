@@ -64,3 +64,59 @@ export const SET_INGREDIENTS_AND_TAGS = gql`
     }
   }
 `
+
+export const DELETE_MEAL = gql`
+  mutation delete_meal($meal_id: Int!) {
+    delete_meal(where: { meal_id: { _eq: $meal_id } }) {
+      affected_rows
+    }
+  }
+`
+
+export const MEAL_SUBSCRIPTION = gql`
+  subscription {
+    meal {
+      meal_id
+      description
+      image_url
+      meal_tags {
+        tag
+      }
+      meal_ingredients {
+        ingredient {
+          description
+        }
+      }
+    }
+  }
+`
+
+export const MEAL_QUERY = gql`
+  query getMealById($meal_id: Int!) {
+    meal(where: { meal_id: { _eq: $meal_id } }) {
+      meal_id
+      description
+      diet_type
+      leftovers
+      image_url
+      serves
+      recipe_book
+      meal_tags {
+        tag
+      }
+      meal_ingredients {
+        quantity
+        unit {
+          unit_id
+        }
+        ingredient {
+          ingredient_id
+          description
+          store_location {
+            store_location_id
+          }
+        }
+      }
+    }
+  }
+`
