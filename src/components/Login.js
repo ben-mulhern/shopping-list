@@ -90,6 +90,7 @@ const Login = (props) => {
           </InputLabel>
           <OutlinedInput
             className={classes.margin}
+            autoComplete
             id="outlined-adornment-password"
             type={values.showPassword ? "text" : "password"}
             value={values.password}
