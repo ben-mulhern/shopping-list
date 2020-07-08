@@ -118,7 +118,8 @@ CREATE TABLE shopping_list_item (
     CONSTRAINT ck_meal_ingredient_quantity CHECK (quantity > 0),
   unit_id VARCHAR(5) NOT NULL DEFAULT 'x',  
   ingredient_id INT NOT NULL,
-  ticked BOOLEAN NOT NULL DEFAULT false,
+  ticked_at TIMESTAMP,
+  question_mark BOOLEAN NOT NULL DEFAULT false,
 
   CONSTRAINT fk_shopping_list_item_unit FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
     ON DELETE RESTRICT

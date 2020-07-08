@@ -6,18 +6,16 @@ import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import { useMutation } from "@apollo/react-hooks"
-import { DELETE_MEAL } from "../api/mealListApiOperations"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import { TICK_ALL } from "../api/shoppingListApiOperations"
 
 const ConfirmWindow = (props) => {
-  const [deleteMeal, { loading: deleting, error: deleteError }] = useMutation(
-    DELETE_MEAL
+  const [tickAll, { loading: deleting, error: deleteError }] = useMutation(
+    TICK_ALL
   )
 
   const deleteAndClose = () => {
-    deleteMeal({
-      variables: { meal_id: props.mealId },
-    })
+    tickAll()
     props.handleClose()
   }
 
@@ -31,7 +29,7 @@ const ConfirmWindow = (props) => {
           ) : deleteError ? (
             `${deleteError}`
           ) : (
-            `Are you sure you want to delete ${props.description}?`
+            `Are you sure you want to clear all items?`
           )}
         </DialogContentText>
       </DialogContent>
