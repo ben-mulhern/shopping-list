@@ -79,6 +79,7 @@ export const MEAL_SUBSCRIPTION = gql`
       meal_id
       description
       image_url
+      serves
       meal_tags {
         tag
       }
