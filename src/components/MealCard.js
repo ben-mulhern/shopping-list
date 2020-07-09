@@ -17,6 +17,7 @@ import { withRouter } from "react-router-dom"
 import ConfirmWindow from "./ConfirmWindow"
 import PersonIcon from "@material-ui/icons/Person"
 import Badge from "@material-ui/core/Badge"
+import Tooltip from "@material-ui/core/Tooltip"
 
 const useStyles = makeStyles({
   card: {
@@ -92,9 +93,11 @@ const MealCard = (props) => {
         >
           Delete
         </Button>
-        <Badge badgeContent={meal.serves} color="primary">
-          <PersonIcon color="secondary" />
-        </Badge>
+        <Tooltip title={`Serves ${meal.serves}`}>
+          <Badge badgeContent={meal.serves} color="primary">
+            <PersonIcon color="secondary" />
+          </Badge>
+        </Tooltip>
         <ConfirmWindow
           open={deleteWindowOpen}
           handleClose={() => setDeleteWindowOpen(false)}
