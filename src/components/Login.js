@@ -15,6 +15,7 @@ import { useLazyQuery } from "@apollo/react-hooks"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import reStartWsLink from "../api/apiClient"
 import { LOGIN_TEST } from "../api/staticDataApiOperations"
+import Tooltip from "@material-ui/core/Tooltip"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -97,13 +98,15 @@ const Login = (props) => {
             onChange={handleChange("password")}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
+                <Tooltip title="Show password">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </Tooltip>
               </InputAdornment>
             }
             labelWidth={70}

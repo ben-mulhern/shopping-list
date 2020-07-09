@@ -14,9 +14,10 @@ import clsx from "clsx"
 import EditIcon from "@material-ui/icons/Edit"
 import DeleteIcon from "@material-ui/icons/Delete"
 import { withRouter } from "react-router-dom"
-import ConfirmWindow from "./ConfirmWindow"
+import ConfirmDeleteWindow from "./ConfirmDeleteWindow"
 import PersonIcon from "@material-ui/icons/Person"
 import Badge from "@material-ui/core/Badge"
+import Tooltip from "@material-ui/core/Tooltip"
 
 const useStyles = makeStyles({
   card: {
@@ -92,10 +93,12 @@ const MealCard = (props) => {
         >
           Delete
         </Button>
-        <Badge badgeContent={meal.serves} color="primary">
-          <PersonIcon color="secondary" />
-        </Badge>
-        <ConfirmWindow
+        <Tooltip title={`Serves ${meal.serves}`}>
+          <Badge badgeContent={meal.serves} color="primary">
+            <PersonIcon color="secondary" />
+          </Badge>
+        </Tooltip>
+        <ConfirmDeleteWindow
           open={deleteWindowOpen}
           handleClose={() => setDeleteWindowOpen(false)}
           mealId={meal.meal_id}

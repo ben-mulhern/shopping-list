@@ -8,6 +8,7 @@ import ListItemText from "@material-ui/core/ListItemText"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import { connect } from "react-redux"
 import { setLastTickedItem } from "../state/actions"
+import Tooltip from "@material-ui/core/Tooltip"
 
 const ShoppingListItem = (props) => {
   const i = props.index
@@ -24,24 +25,34 @@ const ShoppingListItem = (props) => {
 
   return (
     <ListItem dense button key={i}>
-      <ListItemIcon>
-        <Checkbox
-          edge="start"
-          color="primary"
-          disableRipple
-          checked={li.item_id === props.lastTickedId}
-          onChange={(e) => toggleItem(li.item_id, e.target.checked)}
-        />
-      </ListItemIcon>
-      <IconButton
-        onClick={() => toggleQuestionMark(li.item_id, !li.question_mark)}
+      <Tooltip title="Check off item">
+        <ListItemIcon>
+          <Checkbox
+            edge="start"
+            color="primary"
+            disableRipple
+            checked={li.item_id === props.lastTickedId}
+            onChange={(e) => toggleItem(li.item_id, e.target.checked)}
+          />
+        </ListItemIcon>
+      </Tooltip>
+      <Tooltip
+        title={
+          li.question_mark
+            ? "Mark as definitely needed"
+            : "Mark as need to check"
+        }
       >
-        {li.question_mark ? (
-          <HelpIcon color="secondary" />
-        ) : (
-          <HelpOutlineIcon />
-        )}
-      </IconButton>
+        <IconButton
+          onClick={() => toggleQuestionMark(li.item_id, !li.question_mark)}
+        >
+          {li.question_mark ? (
+            <HelpIcon color="secondary" />
+          ) : (
+            <HelpOutlineIcon />
+          )}
+        </IconButton>
+      </Tooltip>
       <ListItemText
         primary={`${li.quantity}${li.unit.unit_id} ${li.ingredient.description}`}
         onClick={() => editListItem(li)}

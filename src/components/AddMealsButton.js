@@ -2,13 +2,13 @@ import React, { useState } from "react"
 import Button from "@material-ui/core/Button"
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd"
 import { makeStyles } from "@material-ui/core/styles"
-import { gql } from "apollo-boost"
 import { useLazyQuery, useMutation } from "@apollo/react-hooks"
 import shoppingListBuilder from "../domain/shoppingListBuilder"
 import { REINSERT_LIST } from "../api/shoppingListApiOperations"
 import { Redirect } from "react-router"
 import { connect } from "react-redux"
 import { clearSelectedMeals } from "../state/actions"
+import { LIST_DATA_QUERY } from "../api/shoppingListApiOperations"
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -17,30 +17,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 10,
   },
 }))
-
-const LIST_DATA_QUERY = gql`
-  query getMealIngredients($mealIds: [Int!]!) {
-    meal_ingredient(where: { meal_id: { _in: $mealIds } }) {
-      ingredient {
-        ingredient_id
-      }
-      unit {
-        unit_id
-      }
-      quantity
-    }
-    shopping_list_item(where: { ticked_at: { _is_null: true } }) {
-      quantity
-      unit {
-        unit_id
-      }
-      question_mark
-      ingredient {
-        ingredient_id
-      }
-    }
-  }
-`
 
 const AddMealsButton = (props) => {
   const classes = useStyles()

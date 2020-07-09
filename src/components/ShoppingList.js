@@ -217,6 +217,7 @@ const ShoppingList = (props) => {
           color="secondary"
           onClick={() => setClearAllWindowOpen(true)}
           size="small"
+          disabled={items.size === 0}
         >
           <ClearIcon />
         </Fab>
