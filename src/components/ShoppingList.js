@@ -14,11 +14,8 @@ import {
   SHOPPING_LIST_SUBSCRIPTION,
 } from "../api/shoppingListApiOperations"
 import { UPSERT_INGREDIENTS } from "../api/mealListApiOperations"
-import IconButton from "@material-ui/core/IconButton"
-import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
 import Paper from "@material-ui/core/Paper"
-import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import MealIngredient from "./MealIngredient"
 import UndoButton from "./UndoButton"
@@ -26,6 +23,9 @@ import { EMPTY_MEAL_INGREDIENT } from "../domain/sharedValues"
 import ShoppingListItem from "./ShoppingListItem"
 import ClearIcon from "@material-ui/icons/Clear"
 import ConfirmClearWindow from "./ConfirmClearWindow"
+import Fab from "@material-ui/core/Fab"
+import AddIcon from "@material-ui/icons/Add"
+import Tooltip from "@material-ui/core/Tooltip"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -184,27 +184,43 @@ const ShoppingList = (props) => {
 
   const buttons = (
     <div>
-      <IconButton
-        variant="outlined"
-        color="primary"
-        onClick={() => setAddMode(true)}
-      >
-        <AddCircleIcon />
-      </IconButton>
+      <Tooltip title="Add a new list item">
+        <Fab
+          className={classes.margin}
+          color="primary"
+          onClick={() => setAddMode(true)}
+          size="small"
+        >
+          <AddIcon />
+        </Fab>
+      </Tooltip>
       <UndoButton />
-      <IconButton
-        variant="outlined"
-        onClick={() => setQuestionMarksOnly(!questionMarksOnly)}
+      <Tooltip
+        title={
+          questionMarksOnly
+            ? "Show all unticked items"
+            : "Show only question marks"
+        }
       >
-        {questionMarksOnly ? (
-          <HelpIcon color="secondary" />
-        ) : (
+        <Fab
+          className={classes.margin}
+          color={questionMarksOnly ? "secondary" : "default"}
+          onClick={() => setQuestionMarksOnly(!questionMarksOnly)}
+          size="small"
+        >
           <HelpOutlineIcon />
-        )}
-      </IconButton>
-      <IconButton onClick={() => setClearAllWindowOpen(true)}>
-        <ClearIcon color="secondary" />
-      </IconButton>
+        </Fab>
+      </Tooltip>
+      <Tooltip title="Clear entire list">
+        <Fab
+          className={classes.margin}
+          color="secondary"
+          onClick={() => setClearAllWindowOpen(true)}
+          size="small"
+        >
+          <ClearIcon />
+        </Fab>
+      </Tooltip>
       <ConfirmClearWindow
         open={clearAllWindowOpen}
         handleClose={() => setClearAllWindowOpen(false)}

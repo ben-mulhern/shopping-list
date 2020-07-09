@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import UndoIcon from "@material-ui/icons/Undo"
-import IconButton from "@material-ui/core/IconButton"
 import { useMutation, useSubscription } from "@apollo/react-hooks"
 import {
   GET_LAST_TICKED_ITEM,
@@ -9,8 +8,18 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { connect } from "react-redux"
 import { setLastTickedItem } from "../state/actions"
+import Fab from "@material-ui/core/Fab"
+import { makeStyles } from "@material-ui/core/styles"
+import Tooltip from "@material-ui/core/Tooltip"
+
+const useStyles = makeStyles((theme) => ({
+  margin: {
+    margin: theme.spacing(1),
+  },
+}))
 
 const UndoButton = (props) => {
+  const classes = useStyles()
   const [disableButton, setDisableButton] = useState(false)
 
   const { loading: loadingSub, data: dataSub } = useSubscription(
@@ -39,14 +48,17 @@ const UndoButton = (props) => {
   if (loadingSub || loadingUti) return <CircularProgress color="secondary" />
 
   return (
-    <IconButton
-      variant="outlined"
-      color="secondary"
-      disabled={disableButton}
-      onClick={() => restoreLastItem()}
-    >
-      <UndoIcon />
-    </IconButton>
+    <Tooltip title="Restore last ticked item">
+      <Fab
+        className={classes.margin}
+        color="secondary"
+        onClick={() => restoreLastItem()}
+        disabled={disableButton}
+        size="small"
+      >
+        <UndoIcon />
+      </Fab>
+    </Tooltip>
   )
 }
 
