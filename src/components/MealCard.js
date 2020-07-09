@@ -14,7 +14,7 @@ import clsx from "clsx"
 import EditIcon from "@material-ui/icons/Edit"
 import DeleteIcon from "@material-ui/icons/Delete"
 import { withRouter } from "react-router-dom"
-import ConfirmWindow from "./ConfirmWindow"
+import ConfirmDeleteWindow from "./ConfirmDeleteWindow"
 import PersonIcon from "@material-ui/icons/Person"
 import Badge from "@material-ui/core/Badge"
 import Tooltip from "@material-ui/core/Tooltip"
@@ -98,7 +98,7 @@ const MealCard = (props) => {
             <PersonIcon color="secondary" />
           </Badge>
         </Tooltip>
-        <ConfirmWindow
+        <ConfirmDeleteWindow
           open={deleteWindowOpen}
           handleClose={() => setDeleteWindowOpen(false)}
           mealId={meal.meal_id}

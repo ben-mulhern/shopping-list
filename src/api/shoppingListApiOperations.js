@@ -118,3 +118,27 @@ export const SHOPPING_LIST_SUBSCRIPTION = gql`
     }
   }
 `
+
+export const LIST_DATA_QUERY = gql`
+  query getMealIngredients($mealIds: [Int!]!) {
+    meal_ingredient(where: { meal_id: { _in: $mealIds } }) {
+      ingredient {
+        ingredient_id
+      }
+      unit {
+        unit_id
+      }
+      quantity
+    }
+    shopping_list_item(where: { ticked_at: { _is_null: true } }) {
+      quantity
+      unit {
+        unit_id
+      }
+      question_mark
+      ingredient {
+        ingredient_id
+      }
+    }
+  }
+`
