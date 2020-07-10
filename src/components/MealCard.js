@@ -8,7 +8,7 @@ import CardActionArea from "@material-ui/core/CardActionArea"
 import CardActions from "@material-ui/core/CardActions"
 import Button from "@material-ui/core/Button"
 import Chip from "@material-ui/core/Chip"
-import { connect } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { toggleMeal } from "../state/actions"
 import clsx from "clsx"
 import EditIcon from "@material-ui/icons/Edit"
@@ -46,8 +46,10 @@ const useStyles = makeStyles({
 const MealCard = (props) => {
   const classes = useStyles()
   const meal = props.meal
+  const selectedMeals = useSelector((state) => state.selectedMeals)
+  const dispatch = useDispatch()
 
-  const selected = props.selectedMeals.includes(meal.meal_id)
+  const selected = selectedMeals.includes(meal.meal_id)
   const cardClass = clsx(
     classes.card,
     selected && classes.selected,
@@ -57,7 +59,7 @@ const MealCard = (props) => {
 
   return (
     <Card raised={true} className={cardClass}>
-      <CardActionArea onClick={(e) => props.toggleMeal(meal.meal_id)}>
+      <CardActionArea onClick={() => dispatch(toggleMeal(meal.meal_id))}>
         <CardMedia
           className={classes.media}
           image={
@@ -110,16 +112,4 @@ const MealCard = (props) => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    selectedMeals: state.selectedMeals,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => ({
-  toggleMeal: (mealId) => dispatch(toggleMeal(mealId)),
-})
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(MealCard)
-)
+export default withRouter(MealCard)
