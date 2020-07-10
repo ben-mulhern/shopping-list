@@ -90,6 +90,7 @@ const MealCard = (props) => {
           color={selected ? "primary" : "secondary"}
           startIcon={<DeleteIcon />}
           onClick={() => setDeleteWindowOpen(true)}
+          disabled={selected}
         >
           Delete
         </Button>
