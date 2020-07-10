@@ -6,7 +6,7 @@ import { useLazyQuery, useMutation } from "@apollo/react-hooks"
 import shoppingListBuilder from "../domain/shoppingListBuilder"
 import { REINSERT_LIST } from "../api/shoppingListApiOperations"
 import { Redirect } from "react-router"
-import { connect } from "react-redux"
+import { useDispatch } from "react-redux"
 import { clearSelectedMeals } from "../state/actions"
 import { LIST_DATA_QUERY } from "../api/shoppingListApiOperations"
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AddMealsButton = (props) => {
   const classes = useStyles()
-
+  const dispatch = useDispatch()
   const [
     getListDataQuery,
     {
@@ -61,7 +61,7 @@ const AddMealsButton = (props) => {
         items: newList,
       },
     })
-    props.clearSelectedMeals()
+    dispatch(clearSelectedMeals())
     setRedirect(true)
   }
 
@@ -79,8 +79,4 @@ const AddMealsButton = (props) => {
   )
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  clearSelectedMeals: () => dispatch(clearSelectedMeals()),
-})
-
-export default connect(null, mapDispatchToProps)(AddMealsButton)
+export default AddMealsButton

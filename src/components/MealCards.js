@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useSubscription } from "@apollo/react-hooks"
 import MealCard from "./MealCard"
-import { connect } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setTab } from "../state/actions"
 import { makeStyles } from "@material-ui/core/styles"
 import Paper from "@material-ui/core/Paper"
@@ -45,7 +45,9 @@ const useStyles = makeStyles((theme) => ({
 
 const MealCards = (props) => {
   const classes = useStyles()
-  props.setTab(1)
+  const dispatch = useDispatch()
+  dispatch(setTab(1))
+  const selectedMeals = useSelector((state) => state.selectedMeals)
 
   const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
 
@@ -79,7 +81,7 @@ const MealCards = (props) => {
       >
         New meal
       </Button>
-      <AddMealsButton meals={props.selectedMeals} />
+      <AddMealsButton meals={selectedMeals} />
       <div>
         {meals.map((m) => (
           <MealCard
@@ -93,16 +95,4 @@ const MealCards = (props) => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    selectedMeals: state.selectedMeals,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => ({
-  setTab: (index) => dispatch(setTab(index)),
-})
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(MealCards)
-)
+export default withRouter(MealCards)

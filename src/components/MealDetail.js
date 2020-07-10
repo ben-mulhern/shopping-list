@@ -1,5 +1,5 @@
 import React from "react"
-import { connect } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setTab } from "../state/actions"
 import { useLazyQuery, useQuery } from "@apollo/react-hooks"
 import MealDetailForm from "./MealDetailForm"
@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const MealDetail = (props) => {
-  props.setTab(1)
+  const dispatch = useDispatch()
+  dispatch(setTab(1))
   const mealId = props.match.params.id
   const classes = useStyles()
 
@@ -65,8 +66,4 @@ const MealDetail = (props) => {
   )
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  setTab: (index) => dispatch(setTab(index)),
-})
-
-export default connect(null, mapDispatchToProps)(MealDetail)
+export default MealDetail

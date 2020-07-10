@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton"
 import HelpIcon from "@material-ui/icons/Help"
 import ListItemText from "@material-ui/core/ListItemText"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
-import { connect } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { setLastTickedItem } from "../state/actions"
 import Tooltip from "@material-ui/core/Tooltip"
 
@@ -16,10 +16,12 @@ const ShoppingListItem = (props) => {
   const toggleItemApi = props.toggleItem
   const toggleQuestionMark = props.toggleQuestionMark
   const editListItem = props.editListItem
+  const lastTickedId = useSelector((state) => state.lastTickedId)
+  const dispatch = useDispatch()
 
   const toggleItem = (id, checked) => {
     console.log(`calling the action with id ${id}`)
-    props.setLastTickedItem(id)
+    dispatch(setLastTickedItem(id))
     toggleItemApi(id, checked)
   }
 
@@ -31,7 +33,7 @@ const ShoppingListItem = (props) => {
             edge="start"
             color="primary"
             disableRipple
-            checked={li.item_id === props.lastTickedId}
+            checked={li.item_id === lastTickedId}
             onChange={(e) => toggleItem(li.item_id, e.target.checked)}
           />
         </ListItemIcon>
@@ -61,14 +63,4 @@ const ShoppingListItem = (props) => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    lastTickedId: state.lastTickedId,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => ({
-  setLastTickedItem: (id) => dispatch(setLastTickedItem(id)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ShoppingListItem)
+export default ShoppingListItem

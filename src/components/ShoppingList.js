@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { connect } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setTab } from "../state/actions"
 import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks"
 import CircularProgress from "@material-ui/core/CircularProgress"
@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
 
 const ShoppingList = (props) => {
   const classes = useStyles()
-  props.setTab(0)
+  const dispatch = useDispatch()
+  dispatch(setTab(0))
 
   const { loading, error, data } = useSubscription(SHOPPING_LIST_SUBSCRIPTION)
 
@@ -269,9 +270,4 @@ const ShoppingList = (props) => {
     </div>
   )
 }
-
-const mapDispatchToProps = (dispatch) => ({
-  setTab: (index) => dispatch(setTab(index)),
-})
-
-export default connect(null, mapDispatchToProps)(ShoppingList)
+export default ShoppingList
