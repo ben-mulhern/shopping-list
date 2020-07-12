@@ -87,6 +87,10 @@ export const MEAL_SUBSCRIPTION = gql`
         ingredient {
           description
         }
+        unit {
+          unit_id
+        }
+        quantity
       }
     }
   }

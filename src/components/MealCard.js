@@ -18,6 +18,12 @@ import ConfirmDeleteWindow from "./ConfirmDeleteWindow"
 import PersonIcon from "@material-ui/icons/Person"
 import Badge from "@material-ui/core/Badge"
 import Tooltip from "@material-ui/core/Tooltip"
+import Accordion from "@material-ui/core/Accordion"
+import AccordionSummary from "@material-ui/core/AccordionSummary"
+import AccordionDetails from "@material-ui/core/AccordionDetails"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
 
 const useStyles = makeStyles({
   card: {
@@ -78,36 +84,47 @@ const MealCard = (props) => {
           ))}
         </CardContent>
       </CardActionArea>
-      <CardActions>
-        <Button
-          size="small"
-          color={selected ? "primary" : "secondary"}
-          startIcon={<EditIcon />}
-          onClick={() => props.history.push(`/meal/${meal.meal_id}`)}
-        >
-          Edit
-        </Button>
-        <Button
-          size="small"
-          color={selected ? "primary" : "secondary"}
-          startIcon={<DeleteIcon />}
-          onClick={() => setDeleteWindowOpen(true)}
-          disabled={selected}
-        >
-          Delete
-        </Button>
-        <Tooltip title={`Serves ${meal.serves}`}>
-          <Badge badgeContent={meal.serves} color="primary">
-            <PersonIcon color="secondary" />
-          </Badge>
-        </Tooltip>
-        <ConfirmDeleteWindow
-          open={deleteWindowOpen}
-          handleClose={() => setDeleteWindowOpen(false)}
-          mealId={meal.meal_id}
-          description={meal.description}
-        />
-      </CardActions>
+      <Accordion elevation="0">
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <CardActions>
+            <Button
+              size="small"
+              color={selected ? "primary" : "secondary"}
+              startIcon={<EditIcon />}
+              onClick={() => props.history.push(`/meal/${meal.meal_id}`)}
+            >
+              Edit
+            </Button>
+            <Button
+              size="small"
+              color={selected ? "primary" : "secondary"}
+              startIcon={<DeleteIcon />}
+              onClick={() => setDeleteWindowOpen(true)}
+              disabled={selected}
+            >
+              Delete
+            </Button>
+            <Tooltip title={`Serves ${meal.serves}`}>
+              <Badge badgeContent={meal.serves} color="primary">
+                <PersonIcon color="secondary" />
+              </Badge>
+            </Tooltip>
+            <ConfirmDeleteWindow
+              open={deleteWindowOpen}
+              handleClose={() => setDeleteWindowOpen(false)}
+              mealId={meal.meal_id}
+              description={meal.description}
+            />
+          </CardActions>
+        </AccordionSummary>
+        <AccordionDetails>
+          <List>
+            {meal.meal_ingredients.map((mi) => (
+              <ListItem>{`${mi.quantity}${mi.unit.unit_id} ${mi.ingredient.description}`}</ListItem>
+            ))}
+          </List>
+        </AccordionDetails>
+      </Accordion>
     </Card>
   )
 }
