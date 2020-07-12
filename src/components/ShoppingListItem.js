@@ -20,7 +20,6 @@ const ShoppingListItem = (props) => {
   const dispatch = useDispatch()
 
   const toggleItem = (id, checked) => {
-    console.log(`calling the action with id ${id}`)
     dispatch(setLastTickedItem(id))
     toggleItemApi(id, checked)
   }

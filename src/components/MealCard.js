@@ -23,7 +23,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary"
 import AccordionDetails from "@material-ui/core/AccordionDetails"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
+import DisplayIngredient from "./DisplayIngredient"
 
 const useStyles = makeStyles({
   card: {
@@ -66,6 +66,11 @@ const MealCard = (props) => {
   )
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
 
+  const triggerDeleteWindow = (e) => {
+    e.stopPropagation()
+    setDeleteWindowOpen(true)
+  }
+
   return (
     <Card raised={true} className={cardClass}>
       <CardActionArea onClick={() => dispatch(toggleMeal(meal.meal_id))}>
@@ -87,7 +92,7 @@ const MealCard = (props) => {
           ))}
         </CardContent>
       </CardActionArea>
-      <Accordion elevation="0" className={classes.accordion}>
+      <Accordion elevation={0} className={classes.accordion}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <CardActions>
             <Button
@@ -102,7 +107,7 @@ const MealCard = (props) => {
               size="small"
               color={selected ? "primary" : "secondary"}
               startIcon={<DeleteIcon />}
-              onClick={() => setDeleteWindowOpen(true)}
+              onClick={(e) => triggerDeleteWindow(e)}
               disabled={selected}
             >
               Delete
@@ -112,22 +117,37 @@ const MealCard = (props) => {
                 <PersonIcon color="secondary" />
               </Badge>
             </Tooltip>
-            <ConfirmDeleteWindow
-              open={deleteWindowOpen}
-              handleClose={() => setDeleteWindowOpen(false)}
-              mealId={meal.meal_id}
-              description={meal.description}
-            />
           </CardActions>
         </AccordionSummary>
         <AccordionDetails>
           <List>
-            {meal.meal_ingredients.map((mi) => (
-              <ListItem>{`${mi.quantity}${mi.unit.unit_id} ${mi.ingredient.description}`}</ListItem>
-            ))}
+            {meal.meal_ingredients.map((mi) => {
+              const checked = props.checked !== "undefined" && props.checked
+              const questionMark =
+                props.questionMark !== "undefined" && props.questionMark
+              return (
+                <DisplayIngredient
+                  item={mi}
+                  index={mi.ingredient.ingredient_id}
+                  checkboxTooltipText="Check if required"
+                  checked={checked}
+                  questionMark={questionMark}
+                  toggleItem={() => {}}
+                  toggleQuestionMark={() => {}}
+                  editAction={() => {}}
+                  allowActions={selected}
+                />
+              )
+            })}
           </List>
         </AccordionDetails>
       </Accordion>
+      <ConfirmDeleteWindow
+        open={deleteWindowOpen}
+        handleClose={() => setDeleteWindowOpen(false)}
+        mealId={meal.meal_id}
+        description={meal.description}
+      />
     </Card>
   )
 }

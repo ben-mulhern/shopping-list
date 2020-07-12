@@ -85,12 +85,17 @@ export const MEAL_SUBSCRIPTION = gql`
       }
       meal_ingredients {
         ingredient {
+          ingredient_id
           description
         }
         unit {
           unit_id
         }
         quantity
+        meal_ingredient_plan_items {
+          checked
+          question_mark
+        }
       }
     }
   }
