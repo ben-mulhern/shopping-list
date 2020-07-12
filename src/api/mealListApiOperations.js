@@ -130,3 +130,21 @@ export const MEAL_QUERY = gql`
     }
   }
 `
+
+export const ADD_MEAL_TO_PLAN = gql`
+  mutation insert_meal_plan($meal: [meal_ingredient_plan_item_insert_input!]!) {
+    insert_meal_ingredient_plan_item(objects: $meal) {
+      returning {
+        meal_id
+      }
+    }
+  }
+`
+
+export const REMOVE_MEAL_FROM_PLAN = gql`
+  mutation delete_meal_ingredient_plan_item($meal_id: Int!) {
+    delete_meal_ingredient_plan_item(where: { meal_id: { _eq: $meal_id } }) {
+      affected_rows
+    }
+  }
+`

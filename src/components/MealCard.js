@@ -24,6 +24,11 @@ import AccordionDetails from "@material-ui/core/AccordionDetails"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import List from "@material-ui/core/List"
 import DisplayIngredient from "./DisplayIngredient"
+import {
+  ADD_MEAL_TO_PLAN,
+  REMOVE_MEAL_FROM_PLAN,
+} from "../api/mealListApiOperations"
+import { useMutation } from "@apollo/react-hooks"
 
 const useStyles = makeStyles({
   card: {
@@ -56,6 +61,8 @@ const MealCard = (props) => {
   const classes = useStyles()
   const meal = props.meal
   const selectedMeals = useSelector((state) => state.selectedMeals)
+  const [addMealToPlan] = useMutation(ADD_MEAL_TO_PLAN)
+  const [removeMealFromPlan] = useMutation(REMOVE_MEAL_FROM_PLAN)
   const dispatch = useDispatch()
 
   const selected = selectedMeals.includes(meal.meal_id)
@@ -71,9 +78,30 @@ const MealCard = (props) => {
     setDeleteWindowOpen(true)
   }
 
+  const addOrRemoveMeal = () => {
+    if (selected)
+      removeMealFromPlan({
+        variables: {
+          meal_id: meal.meal_id,
+        },
+      })
+    else {
+      const planItems = meal.meal_ingredients.map((i) => ({
+        meal_id: meal.meal_id,
+        ingredient_id: i.ingredient.ingredient_id,
+      }))
+      addMealToPlan({
+        variables: {
+          meal: planItems,
+        },
+      })
+    }
+    dispatch(toggleMeal(meal.meal_id))
+  }
+
   return (
     <Card raised={true} className={cardClass}>
-      <CardActionArea onClick={() => dispatch(toggleMeal(meal.meal_id))}>
+      <CardActionArea onClick={() => addOrRemoveMeal()}>
         <CardMedia
           className={classes.media}
           image={
@@ -122,9 +150,12 @@ const MealCard = (props) => {
         <AccordionDetails>
           <List>
             {meal.meal_ingredients.map((mi) => {
-              const checked = props.checked !== "undefined" && props.checked
+              const checked =
+                mi.meal_ingredient_plan_items.length > 0 &&
+                mi.meal_ingredient_plan_items[0].checked
               const questionMark =
-                props.questionMark !== "undefined" && props.questionMark
+                mi.meal_ingredient_plan_items.length > 0 &&
+                mi.meal_ingredient_plan_items[0].questionMark
               return (
                 <DisplayIngredient
                   item={mi}
@@ -136,6 +167,7 @@ const MealCard = (props) => {
                   toggleQuestionMark={() => {}}
                   editAction={() => {}}
                   allowActions={selected}
+                  questionMarkDisabled={!checked}
                 />
               )
             })}

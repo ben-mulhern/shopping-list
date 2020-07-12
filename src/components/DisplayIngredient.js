@@ -25,25 +25,27 @@ const DisplayIngredient = (props) => {
     </Tooltip>
   )
   const questionMarkToggle = (
-    <Tooltip
-      title={
-        props.questionMark
-          ? "Mark as definitely needed"
-          : "Mark as need to check"
-      }
-    >
-      <IconButton
-        onClick={() =>
-          props.toggleQuestionMark(props.index, !props.questionMark)
+    <span disabled={props.questionMarkDisabled}>
+      <Tooltip
+        title={
+          props.questionMark
+            ? "Mark as definitely needed"
+            : "Mark as need to check"
         }
       >
-        {props.questionMark ? (
-          <HelpIcon color="secondary" />
-        ) : (
-          <HelpOutlineIcon />
-        )}
-      </IconButton>
-    </Tooltip>
+        <IconButton
+          onClick={() =>
+            props.toggleQuestionMark(props.index, !props.questionMark)
+          }
+        >
+          {props.questionMark ? (
+            <HelpIcon color="secondary" />
+          ) : (
+            <HelpOutlineIcon />
+          )}
+        </IconButton>
+      </Tooltip>
+    </span>
   )
 
   return (

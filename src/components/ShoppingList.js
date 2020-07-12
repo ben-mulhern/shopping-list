@@ -251,13 +251,13 @@ const ShoppingList = (props) => {
         <List>
           {items
             .filter((i) => !questionMarksOnly || i.question_mark)
-            .map((li, i) =>
+            .map((li) =>
               li.item_id === editItem.item_id ? (
                 mealIngredient
               ) : (
                 <ShoppingListItem
-                  key={i}
-                  index={i}
+                  key={li.item_id}
+                  index={li.item_id}
                   item={li}
                   toggleItem={toggleItem}
                   toggleQuestionMark={toggleQuestionMark}
