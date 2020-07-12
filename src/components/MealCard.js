@@ -47,6 +47,9 @@ const useStyles = makeStyles({
   hidden: {
     display: "none",
   },
+  accordion: {
+    backgroundColor: "transparent",
+  },
 })
 
 const MealCard = (props) => {
@@ -84,7 +87,7 @@ const MealCard = (props) => {
           ))}
         </CardContent>
       </CardActionArea>
-      <Accordion elevation="0">
+      <Accordion elevation="0" className={classes.accordion}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <CardActions>
             <Button
