@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useSubscription } from "@apollo/react-hooks"
 import MealCard from "./MealCard"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setTab } from "../state/actions"
 import { makeStyles } from "@material-ui/core/styles"
 import Paper from "@material-ui/core/Paper"
@@ -15,7 +15,10 @@ import { withRouter } from "react-router-dom"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import Immutable from "immutable"
 import AddMealsButton from "./AddMealsButton"
-import { MEAL_SUBSCRIPTION } from "../api/mealListApiOperations"
+import {
+  MEAL_SUBSCRIPTION,
+  SELECTED_MEALS_SUBSCRIPTION,
+} from "../api/mealListApiOperations"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,17 +50,25 @@ const MealCards = (props) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   dispatch(setTab(1))
-  const selectedMeals = useSelector((state) => state.selectedMeals)
 
   const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
+  const {
+    loading: loadingSelected,
+    error: errorSelected,
+    data: dataSelected,
+  } = useSubscription(SELECTED_MEALS_SUBSCRIPTION)
 
   const [searchString, setSearchString] = useState("")
 
-  if (loading)
+  if (loading || loadingSelected)
     return <CircularProgress color="secondary" className={classes.margin} />
-  if (error) return <p>Error :(</p>
+  if (error || errorSelected) return <p>Error :(</p>
 
   const meals = Immutable.List(data.meal)
+  const selectedMeals = Immutable.List(
+    dataSelected.meal_ingredient_plan_item
+  ).map((m) => m.meal_id)
+  console.log(JSON.stringify(selectedMeals))
 
   return (
     <div>
@@ -88,6 +99,7 @@ const MealCards = (props) => {
             meal={m}
             key={m.meal_id}
             hidden={!mealSearch(searchString, m)}
+            selected={selectedMeals.includes(m.meal_id)}
           />
         ))}
       </div>

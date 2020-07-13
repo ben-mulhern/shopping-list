@@ -101,6 +101,14 @@ export const MEAL_SUBSCRIPTION = gql`
   }
 `
 
+export const SELECTED_MEALS_SUBSCRIPTION = gql`
+  subscription {
+    meal_ingredient_plan_item(distinct_on: meal_id) {
+      meal_id
+    }
+  }
+`
+
 export const MEAL_QUERY = gql`
   query getMealById($meal_id: Int!) {
     meal(where: { meal_id: { _eq: $meal_id } }) {
