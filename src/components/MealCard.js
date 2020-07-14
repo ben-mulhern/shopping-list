@@ -110,8 +110,16 @@ const MealCard = (props) => {
     dispatch(toggleMeal(meal.meal_id))
   }
 
+  const [cardElevation, setCardElevation] = useState(1)
+
   return (
-    <Card raised={true} className={cardClass}>
+    <Card
+      raised={true}
+      className={cardClass}
+      elevation={cardElevation}
+      onMouseEnter={() => setCardElevation(15)}
+      onMouseLeave={() => setCardElevation(1)}
+    >
       <CardActionArea onClick={() => addOrRemoveMeal()}>
         <CardMedia
           className={classes.media}
