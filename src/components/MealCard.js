@@ -27,6 +27,10 @@ import DisplayIngredient from "./DisplayIngredient"
 import {
   ADD_MEAL_TO_PLAN,
   REMOVE_MEAL_FROM_PLAN,
+  SET_PLAN_QUESTION_MARK,
+  UNSET_PLAN_QUESTION_MARK,
+  CHECK_PLAN_ITEM,
+  UNCHECK_PLAN_ITEM,
 } from "../api/mealListApiOperations"
 import { useMutation } from "@apollo/react-hooks"
 
@@ -62,6 +66,10 @@ const MealCard = (props) => {
   const meal = props.meal
   const [addMealToPlan] = useMutation(ADD_MEAL_TO_PLAN)
   const [removeMealFromPlan] = useMutation(REMOVE_MEAL_FROM_PLAN)
+  const [setPlanQuestionMark] = useMutation(SET_PLAN_QUESTION_MARK)
+  const [unsetPlanQuestionMark] = useMutation(UNSET_PLAN_QUESTION_MARK)
+  const [checkPlanItem] = useMutation(CHECK_PLAN_ITEM)
+  const [uncheckPlanItem] = useMutation(UNCHECK_PLAN_ITEM)
   const dispatch = useDispatch()
   const selected = props.selected
 
@@ -71,6 +79,10 @@ const MealCard = (props) => {
     props.hidden && classes.hidden
   )
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
+
+  const toggleItem = (mealId, ingredientId) => {
+    // todo - need to rework this and DisplayIngredient to accommodate the fn and know when it's on/off
+  }
 
   const triggerDeleteWindow = (e) => {
     e.stopPropagation()
@@ -155,7 +167,7 @@ const MealCard = (props) => {
                 mi.meal_ingredient_plan_items[0].checked
               const questionMark =
                 mi.meal_ingredient_plan_items.length > 0 &&
-                mi.meal_ingredient_plan_items[0].questionMark
+                mi.meal_ingredient_plan_items[0].question_mark
               return (
                 <DisplayIngredient
                   item={mi}

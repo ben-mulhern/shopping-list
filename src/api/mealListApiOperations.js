@@ -156,3 +156,59 @@ export const REMOVE_MEAL_FROM_PLAN = gql`
     }
   }
 `
+
+export const SET_PLAN_QUESTION_MARK = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { question_mark: true }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const CHECK_PLAN_ITEM = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { checked: true }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const UNSET_PLAN_QUESTION_MARK = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { question_mark: false }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const UNCHECK_PLAN_ITEM = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { checked: false, question_mark: false }
+    ) {
+      affected_rows
+    }
+  }
+`
