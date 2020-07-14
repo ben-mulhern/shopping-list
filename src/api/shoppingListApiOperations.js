@@ -98,6 +98,7 @@ export const SHOPPING_LIST_SUBSCRIPTION = gql`
       order_by: [
         { ingredient: { store_location: { shop_order: asc } } }
         { ingredient: { ingredient_id: asc } }
+        { item_id: asc }
       ]
     ) {
       item_id
