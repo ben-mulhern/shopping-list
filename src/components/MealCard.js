@@ -80,8 +80,20 @@ const MealCard = (props) => {
   )
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
 
-  const toggleItem = (mealId, ingredientId) => {
-    // todo - need to rework this and DisplayIngredient to accommodate the fn and know when it's on/off
+  const toggleItem = (mealId, ingredientId, checked) => {
+    const variables = {
+      variables: { meal_id: mealId, ingredient_id: ingredientId },
+    }
+    if (checked) checkPlanItem(variables)
+    else uncheckPlanItem(variables)
+  }
+
+  const toggleQuestionMark = (mealId, ingredientId, checked) => {
+    const variables = {
+      variables: { meal_id: mealId, ingredient_id: ingredientId },
+    }
+    if (checked) setPlanQuestionMark(variables)
+    else unsetPlanQuestionMark(variables)
   }
 
   const triggerDeleteWindow = (e) => {
@@ -183,8 +195,20 @@ const MealCard = (props) => {
                   checkboxTooltipText="Check if required"
                   checked={checked}
                   questionMark={questionMark}
-                  toggleItem={() => {}}
-                  toggleQuestionMark={() => {}}
+                  toggleItem={() =>
+                    toggleItem(
+                      meal.meal_id,
+                      mi.ingredient.ingredient_id,
+                      !checked
+                    )
+                  }
+                  toggleQuestionMark={() =>
+                    toggleQuestionMark(
+                      meal.meal_id,
+                      mi.ingredient.ingredient_id,
+                      !questionMark
+                    )
+                  }
                   editAction={() => {}}
                   allowActions={selected}
                   questionMarkDisabled={!checked}

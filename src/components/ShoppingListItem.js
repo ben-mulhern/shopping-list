@@ -21,7 +21,7 @@ const ShoppingListItem = (props) => {
       checkboxTooltipText="Check off item"
       checked={li.item_id === lastTickedId}
       questionMark={li.question_mark}
-      toggleItem={toggleItem}
+      toggleItem={() => toggleItem(li.item_id, !(li.item_id === lastTickedId))}
       toggleQuestionMark={() =>
         props.toggleQuestionMark(li.item_id, !li.question_mark)
       }

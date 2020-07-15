@@ -19,33 +19,30 @@ const DisplayIngredient = (props) => {
           color="primary"
           disableRipple
           checked={props.checked}
-          onChange={(e) => props.toggleItem(props.index, e.target.checked)}
+          onChange={props.toggleItem}
         />
       </ListItemIcon>
     </Tooltip>
   )
   const questionMarkToggle = (
-    <span disabled={props.questionMarkDisabled}>
-      <Tooltip
-        title={
-          props.questionMark
-            ? "Mark as definitely needed"
-            : "Mark as need to check"
-        }
+    <Tooltip
+      title={
+        props.questionMark
+          ? "Mark as definitely needed"
+          : "Mark as need to check"
+      }
+    >
+      <IconButton
+        onClick={props.toggleQuestionMark}
+        disabled={props.questionMarkDisabled}
       >
-        <IconButton
-          onClick={() =>
-            props.toggleQuestionMark(props.index, !props.questionMark)
-          }
-        >
-          {props.questionMark ? (
-            <HelpIcon color="secondary" />
-          ) : (
-            <HelpOutlineIcon />
-          )}
-        </IconButton>
-      </Tooltip>
-    </span>
+        {props.questionMark ? (
+          <HelpIcon color="secondary" />
+        ) : (
+          <HelpOutlineIcon />
+        )}
+      </IconButton>
+    </Tooltip>
   )
 
   return (
