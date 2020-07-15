@@ -8,8 +8,6 @@ import CardActionArea from "@material-ui/core/CardActionArea"
 import CardActions from "@material-ui/core/CardActions"
 import Button from "@material-ui/core/Button"
 import Chip from "@material-ui/core/Chip"
-import { useDispatch } from "react-redux"
-import { toggleMeal } from "../state/actions"
 import clsx from "clsx"
 import EditIcon from "@material-ui/icons/Edit"
 import DeleteIcon from "@material-ui/icons/Delete"
@@ -70,7 +68,6 @@ const MealCard = (props) => {
   const [unsetPlanQuestionMark] = useMutation(UNSET_PLAN_QUESTION_MARK)
   const [checkPlanItem] = useMutation(CHECK_PLAN_ITEM)
   const [uncheckPlanItem] = useMutation(UNCHECK_PLAN_ITEM)
-  const dispatch = useDispatch()
   const selected = props.selected
 
   const cardClass = clsx(
@@ -119,7 +116,6 @@ const MealCard = (props) => {
         },
       })
     }
-    dispatch(toggleMeal(meal.meal_id))
   }
 
   const [cardElevation, setCardElevation] = useState(1)
