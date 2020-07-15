@@ -104,6 +104,7 @@ const MealIngredient = (props) => {
             <TextField
               {...params}
               fullWidth
+              autoFocus={props.listMode || !mi.ingredient.description}
               placeholder="Ingredient"
               required
             />
