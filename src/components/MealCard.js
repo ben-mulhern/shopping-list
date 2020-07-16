@@ -31,6 +31,7 @@ import {
   UNCHECK_PLAN_ITEM,
 } from "../api/mealListApiOperations"
 import { useMutation } from "@apollo/react-hooks"
+import Box from "@material-ui/core/Box"
 
 const useStyles = makeStyles({
   card: {
@@ -46,10 +47,6 @@ const useStyles = makeStyles({
   },
   chip: {
     margin: 1,
-  },
-  selected: {
-    backgroundColor: "#999999",
-    opacity: 0.6,
   },
   hidden: {
     display: "none",
@@ -70,11 +67,7 @@ const MealCard = (props) => {
   const [uncheckPlanItem] = useMutation(UNCHECK_PLAN_ITEM)
   const selected = props.selected
 
-  const cardClass = clsx(
-    classes.card,
-    selected && classes.selected,
-    props.hidden && classes.hidden
-  )
+  const cardClass = clsx(classes.card, props.hidden && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
 
   const toggleItem = (mealId, ingredientId, checked) => {
@@ -128,25 +121,31 @@ const MealCard = (props) => {
       onMouseEnter={() => setCardElevation(15)}
       onMouseLeave={() => setCardElevation(1)}
     >
-      <CardActionArea onClick={() => addOrRemoveMeal()}>
-        <CardMedia
-          className={classes.media}
-          image={
-            meal.image_url
-              ? meal.image_url
-              : process.env.PUBLIC_URL + "/meal-placeholder.png"
-          }
-          title={meal.description}
-        />
-        <CardContent>
-          <Typography variant="h5" component="h2">
-            {meal.description}
-          </Typography>
-          {meal.meal_tags.map((t, i) => (
-            <Chip label={t.tag} className={classes.chip} key={i} />
-          ))}
-        </CardContent>
-      </CardActionArea>
+      <Box
+        border={selected ? 5 : 0}
+        borderColor={selected ? "secondary.main" : "default"}
+        borderRadius={8}
+      >
+        <CardActionArea onClick={() => addOrRemoveMeal()}>
+          <CardMedia
+            className={classes.media}
+            image={
+              meal.image_url
+                ? meal.image_url
+                : process.env.PUBLIC_URL + "/meal-placeholder.png"
+            }
+            title={meal.description}
+          />
+          <CardContent>
+            <Typography variant="h5" component="h2">
+              {meal.description}
+            </Typography>
+            {meal.meal_tags.map((t, i) => (
+              <Chip label={t.tag} className={classes.chip} key={i} />
+            ))}
+          </CardContent>
+        </CardActionArea>
+      </Box>
       <Accordion elevation={0} className={classes.accordion}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <CardActions>
