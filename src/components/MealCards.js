@@ -103,6 +103,7 @@ const MealCards = (props) => {
           value={planOnly}
           checked={planOnly}
           color="secondary"
+          disabled={selectedMeals.size === 0}
           onChange={(e) => setPlanOnly(e.target.checked)}
         />
       </FormControl>
