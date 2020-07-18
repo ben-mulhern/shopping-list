@@ -8,9 +8,18 @@ const ConfirmWindow = (props) => {
     TICK_ALL
   )
 
+  const tickAllItems = () => {
+    const now = new Date()
+    tickAll({
+      variables: {
+        ts: now.toJSON(),
+      },
+    })
+  }
+
   return (
     <DialogBox
-      action={() => tickAll()}
+      action={() => tickAllItems()}
       handleClose={props.handleClose}
       open={props.open}
       waiting={deleting}
