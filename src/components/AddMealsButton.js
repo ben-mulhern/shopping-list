@@ -59,7 +59,7 @@ const AddMealsButton = (props) => {
   return (
     <Button
       variant="contained"
-      color="primary"
+      color="secondary"
       className={classes.button}
       disabled={ids.size === 0 || loadingRil}
       startIcon={<PlaylistAddIcon />}

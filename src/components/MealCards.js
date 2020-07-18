@@ -19,6 +19,9 @@ import {
   MEAL_SUBSCRIPTION,
   SELECTED_MEALS_SUBSCRIPTION,
 } from "../api/mealListApiOperations"
+import FormControl from "@material-ui/core/FormControl"
+import FormLabel from "@material-ui/core/FormLabel"
+import Switch from "@material-ui/core/Switch"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,6 +62,7 @@ const MealCards = (props) => {
   } = useSubscription(SELECTED_MEALS_SUBSCRIPTION)
 
   const [searchString, setSearchString] = useState("")
+  const [planOnly, setPlanOnly] = useState(false)
 
   if (loading || loadingSelected)
     return <CircularProgress color="secondary" className={classes.margin} />
@@ -93,12 +97,24 @@ const MealCards = (props) => {
         New meal
       </Button>
       <AddMealsButton meals={selectedMeals} />
+      <FormControl component="fieldset" className={classes.margin}>
+        <FormLabel component="legend">Plan-only</FormLabel>
+        <Switch
+          value={planOnly}
+          checked={planOnly}
+          color="secondary"
+          onChange={(e) => setPlanOnly(e.target.checked)}
+        />
+      </FormControl>
       <div>
         {meals.map((m) => (
           <MealCard
             meal={m}
             key={m.meal_id}
-            hidden={!mealSearch(searchString, m)}
+            hidden={
+              (planOnly && !selectedMeals.includes(m.meal_id)) ||
+              !mealSearch(searchString, m)
+            }
             selected={selectedMeals.includes(m.meal_id)}
           />
         ))}
