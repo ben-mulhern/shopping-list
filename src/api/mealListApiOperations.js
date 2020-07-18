@@ -75,7 +75,7 @@ export const DELETE_MEAL = gql`
 
 export const MEAL_SUBSCRIPTION = gql`
   subscription {
-    meal {
+    meal(order_by: { meal_id: asc }) {
       meal_id
       description
       image_url
