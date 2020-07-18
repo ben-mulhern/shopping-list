@@ -59,7 +59,7 @@ const useStyles = makeStyles({
   },
   slider: {
     margin: 1,
-    width: 200,
+    width: "100%",
   },
 })
 
@@ -75,16 +75,13 @@ const MealCard = (props) => {
   const selected = props.selected
 
   const cardClass = clsx(classes.card, props.hidden && classes.hidden)
+  const sliderClass = clsx(classes.slider, !selected && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
   const [mealCount, setMealCount] = useState(1)
 
-  const marks = [
-    { value: 1, label: "1" },
-    { value: 2, label: "2" },
-    { value: 3, label: "3" },
-    { value: 4, label: "4" },
-    { value: 5, label: "5" },
-  ]
+  const marks = Array(6)
+    .fill({})
+    .map((e, i) => ({ value: (i + 1) / 2, label: ((i + 1) / 2).toString() }))
 
   const toggleItem = (mealId, ingredientId, checked) => {
     const variables = {
@@ -193,15 +190,15 @@ const MealCard = (props) => {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <FormControl className={classes.slider}>
-              <FormLabel component="legend">Count</FormLabel>
+            <FormControl className={sliderClass}>
+              <FormLabel component="legend">Meal count</FormLabel>
               <Slider
-                step={1}
+                step={0.5}
                 marks={marks}
-                min={1}
-                max={5}
+                min={0.5}
+                max={3}
                 value={mealCount}
-                valueLabelDisplay="on"
+                valueLabelDisplay="auto"
                 color="secondary"
                 onChange={(e, v) => setMealCount(v)}
               />
