@@ -29,7 +29,7 @@ const AddMealsButton = (props) => {
       error: errorIngs,
       data: dataIngs,
     },
-  ] = useLazyQuery(LIST_DATA_QUERY, { fetchPolicy: "no-cache" })
+  ] = useLazyQuery(LIST_DATA_QUERY)
 
   const [reinsertList, { loading: loadingRil }] = useMutation(REINSERT_LIST)
   const [clearPlan] = useMutation(CLEAR_PLAN)
@@ -45,7 +45,8 @@ const AddMealsButton = (props) => {
   if (calledIngs && !loadingIngs && !errorIngs) {
     const newList = shoppingListBuilder(
       dataIngs.meal_ingredient_plan_item,
-      dataIngs.shopping_list_item
+      dataIngs.shopping_list_item,
+      dataIngs.meal_plan_count
     )
     reinsertList({
       variables: {
@@ -59,7 +60,7 @@ const AddMealsButton = (props) => {
   return (
     <Button
       variant="contained"
-      color="primary"
+      color="secondary"
       className={classes.button}
       disabled={ids.size === 0 || loadingRil}
       startIcon={<PlaylistAddIcon />}

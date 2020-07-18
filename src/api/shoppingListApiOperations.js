@@ -84,9 +84,15 @@ export const GET_LAST_TICKED_ITEM = gql`
 `
 
 export const TICK_ALL = gql`
-  mutation reinsert_list {
-    delete_shopping_list_item(where: { ticked_at: { _eq: null } }) {
+  mutation tick_item($ts: timestamp!) {
+    update_shopping_list_item(
+      where: { ticked_at: { _is_null: true } }
+      _set: { ticked_at: $ts }
+    ) {
       affected_rows
+      returning {
+        item_id
+      }
     }
   }
 `
@@ -131,6 +137,10 @@ export const LIST_DATA_QUERY = gql`
           unit_id
         }
       }
+    }
+    meal_plan_count {
+      meal_id
+      meal_count
     }
     shopping_list_item(where: { ticked_at: { _is_null: true } }) {
       quantity

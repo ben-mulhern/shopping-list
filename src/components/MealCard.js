@@ -29,9 +29,13 @@ import {
   UNSET_PLAN_QUESTION_MARK,
   CHECK_PLAN_ITEM,
   UNCHECK_PLAN_ITEM,
+  UPDATE_MEAL_PLAN_COUNT,
 } from "../api/mealListApiOperations"
 import { useMutation } from "@apollo/react-hooks"
 import Box from "@material-ui/core/Box"
+import Slider from "@material-ui/core/Slider"
+import FormControl from "@material-ui/core/FormControl"
+import FormLabel from "@material-ui/core/FormLabel"
 
 const useStyles = makeStyles({
   card: {
@@ -54,6 +58,10 @@ const useStyles = makeStyles({
   accordion: {
     backgroundColor: "transparent",
   },
+  slider: {
+    margin: 1,
+    width: "100%",
+  },
 })
 
 const MealCard = (props) => {
@@ -65,10 +73,18 @@ const MealCard = (props) => {
   const [unsetPlanQuestionMark] = useMutation(UNSET_PLAN_QUESTION_MARK)
   const [checkPlanItem] = useMutation(CHECK_PLAN_ITEM)
   const [uncheckPlanItem] = useMutation(UNCHECK_PLAN_ITEM)
+  const [updateMealPlanCount] = useMutation(UPDATE_MEAL_PLAN_COUNT)
   const selected = props.selected
 
   const cardClass = clsx(classes.card, props.hidden && classes.hidden)
+  const sliderClass = clsx(classes.slider, !selected && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
+  const mealCount =
+    meal.meal_plan_counts.length > 0 ? meal.meal_plan_counts[0].meal_count : 1
+
+  const marks = Array(6)
+    .fill({})
+    .map((e, i) => ({ value: (i + 1) / 2, label: ((i + 1) / 2).toString() }))
 
   const toggleItem = (mealId, ingredientId, checked) => {
     const variables = {
@@ -107,6 +123,7 @@ const MealCard = (props) => {
       addMealToPlan({
         variables: {
           meal: planItems,
+          mealId: meal.meal_id,
         },
       })
     }
@@ -176,42 +193,69 @@ const MealCard = (props) => {
           </CardActions>
         </AccordionSummary>
         <AccordionDetails>
-          <List>
-            {meal.meal_ingredients.map((mi) => {
-              const checked =
-                mi.meal_ingredient_plan_items.length > 0 &&
-                mi.meal_ingredient_plan_items[0].checked
-              const questionMark =
-                mi.meal_ingredient_plan_items.length > 0 &&
-                mi.meal_ingredient_plan_items[0].question_mark
-              return (
-                <DisplayIngredient
-                  item={mi}
-                  index={mi.ingredient.ingredient_id}
-                  checkboxTooltipText="Check if required"
-                  checked={checked}
-                  questionMark={questionMark}
-                  toggleItem={() =>
-                    toggleItem(
-                      meal.meal_id,
-                      mi.ingredient.ingredient_id,
-                      !checked
-                    )
-                  }
-                  toggleQuestionMark={() =>
-                    toggleQuestionMark(
-                      meal.meal_id,
-                      mi.ingredient.ingredient_id,
-                      !questionMark
-                    )
-                  }
-                  editAction={() => {}}
-                  allowActions={selected}
-                  questionMarkDisabled={!checked}
-                />
-              )
-            })}
-          </List>
+          <div>
+            <FormControl className={sliderClass}>
+              <FormLabel component="legend">{`Meal count (${
+                meal.serves * mealCount
+              } portions)`}</FormLabel>
+              <Slider
+                step={0.5}
+                marks={marks}
+                min={0.5}
+                max={3}
+                value={mealCount}
+                valueLabelDisplay="auto"
+                color="secondary"
+                onChange={(e, v) =>
+                  updateMealPlanCount({
+                    variables: {
+                      meal_id: meal.meal_id,
+                      count: v,
+                    },
+                  })
+                }
+              />
+            </FormControl>
+            <List>
+              {meal.meal_ingredients.map((mi) => {
+                const checked =
+                  mi.meal_ingredient_plan_items.length > 0 &&
+                  mi.meal_ingredient_plan_items[0].checked
+                const questionMark =
+                  mi.meal_ingredient_plan_items.length > 0 &&
+                  mi.meal_ingredient_plan_items[0].question_mark
+                return (
+                  <DisplayIngredient
+                    item={{
+                      ...mi,
+                      quantity: mi.quantity * mealCount,
+                    }}
+                    index={mi.ingredient.ingredient_id}
+                    checkboxTooltipText="Check if required"
+                    checked={checked}
+                    questionMark={questionMark}
+                    toggleItem={() =>
+                      toggleItem(
+                        meal.meal_id,
+                        mi.ingredient.ingredient_id,
+                        !checked
+                      )
+                    }
+                    toggleQuestionMark={() =>
+                      toggleQuestionMark(
+                        meal.meal_id,
+                        mi.ingredient.ingredient_id,
+                        !questionMark
+                      )
+                    }
+                    editAction={() => {}}
+                    allowActions={selected}
+                    questionMarkDisabled={!checked}
+                  />
+                )
+              })}
+            </List>
+          </div>
         </AccordionDetails>
       </Accordion>
       <ConfirmDeleteWindow

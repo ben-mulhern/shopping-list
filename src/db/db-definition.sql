@@ -135,9 +135,9 @@ CREATE TABLE shopping_list_item (
 -- Extension of meal_ingredient that records transient plan data
 CREATE TABLE meal_ingredient_plan_item (
 
-  CONSTRAINT pk_plan_ PRIMARY KEY (meal_id, ingredient_id),
+  CONSTRAINT pk_meal_ingredient_plan_item PRIMARY KEY (meal_id, ingredient_id),
 
-    meal_id INT NOT NULL,
+  meal_id INT NOT NULL,
   ingredient_id INT NOT NULL,
   question_mark BOOLEAN NOT NULL DEFAULT false,
   checked BOOLEAN NOT NULL DEFAULT true,
@@ -147,5 +147,19 @@ CREATE TABLE meal_ingredient_plan_item (
 	  ON UPDATE RESTRICT,
 
   CONSTRAINT ck_meal_ingredient_plan_item_question_mark_checked CHECK (checked OR NOT question_mark)     
+
+);
+
+-- Extension table of meal for the plan to say how many we want
+CREATE TABLE meal_plan_count (
+
+  CONSTRAINT pk_meal_plan_count PRIMARY KEY (meal_id),
+
+  meal_id INT NOT NULL,
+  meal_count DECIMAL (2, 1) NOT NULL DEFAULT 1,
+
+  CONSTRAINT fk_meal_plan_count_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
+    ON DELETE RESTRICT
+	  ON UPDATE RESTRICT  
 
 );
