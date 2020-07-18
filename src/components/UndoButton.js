@@ -6,7 +6,7 @@ import {
   UNTICK_ITEM,
 } from "../api/shoppingListApiOperations"
 import CircularProgress from "@material-ui/core/CircularProgress"
-import { connect } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setLastTickedItem } from "../state/actions"
 import Fab from "@material-ui/core/Fab"
 import { makeStyles } from "@material-ui/core/styles"
@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UndoButton = (props) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const [disableButton, setDisableButton] = useState(false)
 
   const { loading: loadingSub, data: dataSub } = useSubscription(
@@ -34,7 +35,7 @@ const UndoButton = (props) => {
   if (!disableButton && (loadingSub || loadingUti)) setDisableButton(true)
 
   const restoreLastItem = () => {
-    props.untickLastItem()
+    dispatch(setLastTickedItem(0))
     if (!loadingSub && dataSub.shopping_list_item.length !== 0) {
       const itemId = dataSub.shopping_list_item[0].item_id
       untickItem({
@@ -62,8 +63,4 @@ const UndoButton = (props) => {
   )
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  untickLastItem: () => dispatch(setLastTickedItem(0)),
-})
-
-export default connect(null, mapDispatchToProps)(UndoButton)
+export default UndoButton

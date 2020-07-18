@@ -4,11 +4,12 @@ import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLazyQuery, useMutation } from "@apollo/react-hooks"
 import shoppingListBuilder from "../domain/shoppingListBuilder"
-import { REINSERT_LIST } from "../api/shoppingListApiOperations"
+import {
+  REINSERT_LIST,
+  LIST_DATA_QUERY,
+} from "../api/shoppingListApiOperations"
 import { Redirect } from "react-router"
-import { connect } from "react-redux"
-import { clearSelectedMeals } from "../state/actions"
-import { LIST_DATA_QUERY } from "../api/shoppingListApiOperations"
+import { CLEAR_PLAN } from "../api/mealListApiOperations"
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -20,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
 
 const AddMealsButton = (props) => {
   const classes = useStyles()
-
   const [
     getListDataQuery,
     {
@@ -32,6 +32,7 @@ const AddMealsButton = (props) => {
   ] = useLazyQuery(LIST_DATA_QUERY, { fetchPolicy: "no-cache" })
 
   const [reinsertList, { loading: loadingRil }] = useMutation(REINSERT_LIST)
+  const [clearPlan] = useMutation(CLEAR_PLAN)
 
   const [redirect, setRedirect] = useState(false)
 
@@ -40,20 +41,10 @@ const AddMealsButton = (props) => {
   // Get the meal ids
   const ids = props.meals
 
-  const addToList = () => {
-    // Get the meal ingredients and the existing shopping list items
-    getListDataQuery({
-      variables: {
-        mealIds: ids,
-      },
-    })
-  }
-
   // if called and finished loading boths lists and neither has errored
   if (calledIngs && !loadingIngs && !errorIngs) {
-    console.log("Building fresh list")
     const newList = shoppingListBuilder(
-      dataIngs.meal_ingredient,
+      dataIngs.meal_ingredient_plan_item,
       dataIngs.shopping_list_item
     )
     reinsertList({
@@ -61,7 +52,7 @@ const AddMealsButton = (props) => {
         items: newList,
       },
     })
-    props.clearSelectedMeals()
+    clearPlan()
     setRedirect(true)
   }
 
@@ -72,15 +63,11 @@ const AddMealsButton = (props) => {
       className={classes.button}
       disabled={ids.size === 0 || loadingRil}
       startIcon={<PlaylistAddIcon />}
-      onClick={addToList}
+      onClick={() => getListDataQuery()}
     >
       Compile
     </Button>
   )
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  clearSelectedMeals: () => dispatch(clearSelectedMeals()),
-})
-
-export default connect(null, mapDispatchToProps)(AddMealsButton)
+export default AddMealsButton

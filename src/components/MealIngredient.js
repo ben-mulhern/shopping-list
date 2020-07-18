@@ -14,6 +14,8 @@ import Paper from "@material-ui/core/Paper"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import ClearIcon from "@material-ui/icons/Clear"
 import Tooltip from "@material-ui/core/Tooltip"
+import HelpIcon from "@material-ui/icons/Help"
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -68,6 +70,11 @@ const MealIngredient = (props) => {
     props.editIngredient(props.rowIndex, ing)
   }
 
+  const handleQuestionMark = () => {
+    ing.default_question_mark = !mi.default_question_mark
+    props.editIngredient(props.rowIndex, ing)
+  }
+
   const handleUnit = (unit) => {
     const newUnit = units.find((u) => u.unit_id === unit)
     ing.unit = newUnit
@@ -104,6 +111,7 @@ const MealIngredient = (props) => {
             <TextField
               {...params}
               fullWidth
+              autoFocus={props.listMode || !mi.ingredient.description}
               placeholder="Ingredient"
               required
             />
@@ -162,6 +170,7 @@ const MealIngredient = (props) => {
           ))}
         </Select>
       </FormControl>
+
       {props.listMode ? (
         <span>
           <Tooltip title="Add ingredient to list">
@@ -180,11 +189,28 @@ const MealIngredient = (props) => {
           </Tooltip>
         </span>
       ) : (
-        <Tooltip title="Remove ingredient from meal">
-          <IconButton color="inherit" onClick={props.deleteIngredient}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        <span>
+          <Tooltip
+            title={
+              mi.default_question_mark
+                ? "Mark as probably needed"
+                : "Mark as always check"
+            }
+          >
+            <IconButton onClick={() => handleQuestionMark()}>
+              {mi.default_question_mark ? (
+                <HelpIcon color="secondary" />
+              ) : (
+                <HelpOutlineIcon />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Remove ingredient from meal">
+            <IconButton color="inherit" onClick={props.deleteIngredient}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </span>
       )}
     </Paper>
   )

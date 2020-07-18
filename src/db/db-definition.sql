@@ -73,6 +73,7 @@ CREATE TABLE meal_ingredient (
   quantity DECIMAL (8, 2) NOT NULL
     CONSTRAINT ck_meal_ingredient_quantity CHECK (quantity > 0),
   unit_id VARCHAR(5) NOT NULL,
+  default_question_mark BOOLEAN NOT NULL DEFAULT false,
   
   CONSTRAINT fk_meal_ingredient_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
     ON DELETE CASCADE
@@ -128,5 +129,23 @@ CREATE TABLE shopping_list_item (
   CONSTRAINT fk_shopping_list_item_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
     ON DELETE RESTRICT
 	  ON UPDATE RESTRICT     
+
+);
+
+-- Extension of meal_ingredient that records transient plan data
+CREATE TABLE meal_ingredient_plan_item (
+
+  CONSTRAINT pk_plan_ PRIMARY KEY (meal_id, ingredient_id),
+
+    meal_id INT NOT NULL,
+  ingredient_id INT NOT NULL,
+  question_mark BOOLEAN NOT NULL DEFAULT false,
+  checked BOOLEAN NOT NULL DEFAULT true,
+
+  CONSTRAINT fk_meal_ingredient_plan_item_meal_ingredient FOREIGN KEY (meal_id, ingredient_id) REFERENCES meal_ingredient(meal_id, ingredient_id)
+    ON DELETE RESTRICT
+	  ON UPDATE RESTRICT,
+
+  CONSTRAINT ck_meal_ingredient_plan_item_question_mark_checked CHECK (checked OR NOT question_mark)     
 
 );

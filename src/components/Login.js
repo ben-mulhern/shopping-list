@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import IconButton from "@material-ui/core/IconButton"
 import clsx from "clsx"
 import Button from "@material-ui/core/Button"
-import { connect } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setTab, logIn } from "../state/actions"
 import { useLazyQuery } from "@apollo/react-hooks"
 import CircularProgress from "@material-ui/core/CircularProgress"
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Login = (props) => {
+  const dispatch = useDispatch()
   const [attemptLogInCall, { called, loading, error }] = useLazyQuery(
     LOGIN_TEST
   )
@@ -40,7 +41,7 @@ const Login = (props) => {
     attemptLogInCall()
   }
 
-  props.setTab(0)
+  dispatch(setTab(0))
 
   const classes = useStyles()
   const [values, setValues] = React.useState({
@@ -72,7 +73,7 @@ const Login = (props) => {
   }
   // If we got here and we've already called, we're logged in
   if (called) {
-    props.logIn()
+    dispatch(logIn())
   }
 
   return (
@@ -125,9 +126,4 @@ const Login = (props) => {
   )
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  setTab: (index) => dispatch(setTab(index)),
-  logIn: () => dispatch(logIn()),
-})
-
-export default connect(null, mapDispatchToProps)(Login)
+export default Login
