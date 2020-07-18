@@ -92,6 +92,7 @@ export const MEAL_SUBSCRIPTION = gql`
           unit_id
         }
         quantity
+        default_question_mark
         meal_ingredient_plan_items {
           checked
           question_mark
@@ -124,6 +125,7 @@ export const MEAL_QUERY = gql`
       }
       meal_ingredients {
         quantity
+        default_question_mark
         unit {
           unit_id
         }

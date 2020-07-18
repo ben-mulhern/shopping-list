@@ -73,6 +73,7 @@ CREATE TABLE meal_ingredient (
   quantity DECIMAL (8, 2) NOT NULL
     CONSTRAINT ck_meal_ingredient_quantity CHECK (quantity > 0),
   unit_id VARCHAR(5) NOT NULL,
+  default_question_mark BOOLEAN NOT NULL DEFAULT false,
   
   CONSTRAINT fk_meal_ingredient_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
     ON DELETE CASCADE

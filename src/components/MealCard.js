@@ -102,6 +102,7 @@ const MealCard = (props) => {
       const planItems = meal.meal_ingredients.map((i) => ({
         meal_id: meal.meal_id,
         ingredient_id: i.ingredient.ingredient_id,
+        question_mark: i.default_question_mark,
       }))
       addMealToPlan({
         variables: {
