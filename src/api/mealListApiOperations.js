@@ -159,6 +159,14 @@ export const REMOVE_MEAL_FROM_PLAN = gql`
   }
 `
 
+export const CLEAR_PLAN = gql`
+  mutation delete_meal_ingredient_plan_item {
+    delete_meal_ingredient_plan_item(where: {}) {
+      affected_rows
+    }
+  }
+`
+
 export const SET_PLAN_QUESTION_MARK = gql`
   mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
     update_meal_ingredient_plan_item(
