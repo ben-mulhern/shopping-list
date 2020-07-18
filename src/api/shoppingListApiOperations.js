@@ -138,6 +138,10 @@ export const LIST_DATA_QUERY = gql`
         }
       }
     }
+    meal_plan_count {
+      meal_id
+      meal_count
+    }
     shopping_list_item(where: { ticked_at: { _is_null: true } }) {
       quantity
       unit {
