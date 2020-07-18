@@ -29,6 +29,7 @@ import {
   UNSET_PLAN_QUESTION_MARK,
   CHECK_PLAN_ITEM,
   UNCHECK_PLAN_ITEM,
+  UPDATE_MEAL_PLAN_COUNT,
 } from "../api/mealListApiOperations"
 import { useMutation } from "@apollo/react-hooks"
 import Box from "@material-ui/core/Box"
@@ -72,12 +73,14 @@ const MealCard = (props) => {
   const [unsetPlanQuestionMark] = useMutation(UNSET_PLAN_QUESTION_MARK)
   const [checkPlanItem] = useMutation(CHECK_PLAN_ITEM)
   const [uncheckPlanItem] = useMutation(UNCHECK_PLAN_ITEM)
+  const [updateMealPlanCount] = useMutation(UPDATE_MEAL_PLAN_COUNT)
   const selected = props.selected
 
   const cardClass = clsx(classes.card, props.hidden && classes.hidden)
   const sliderClass = clsx(classes.slider, !selected && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
-  const [mealCount, setMealCount] = useState(1)
+  const mealCount =
+    meal.meal_plan_counts.length > 0 ? meal.meal_plan_counts[0].meal_count : 1
 
   const marks = Array(6)
     .fill({})
@@ -120,6 +123,7 @@ const MealCard = (props) => {
       addMealToPlan({
         variables: {
           meal: planItems,
+          mealId: meal.meal_id,
         },
       })
     }
@@ -191,7 +195,9 @@ const MealCard = (props) => {
         <AccordionDetails>
           <div>
             <FormControl className={sliderClass}>
-              <FormLabel component="legend">Meal count</FormLabel>
+              <FormLabel component="legend">{`Meal count (${
+                meal.serves * mealCount
+              } portions)`}</FormLabel>
               <Slider
                 step={0.5}
                 marks={marks}
@@ -200,7 +206,14 @@ const MealCard = (props) => {
                 value={mealCount}
                 valueLabelDisplay="auto"
                 color="secondary"
-                onChange={(e, v) => setMealCount(v)}
+                onChange={(e, v) =>
+                  updateMealPlanCount({
+                    variables: {
+                      meal_id: meal.meal_id,
+                      count: v,
+                    },
+                  })
+                }
               />
             </FormControl>
             <List>
@@ -213,7 +226,10 @@ const MealCard = (props) => {
                   mi.meal_ingredient_plan_items[0].question_mark
                 return (
                   <DisplayIngredient
-                    item={mi}
+                    item={{
+                      ...mi,
+                      quantity: mi.quantity * mealCount,
+                    }}
                     index={mi.ingredient.ingredient_id}
                     checkboxTooltipText="Check if required"
                     checked={checked}

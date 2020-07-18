@@ -72,7 +72,6 @@ const MealCards = (props) => {
   const selectedMeals = Immutable.List(
     dataSelected.meal_ingredient_plan_item
   ).map((m) => m.meal_id)
-  console.log(JSON.stringify(selectedMeals))
 
   return (
     <div>

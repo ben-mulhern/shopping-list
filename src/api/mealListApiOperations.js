@@ -80,6 +80,9 @@ export const MEAL_SUBSCRIPTION = gql`
       description
       image_url
       serves
+      meal_plan_counts {
+        meal_count
+      }
       meal_tags {
         tag
       }
@@ -142,8 +145,16 @@ export const MEAL_QUERY = gql`
 `
 
 export const ADD_MEAL_TO_PLAN = gql`
-  mutation insert_meal_plan($meal: [meal_ingredient_plan_item_insert_input!]!) {
+  mutation insert_meal_plan(
+    $meal: [meal_ingredient_plan_item_insert_input!]!
+    $mealId: Int!
+  ) {
     insert_meal_ingredient_plan_item(objects: $meal) {
+      returning {
+        meal_id
+      }
+    }
+    insert_meal_plan_count(objects: [{ meal_id: $mealId }]) {
       returning {
         meal_id
       }
@@ -154,6 +165,9 @@ export const ADD_MEAL_TO_PLAN = gql`
 export const REMOVE_MEAL_FROM_PLAN = gql`
   mutation delete_meal_ingredient_plan_item($meal_id: Int!) {
     delete_meal_ingredient_plan_item(where: { meal_id: { _eq: $meal_id } }) {
+      affected_rows
+    }
+    delete_meal_plan_count(where: { meal_id: { _eq: $meal_id } }) {
       affected_rows
     }
   }
@@ -217,6 +231,17 @@ export const UNCHECK_PLAN_ITEM = gql`
         ingredient_id: { _eq: $ingredient_id }
       }
       _set: { checked: false, question_mark: false }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const UPDATE_MEAL_PLAN_COUNT = gql`
+  mutation update_meal_plan_count($meal_id: Int!, $count: numeric!) {
+    update_meal_plan_count(
+      where: { meal_id: { _eq: $meal_id } }
+      _set: { meal_count: $count }
     ) {
       affected_rows
     }
