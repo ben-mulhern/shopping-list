@@ -178,6 +178,9 @@ export const CLEAR_PLAN = gql`
     delete_meal_ingredient_plan_item(where: {}) {
       affected_rows
     }
+    delete_meal_plan_count(where: {}) {
+      affected_rows
+    }
   }
 `
 
