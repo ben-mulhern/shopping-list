@@ -36,6 +36,8 @@ import Box from "@material-ui/core/Box"
 import Slider from "@material-ui/core/Slider"
 import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
+import { useSelector } from "react-redux"
+import IconButton from "@material-ui/core/IconButton"
 
 const useStyles = makeStyles({
   card: {
@@ -129,7 +131,11 @@ const MealCard = (props) => {
     }
   }
 
+  const planOnly = useSelector((state) => state.planOnlyMode)
   const [cardElevation, setCardElevation] = useState(1)
+  const [expanded, setExpanded] = useState(false)
+
+  if (planOnly && selected && !expanded) setExpanded(true)
 
   return (
     <Card
@@ -164,8 +170,23 @@ const MealCard = (props) => {
           </CardContent>
         </CardActionArea>
       </Box>
-      <Accordion elevation={0} className={classes.accordion}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Accordion
+        elevation={0}
+        className={classes.accordion}
+        expanded={expanded}
+      >
+        <AccordionSummary
+          expandIcon={
+            <Tooltip title={expanded ? "Hide ingredients" : "View ingredients"}>
+              <IconButton
+                onClick={() => setExpanded(!expanded)}
+                disabled={planOnly}
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            </Tooltip>
+          }
+        >
           <CardActions>
             <Button
               size="small"

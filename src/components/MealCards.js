@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useSubscription } from "@apollo/react-hooks"
 import MealCard from "./MealCard"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setTab } from "../state/actions"
 import { makeStyles } from "@material-ui/core/styles"
 import Paper from "@material-ui/core/Paper"
@@ -22,6 +22,7 @@ import {
 import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
 import Switch from "@material-ui/core/Switch"
+import { togglePlanOnlyMode } from "../state/actions"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +54,7 @@ const MealCards = (props) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   dispatch(setTab(1))
+  const planOnly = useSelector((state) => state.planOnlyMode)
 
   const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
   const {
@@ -62,7 +64,6 @@ const MealCards = (props) => {
   } = useSubscription(SELECTED_MEALS_SUBSCRIPTION)
 
   const [searchString, setSearchString] = useState("")
-  const [planOnly, setPlanOnly] = useState(false)
 
   if (loading || loadingSelected)
     return <CircularProgress color="secondary" className={classes.margin} />
@@ -103,7 +104,7 @@ const MealCards = (props) => {
           checked={planOnly}
           color="secondary"
           disabled={selectedMeals.size === 0 && !planOnly}
-          onChange={(e) => setPlanOnly(e.target.checked)}
+          onChange={() => dispatch(togglePlanOnlyMode())}
         />
       </FormControl>
       <div>

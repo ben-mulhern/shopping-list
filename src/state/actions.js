@@ -16,3 +16,7 @@ export const setLastTickedItem = (id) => ({
   type: "SET_LAST_TICKED_ITEM",
   id,
 })
+
+export const togglePlanOnlyMode = () => ({
+  type: "TOGGLE_PLAN_ONLY_MODE",
+})
