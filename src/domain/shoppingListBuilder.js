@@ -12,7 +12,7 @@ const shoppingListBuilder = (planItems, listItems, mealCounts) => {
   const a = Immutable.List(planItems).map((pi) => ({
     id: pi.ingredient_id,
     unit: pi.meal_ingredient.unit.unit_id,
-    quantity: pi.meal_ingredient.quantity * getMealCount(pi.ingredient_id),
+    quantity: pi.meal_ingredient.quantity * getMealCount(pi.meal_id),
     question_mark: pi.question_mark,
   }))
   const b = Immutable.List(listItems).map((i) => ({
@@ -29,7 +29,6 @@ const shoppingListBuilder = (planItems, listItems, mealCounts) => {
     quantity: vals.reduce((sum, x) => sum + x.quantity, 0),
     question_mark: vals.reduce((res, x) => res || x.question_mark, false),
   }))
-
   return newList
 }
 
