@@ -129,6 +129,7 @@ export const SHOPPING_LIST_SUBSCRIPTION = gql`
 export const LIST_DATA_QUERY = gql`
   query getMealIngredients {
     meal_ingredient_plan_item(where: { checked: { _eq: true } }) {
+      meal_id
       ingredient_id
       question_mark
       meal_ingredient {

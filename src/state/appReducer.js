@@ -2,6 +2,7 @@ const initialState = {
   loggedIn: false,
   activeTab: 0,
   lastTickedId: 0,
+  planOnlyMode: false,
 }
 
 const appReducer = (state = initialState, action) => {
@@ -22,6 +23,12 @@ const appReducer = (state = initialState, action) => {
       return {
         ...state,
         lastTickedId: action.id,
+      }
+
+    case "TOGGLE_PLAN_ONLY_MODE":
+      return {
+        ...state,
+        planOnlyMode: !state.planOnlyMode,
       }
 
     default:
