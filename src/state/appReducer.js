@@ -13,6 +13,12 @@ const appReducer = (state = initialState, action) => {
         loggedIn: true,
       }
 
+    case "LOGOUT":
+      return {
+        ...state,
+        loggedIn: false,
+      }
+
     case "SET_TAB":
       return {
         ...state,
