@@ -31,7 +31,9 @@ const AddMealsButton = (props) => {
       error: errorIngs,
       data: dataIngs,
     },
-  ] = useLazyQuery(LIST_DATA_QUERY)
+  ] = useLazyQuery(LIST_DATA_QUERY, {
+    fetchPolicy: "network-only",
+  })
 
   const [reinsertList, { loading: loadingRil }] = useMutation(REINSERT_LIST)
   const [clearPlan] = useMutation(CLEAR_PLAN)
