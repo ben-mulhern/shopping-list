@@ -56,7 +56,7 @@ const AddMealsButton = (props) => {
       },
     })
     clearPlan()
-    dispatch(togglePlanOnlyMode)
+    dispatch(togglePlanOnlyMode(false))
     setRedirect(true)
   }
 

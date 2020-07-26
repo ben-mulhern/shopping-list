@@ -17,6 +17,7 @@ export const setLastTickedItem = (id) => ({
   id,
 })
 
-export const togglePlanOnlyMode = () => ({
+export const togglePlanOnlyMode = (mode) => ({
   type: "TOGGLE_PLAN_ONLY_MODE",
+  mode,
 })

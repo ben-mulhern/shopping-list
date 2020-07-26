@@ -28,7 +28,7 @@ const appReducer = (state = initialState, action) => {
     case "TOGGLE_PLAN_ONLY_MODE":
       return {
         ...state,
-        planOnlyMode: !state.planOnlyMode,
+        planOnlyMode: action.mode,
       }
 
     default:
