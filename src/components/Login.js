@@ -33,11 +33,8 @@ const Login = (props) => {
   )
 
   const attemptLogin = (apiKey) => {
-    console.log("Attempting login")
-    sessionStorage.setItem("API_KEY", apiKey)
-    console.log("Key has been set")
+    localStorage.setItem("API_KEY", apiKey)
     reStartWsLink()
-    console.log("WS link has been restarted")
     attemptLogInCall()
   }
 
@@ -64,7 +61,7 @@ const Login = (props) => {
   if (called && loading)
     return <CircularProgress color="secondary" className={classes.margin} />
   if (called && error) {
-    sessionStorage.removeItem("API_KEY")
+    localStorage.removeItem("API_KEY")
     return (
       <p>
         Login failed :( Please <a href="/">try again</a>

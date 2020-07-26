@@ -163,3 +163,55 @@ CREATE TABLE meal_plan_count (
 	  ON UPDATE RESTRICT  
 
 );
+
+-- Load standard static data
+INSERT INTO unit
+VALUES
+('x', 'Unit'),
+('pack', 'Pack'),
+('tbsp', 'Tablespoon'),
+('tsp', 'Teaspoon'),
+('clove', 'Clove'),
+('g', 'Gram'),
+('tin', 'Tin'),
+('ml', 'Millilitres'),
+('bunch', 'Bunch'),
+('pinch', 'Pinch'),
+('sch', 'Sachet'),
+('knob', 'Knob'),
+('slice', 'Slice'),
+('loaf', 'Loaf');
+
+INSERT INTO store_location
+VALUES
+('VEGGIE', 'Olives, veggie stuff, soups, pizzas', 14),
+('HOUSEHOLD', 'Household', 30),
+('TOILETRIES', 'Toiletries', 31),
+('SWEETS', 'Chocoloate, biscuits', 20),
+('CRISPS', 'Crisps', 21),
+('BAKERY', 'Bakery section', 22),
+('TEA', 'Tea, coffee, sauces', 19),
+('OTHER', 'Other', 1),
+('HOMEWARES', 'Homewares', 2),
+('CITRUS', 'Citrus, banana table', 3),
+('BERRIES', 'Berries wall', 4),
+('APPLES', 'Apples, pears', 5),
+('POTATOES', 'Potato table', 6),
+('ONIONS', 'Onions, shallots', 7),
+('ROOTVEG', 'Root vegetable table - carrots etc', 8),
+('SALADWALL', 'Salad wall', 9),
+('MIDVEGWALL', 'Tomatoes, avocado, spring onions etc', 10),
+('GREENS', 'Broccoli, kale, cabbage, cauliflower', 11),
+('HERBS', 'Herbs, mushrooms, veg packs, peppers', 12),
+('MEAT', 'Meat aisle', 13),
+('CHEESE', 'Cheese, butter', 15),
+('MILK', 'Milk, juice, yoghurt', 16),
+('WORLDFOOD', 'Rice, pasta', 17),
+('TINVEG', 'Pulses', 18),
+('BAKING', 'Baking ailse', 24),
+('BREAD', 'Bread ailse', 25),
+('FREEZER', 'Freezer ailse', 26),
+('SOFTDRINK', 'Bottled water, fizzy pop', 27),
+('BEER', 'Squash, beer', 28),
+('WINE', 'Wine, spirits', 29),
+('CEREAL', 'Cereal', 23);

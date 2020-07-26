@@ -10,6 +10,8 @@ import {
 } from "../api/shoppingListApiOperations"
 import { Redirect } from "react-router"
 import { CLEAR_PLAN } from "../api/mealListApiOperations"
+import { useDispatch } from "react-redux"
+import { togglePlanOnlyMode } from "../state/actions"
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -29,12 +31,14 @@ const AddMealsButton = (props) => {
       error: errorIngs,
       data: dataIngs,
     },
-  ] = useLazyQuery(LIST_DATA_QUERY)
+  ] = useLazyQuery(LIST_DATA_QUERY, {
+    fetchPolicy: "network-only",
+  })
 
   const [reinsertList, { loading: loadingRil }] = useMutation(REINSERT_LIST)
   const [clearPlan] = useMutation(CLEAR_PLAN)
-
   const [redirect, setRedirect] = useState(false)
+  const dispatch = useDispatch()
 
   if (redirect) return <Redirect push to="/list" />
 
@@ -54,6 +58,7 @@ const AddMealsButton = (props) => {
       },
     })
     clearPlan()
+    dispatch(togglePlanOnlyMode(false))
     setRedirect(true)
   }
 

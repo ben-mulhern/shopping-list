@@ -104,7 +104,7 @@ const MealCards = (props) => {
           checked={planOnly}
           color="secondary"
           disabled={selectedMeals.size === 0 && !planOnly}
-          onChange={() => dispatch(togglePlanOnlyMode())}
+          onChange={() => dispatch(togglePlanOnlyMode(!planOnly))}
         />
       </FormControl>
       <div>

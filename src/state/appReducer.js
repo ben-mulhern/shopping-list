@@ -13,6 +13,12 @@ const appReducer = (state = initialState, action) => {
         loggedIn: true,
       }
 
+    case "LOGOUT":
+      return {
+        ...state,
+        loggedIn: false,
+      }
+
     case "SET_TAB":
       return {
         ...state,
@@ -28,7 +34,7 @@ const appReducer = (state = initialState, action) => {
     case "TOGGLE_PLAN_ONLY_MODE":
       return {
         ...state,
-        planOnlyMode: !state.planOnlyMode,
+        planOnlyMode: action.mode,
       }
 
     default:

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 const MainView = (props) => {
   const dispatch = useDispatch()
   const classes = useStyles()
-  const apiKey = sessionStorage.getItem("API_KEY")
+  const apiKey = localStorage.getItem("API_KEY")
   const stateLoggedIn = useSelector((state) => state.loggedIn)
   const loggedIn = stateLoggedIn || (apiKey && !stateLoggedIn)
 
