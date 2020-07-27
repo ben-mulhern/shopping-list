@@ -97,7 +97,7 @@ const MealDetailForm = (props) => {
 
   const addIngredient = () => {
     const newIngredient = cloneDeep(EMPTY_MEAL_INGREDIENT)
-    const ings = mealIngredients.push(newIngredient)
+    const ings = mealIngredients.unshift(newIngredient)
     setMealIngredients(ings)
     validateIngredients(ings)
   }
@@ -220,6 +220,15 @@ const MealDetailForm = (props) => {
         </FormControl>
       </Paper>
       <h2 className={classes.margin}>Ingredients</h2>
+      <Button
+        variant="contained"
+        color="secondary"
+        className={classes.margin}
+        startIcon={<AddIcon />}
+        onClick={() => addIngredient()}
+      >
+        Add ingredient
+      </Button>
       {mealIngredients.map((mi, i) => (
         <MealIngredient
           mealIngredient={mi}
@@ -253,15 +262,6 @@ const MealDetailForm = (props) => {
           !tagString
         }
       />
-      <Button
-        variant="contained"
-        color="secondary"
-        className={classes.margin}
-        startIcon={<AddIcon />}
-        onClick={() => addIngredient()}
-      >
-        Add ingredient
-      </Button>
       <Button
         variant="contained"
         color="default"
