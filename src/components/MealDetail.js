@@ -1,12 +1,13 @@
 import React from "react"
 import { useDispatch } from "react-redux"
-import { setTab } from "../state/actions"
+import { setTab, storeStaticData } from "../state/actions"
 import { useLazyQuery, useQuery } from "@apollo/react-hooks"
 import MealDetailForm from "./MealDetailForm"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import { QUERY_STATIC_DATA } from "../api/staticDataApiOperations"
 import { MEAL_QUERY } from "../api/mealListApiOperations"
+import Immutable from "immutable"
 
 const EMPTY_MEAL = {
   description: "",
@@ -45,6 +46,13 @@ const MealDetail = (props) => {
     }
   )
 
+  if (!staticLoading) {
+    const units = Immutable.List(staticData.unit)
+    const locations = Immutable.List(staticData.store_location)
+    const ingredients = Immutable.List(staticData.ingredient)
+    dispatch(storeStaticData(units, locations, ingredients))
+  }
+
   if (!called && mealId !== "new") runMealQuery()
 
   if (loading || staticLoading)
@@ -52,18 +60,8 @@ const MealDetail = (props) => {
   if (error || staticError) return <p>Error :(</p>
 
   const meal = called ? data.meal[0] : EMPTY_MEAL
-  const units = staticData.unit
-  const locations = staticData.store_location
-  const ingredients = staticData.ingredient
 
-  return (
-    <MealDetailForm
-      meal={meal}
-      units={units}
-      locations={locations}
-      ingredients={ingredients}
-    />
-  )
+  return <MealDetailForm meal={meal} />
 }
 
 export default MealDetail

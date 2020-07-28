@@ -232,9 +232,6 @@ const MealDetailForm = (props) => {
       {mealIngredients.map((mi, i) => (
         <MealIngredient
           mealIngredient={mi}
-          units={props.units}
-          locations={props.locations}
-          ingredients={props.ingredients}
           key={i}
           rowIndex={i}
           deleteIngredient={() => deleteIngredient(i)}

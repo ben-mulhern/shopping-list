@@ -17,7 +17,6 @@ import Tooltip from "@material-ui/core/Tooltip"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import { useSelector } from "react-redux"
-import { pathToArray } from "graphql/jsutils/Path"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
