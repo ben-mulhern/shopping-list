@@ -25,3 +25,10 @@ export const togglePlanOnlyMode = (mode) => ({
   type: "TOGGLE_PLAN_ONLY_MODE",
   mode,
 })
+
+export const storeStaticData = (units, locations, ingredients) => ({
+  type: "STORE_STATIC_DATA",
+  units,
+  locations,
+  ingredients,
+})

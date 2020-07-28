@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
-import { setTab } from "../state/actions"
+import { setTab, storeStaticData } from "../state/actions"
 import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
@@ -66,6 +66,13 @@ const ShoppingList = (props) => {
   const [addMode, setAddMode] = useState(false)
   const [editItem, setEditItem] = useState(EMPTY_MEAL_INGREDIENT)
   const [clearAllWindowOpen, setClearAllWindowOpen] = useState(false)
+
+  if (!staticLoading) {
+    const units = Immutable.List(staticData.unit)
+    const locations = Immutable.List(staticData.store_location)
+    const ingredients = Immutable.List(staticData.ingredient)
+    dispatch(storeStaticData(units, locations, ingredients))
+  }
 
   const toggleItem = (id, checked) => {
     if (checked) {
@@ -233,9 +240,6 @@ const ShoppingList = (props) => {
   const mealIngredient = (
     <MealIngredient
       mealIngredient={editItem}
-      units={staticData.unit}
-      locations={staticData.store_location}
-      ingredients={staticData.ingredient}
       deleteIngredient={stopEdits}
       editIngredient={handleItemEdit}
       listMode={true}
