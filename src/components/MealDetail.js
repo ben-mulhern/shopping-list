@@ -12,7 +12,6 @@ import Immutable from "immutable"
 const EMPTY_MEAL = {
   description: "",
   diet_type: "OMNI",
-  leftovers: false,
   image_url: null,
   serves: 4,
   recipe_book: null,

@@ -45,7 +45,6 @@ const MealDetailForm = (props) => {
   const [redirect, setRedirect] = useState(false)
   const [description, setDescription] = useState(meal.description)
   const [dietType, setDietType] = useState(meal.diet_type)
-  const [leftovers, setLeftovers] = useState(meal.leftovers)
   const [imageUrl, setImageUrl] = useState(meal.image_url)
   const [serves, setServes] = useState(meal.serves)
   const [recipeBook, setRecipeBook] = useState(meal.recipe_book)
@@ -158,16 +157,6 @@ const MealDetailForm = (props) => {
         </FormControl>
 
         <FormControl component="fieldset" className={classes.formControl}>
-          <FormLabel component="legend">Leftovers</FormLabel>
-          <Switch
-            value={leftovers}
-            checked={leftovers}
-            color="primary"
-            onChange={(e) => setLeftovers(e.target.checked)}
-          />
-        </FormControl>
-
-        <FormControl component="fieldset" className={classes.formControl}>
           <TextField
             label="Image URL"
             value={imageUrl}
@@ -245,7 +234,6 @@ const MealDetailForm = (props) => {
         mealId={meal.meal_id}
         description={description}
         serves={serves}
-        leftovers={leftovers}
         dietType={dietType}
         recipeBook={recipeBook}
         imageUrl={imageUrl}
