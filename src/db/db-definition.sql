@@ -179,7 +179,8 @@ VALUES
 ('sch', 'Sachet'),
 ('knob', 'Knob'),
 ('slice', 'Slice'),
-('loaf', 'Loaf');
+('loaf', 'Loaf'),
+('sheet', 'Sheet');
 
 INSERT INTO store_location
 VALUES
