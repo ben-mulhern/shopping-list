@@ -16,6 +16,7 @@ import ClearIcon from "@material-ui/icons/Clear"
 import Tooltip from "@material-ui/core/Tooltip"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
+import { useSelector } from "react-redux"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -52,10 +53,11 @@ const EMPTY_INGREDIENT = {
 const MealIngredient = (props) => {
   const mi = props.mealIngredient
   let ing = cloneDeep(mi)
-  const units = props.units
-  const locations = props.locations
+  const units = useSelector((state) => state.units)
+  const locations = useSelector((state) => state.locations)
+  const ings = useSelector((state) => state.ingredients)
   const classes = useStyles()
-  const [ingredients, setIngredients] = useState(props.ingredients)
+  const [ingredients, setIngredients] = useState(ings)
 
   const ingredientFilter = (str, ings) => {
     if (!str) return ings
@@ -89,7 +91,7 @@ const MealIngredient = (props) => {
       newIngredient.store_location = mi.ingredient.store_location
     }
     ing.ingredient = newIngredient
-    setIngredients(ingredientFilter(desc, props.ingredients))
+    setIngredients(ingredientFilter(desc, ings))
     props.editIngredient(props.rowIndex, ing)
   }
 
@@ -104,7 +106,7 @@ const MealIngredient = (props) => {
       <FormControl className={clsx(classes.margin, classes.textField200)}>
         <Autocomplete
           freeSolo
-          options={ingredients.map((i) => i.description)}
+          options={ingredients.map((i) => i.description).toArray()}
           value={mi.ingredient.description}
           onInputChange={(e, v) => handleIngredient(v)}
           renderInput={(params) => (

@@ -10,7 +10,6 @@ CREATE TABLE meal (
     CONSTRAINT ck_meal_description CHECK (description <> ''),
   serves SMALLINT NOT NULL
     CONSTRAINT ck_meal_serves CHECK (serves BETWEEN 1 AND 8),
-  leftovers BOOLEAN NOT NULL,
   diet_type VARCHAR(10) NOT NULL DEFAULT 'OMNI'
     CONSTRAINT ck_meal_diet_type CHECK (diet_type IN ('VEGAN', 'VEGETARIAN', 'OMNI')),
   recipe_book VARCHAR(500)

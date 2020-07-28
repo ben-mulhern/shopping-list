@@ -1,8 +1,13 @@
+import Immutable from "immutable"
+
 const initialState = {
   loggedIn: false,
   activeTab: 0,
   lastTickedId: 0,
   planOnlyMode: false,
+  units: Immutable.List(),
+  locations: Immutable.List(),
+  ingredients: Immutable.List(),
 }
 
 const appReducer = (state = initialState, action) => {
@@ -35,6 +40,14 @@ const appReducer = (state = initialState, action) => {
       return {
         ...state,
         planOnlyMode: action.mode,
+      }
+
+    case "STORE_STATIC_DATA":
+      return {
+        ...state,
+        units: action.units,
+        locations: action.locations,
+        ingredients: action.ingredients,
       }
 
     default:

@@ -82,7 +82,6 @@ const CommitChangesButton = (props) => {
       meal_id: props.mealId,
       description: props.description,
       serves: props.serves,
-      leftovers: props.leftovers,
       diet_type: props.dietType,
       recipe_book: props.recipeBook,
       image_url: props.imageUrl,
