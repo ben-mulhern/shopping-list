@@ -178,12 +178,14 @@ const MealCard = (props) => {
         <AccordionSummary
           expandIcon={
             <Tooltip title={expanded ? "Hide ingredients" : "View ingredients"}>
-              <IconButton
-                onClick={() => setExpanded(!expanded)}
-                disabled={planOnly}
-              >
-                <ExpandMoreIcon />
-              </IconButton>
+              <span>
+                <IconButton
+                  onClick={() => setExpanded(!expanded)}
+                  disabled={planOnly}
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </span>
             </Tooltip>
           }
         >
@@ -252,6 +254,7 @@ const MealCard = (props) => {
                       quantity: mi.quantity * mealCount,
                     }}
                     index={mi.ingredient.ingredient_id}
+                    key={mi.ingredient.ingredient_id}
                     checkboxTooltipText="Check if required"
                     checked={checked}
                     questionMark={questionMark}

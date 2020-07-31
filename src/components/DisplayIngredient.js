@@ -32,16 +32,18 @@ const DisplayIngredient = (props) => {
           : "Mark as need to check"
       }
     >
-      <IconButton
-        onClick={props.toggleQuestionMark}
-        disabled={props.questionMarkDisabled}
-      >
-        {props.questionMark ? (
-          <HelpIcon color="secondary" />
-        ) : (
-          <HelpOutlineIcon />
-        )}
-      </IconButton>
+      <span>
+        <IconButton
+          onClick={props.toggleQuestionMark}
+          disabled={props.questionMarkDisabled}
+        >
+          {props.questionMark ? (
+            <HelpIcon color="secondary" />
+          ) : (
+            <HelpOutlineIcon />
+          )}
+        </IconButton>
+      </span>
     </Tooltip>
   )
 
