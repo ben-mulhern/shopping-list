@@ -96,7 +96,7 @@ const MealCards = (props) => {
       >
         New meal
       </Button>
-      <AddMealsButton meals={selectedMeals} />
+      <AddMealsButton mealCount={selectedMeals.size} />
       <FormControl component="fieldset" className={classes.margin}>
         <FormLabel component="legend">Plan-only</FormLabel>
         <Switch
