@@ -3,7 +3,14 @@ import { useMutation } from "@apollo/react-hooks"
 import { DELETE_MEAL } from "../api/mealListApiOperations"
 import DialogBox from "./DialogBox"
 
-const ConfirmDeleteWindow = (props) => {
+interface Props {
+  handleClose(): any
+  open: boolean
+  description: string
+  mealId: number
+}
+
+const ConfirmDeleteWindow = (props: Props) => {
   const [deleteMeal, { loading: deleting, error: deleteError }] = useMutation(
     DELETE_MEAL
   )
@@ -18,7 +25,7 @@ const ConfirmDeleteWindow = (props) => {
       handleClose={props.handleClose}
       open={props.open}
       waiting={deleting}
-      actionError={deleteError}
+      actionError={deleteError ? deleteError.message : ""}
       message={`Are you sure you want to delete ${props.description}?`}
     />
   )

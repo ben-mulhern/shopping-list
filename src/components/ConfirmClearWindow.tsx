@@ -3,7 +3,12 @@ import { useMutation } from "@apollo/react-hooks"
 import { TICK_ALL } from "../api/shoppingListApiOperations"
 import DialogBox from "./DialogBox"
 
-const ConfirmWindow = (props) => {
+interface Props {
+  handleClose(): any
+  open: boolean
+}
+
+const ConfirmWindow = (props: Props) => {
   const [tickAll, { loading: deleting, error: deleteError }] = useMutation(
     TICK_ALL
   )
@@ -23,7 +28,7 @@ const ConfirmWindow = (props) => {
       handleClose={props.handleClose}
       open={props.open}
       waiting={deleting}
-      actionError={deleteError}
+      actionError={deleteError ? deleteError.message : ""}
       message="Are you sure you want to clear all items?"
     />
   )

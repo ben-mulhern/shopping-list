@@ -7,8 +7,22 @@ import HelpIcon from "@material-ui/icons/Help"
 import ListItemText from "@material-ui/core/ListItemText"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import Tooltip from "@material-ui/core/Tooltip"
+import { ShoppingListItem } from "../domain/shoppingListTypes"
 
-const DisplayIngredient = (props) => {
+interface Props {
+  item: ShoppingListItem
+  checkboxTooltipText: string
+  checked: boolean
+  toggleItem(): any
+  questionMark: boolean
+  toggleQuestionMark(): any
+  questionMarkDisabled: boolean
+  index: number
+  allowActions: boolean
+  editAction(item: ShoppingListItem): any
+}
+
+const DisplayIngredient = (props: Props) => {
   const item = props.item
 
   const checkBox = (

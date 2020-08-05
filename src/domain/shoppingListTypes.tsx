@@ -34,3 +34,12 @@ export type Meal = {
   meal_ingredients: MealIngredient[]
   meal_tags: string[]
 }
+
+export type ShoppingListItem = {
+  item_id: number
+  quantity: number
+  unit: Unit
+  ingredient: Ingredient
+  ticked_at?: Date
+  question_mark: boolean
+}
