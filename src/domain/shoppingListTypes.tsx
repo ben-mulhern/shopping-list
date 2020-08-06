@@ -17,11 +17,25 @@ export type Ingredient = {
   store_location: StoreLocation
 }
 
+export type MealIngredientPlanItem = {
+  question_mark: boolean
+  checked: boolean
+}
+
 export type MealIngredient = {
   ingredient: Ingredient
   quantity: number
   unit: Unit
   default_question_mark: boolean
+  meal_ingredient_plan_items?: MealIngredientPlanItem[]
+}
+
+export type MealPlanCount = {
+  meal_count: number
+}
+
+export type MealTag = {
+  tag: string
 }
 
 export type Meal = {
@@ -32,7 +46,8 @@ export type Meal = {
   recipe_book?: string
   image_url?: string
   meal_ingredients: MealIngredient[]
-  meal_tags: string[]
+  meal_tags: MealTag[]
+  meal_plan_counts?: MealPlanCount[]
 }
 
 export type ShoppingListItem = {

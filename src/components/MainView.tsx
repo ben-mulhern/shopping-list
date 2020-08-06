@@ -8,6 +8,7 @@ import Navbar from "./Navbar"
 import { makeStyles } from "@material-ui/core/styles"
 import { logIn } from "../state/actions"
 import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../state/RootState"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -15,11 +16,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MainView = (props) => {
+interface Props {
+  location: {
+    pathname: string
+  }
+}
+
+const MainView = (props: Props) => {
   const dispatch = useDispatch()
   const classes = useStyles()
   const apiKey = localStorage.getItem("API_KEY")
-  const stateLoggedIn = useSelector((state) => state.loggedIn)
+  const stateLoggedIn = useSelector((state: RootState) => state.loggedIn)
   const loggedIn = stateLoggedIn || (apiKey && !stateLoggedIn)
 
   if (!stateLoggedIn && apiKey) {
