@@ -11,7 +11,7 @@ import SearchIcon from "@material-ui/icons/Search"
 import Button from "@material-ui/core/Button"
 import mealSearch from "../domain/mealSearch"
 import AddIcon from "@material-ui/icons/Add"
-import { withRouter } from "react-router-dom"
+import { withRouter, RouteComponentProps } from "react-router-dom"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import Immutable from "immutable"
 import AddMealsButton from "./AddMealsButton"
@@ -23,6 +23,8 @@ import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
 import Switch from "@material-ui/core/Switch"
 import { togglePlanOnlyMode } from "../state/actions"
+import { RootState } from "../state/RootState"
+import { Meal, MealIngredientPlanItem } from "../domain/shoppingListTypes"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,11 +52,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MealCards = (props) => {
+interface Props extends RouteComponentProps {}
+
+const MealCards = (props: Props) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   dispatch(setTab(1))
-  const planOnly = useSelector((state) => state.planOnlyMode)
+  const planOnly = useSelector((state: RootState) => state.planOnlyMode)
 
   const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
   const {
@@ -69,10 +73,13 @@ const MealCards = (props) => {
     return <CircularProgress color="secondary" className={classes.margin} />
   if (error || errorSelected) return <p>Error :(</p>
 
-  const meals = Immutable.List(data.meal)
-  const selectedMeals = Immutable.List(
+  const meals: Immutable.List<Meal> = Immutable.List(data.meal)
+  const selectedItems: Immutable.List<MealIngredientPlanItem> = Immutable.List(
     dataSelected.meal_ingredient_plan_item
-  ).map((m) => m.meal_id)
+  )
+  const selectedMeals: Immutable.Set<number> = selectedItems
+    .map((i) => i.meal_id!)
+    .toSet()
 
   return (
     <div>

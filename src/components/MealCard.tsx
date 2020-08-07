@@ -11,7 +11,7 @@ import Chip from "@material-ui/core/Chip"
 import clsx from "clsx"
 import EditIcon from "@material-ui/icons/Edit"
 import DeleteIcon from "@material-ui/icons/Delete"
-import { withRouter } from "react-router-dom"
+import { RouteComponentProps, withRouter } from "react-router-dom"
 import ConfirmDeleteWindow from "./ConfirmDeleteWindow"
 import PersonIcon from "@material-ui/icons/Person"
 import Badge from "@material-ui/core/Badge"
@@ -38,6 +38,8 @@ import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
 import { useSelector } from "react-redux"
 import IconButton from "@material-ui/core/IconButton"
+import { RootState } from "../state/RootState"
+import { Meal } from "../domain/shoppingListTypes"
 
 const useStyles = makeStyles({
   card: {
@@ -66,7 +68,13 @@ const useStyles = makeStyles({
   },
 })
 
-const MealCard = (props) => {
+interface Props extends RouteComponentProps {
+  meal: Meal
+  selected: boolean
+  hidden: boolean
+}
+
+const MealCard = (props: Props) => {
   const classes = useStyles()
   const meal = props.meal
   const [addMealToPlan] = useMutation(ADD_MEAL_TO_PLAN)
@@ -82,13 +90,17 @@ const MealCard = (props) => {
   const sliderClass = clsx(classes.slider, !selected && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
   const mealCount =
-    meal.meal_plan_counts.length > 0 ? meal.meal_plan_counts[0].meal_count : 1
+    meal.meal_plan_counts!.length > 0 ? meal.meal_plan_counts![0].meal_count : 1
 
   const marks = Array(6)
     .fill({})
     .map((e, i) => ({ value: (i + 1) / 2, label: ((i + 1) / 2).toString() }))
 
-  const toggleItem = (mealId, ingredientId, checked) => {
+  const toggleItem = (
+    mealId: number,
+    ingredientId: number,
+    checked: boolean
+  ) => {
     const variables = {
       variables: { meal_id: mealId, ingredient_id: ingredientId },
     }
@@ -96,7 +108,11 @@ const MealCard = (props) => {
     else uncheckPlanItem(variables)
   }
 
-  const toggleQuestionMark = (mealId, ingredientId, checked) => {
+  const toggleQuestionMark = (
+    mealId: number,
+    ingredientId: number,
+    checked: boolean
+  ) => {
     const variables = {
       variables: { meal_id: mealId, ingredient_id: ingredientId },
     }
@@ -104,7 +120,9 @@ const MealCard = (props) => {
     else unsetPlanQuestionMark(variables)
   }
 
-  const triggerDeleteWindow = (e) => {
+  const triggerDeleteWindow = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation()
     setDeleteWindowOpen(true)
   }
@@ -131,7 +149,7 @@ const MealCard = (props) => {
     }
   }
 
-  const planOnly = useSelector((state) => state.planOnlyMode)
+  const planOnly = useSelector((state: RootState) => state.planOnlyMode)
   const [cardElevation, setCardElevation] = useState(1)
   const [expanded, setExpanded] = useState(false)
 
@@ -242,16 +260,18 @@ const MealCard = (props) => {
             <List>
               {meal.meal_ingredients.map((mi) => {
                 const checked =
-                  mi.meal_ingredient_plan_items.length > 0 &&
-                  mi.meal_ingredient_plan_items[0].checked
+                  mi.meal_ingredient_plan_items!.length > 0 &&
+                  mi.meal_ingredient_plan_items![0].checked
                 const questionMark =
-                  mi.meal_ingredient_plan_items.length > 0 &&
-                  mi.meal_ingredient_plan_items[0].question_mark
+                  mi.meal_ingredient_plan_items!.length > 0 &&
+                  mi.meal_ingredient_plan_items![0].question_mark
                 return (
                   <DisplayIngredient
                     item={{
                       ...mi,
                       quantity: mi.quantity * mealCount,
+                      item_id: 0,
+                      question_mark: false,
                     }}
                     index={mi.ingredient.ingredient_id}
                     key={mi.ingredient.ingredient_id}

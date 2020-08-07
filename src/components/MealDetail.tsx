@@ -25,7 +25,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MealDetail = (props) => {
+interface Props {
+  match: {
+    params: {
+      id: number | string
+    }
+  }
+}
+
+const MealDetail = (props: Props) => {
   const dispatch = useDispatch()
   dispatch(setTab(1))
   const mealId = props.match.params.id

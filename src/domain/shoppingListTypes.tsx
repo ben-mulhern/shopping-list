@@ -18,6 +18,7 @@ export type Ingredient = {
 }
 
 export type MealIngredientPlanItem = {
+  meal_id?: number
   question_mark: boolean
   checked: boolean
 }
