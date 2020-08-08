@@ -17,6 +17,9 @@ import Tooltip from "@material-ui/core/Tooltip"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import { useSelector } from "react-redux"
+import { MealIngredient, Ingredient } from "../domain/shoppingListTypes"
+import { RootState } from "../state/RootState"
+import Immutable from "immutable"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -47,19 +50,29 @@ const EMPTY_INGREDIENT = {
   store_location: {
     store_location_id: "",
     description: "",
+    shop_order: 0,
   },
 }
 
-const EditableMealIngredient = (props) => {
+interface Props {
+  mealIngredient: MealIngredient
+  rowIndex: number
+  editIngredient(rowIndex: number, ingredient: MealIngredient): any
+  listMode: boolean
+  setItem?(): any
+  deleteIngredient(): any
+}
+
+const EditableMealIngredient = (props: Props) => {
   const mi = props.mealIngredient
   let ing = cloneDeep(mi)
-  const units = useSelector((state) => state.units)
-  const locations = useSelector((state) => state.locations)
-  const ings = useSelector((state) => state.ingredients)
+  const units = useSelector((state: RootState) => state.units)
+  const locations = useSelector((state: RootState) => state.locations)
+  const ings = useSelector((state: RootState) => state.ingredients)
   const classes = useStyles()
   const [ingredients, setIngredients] = useState(ings)
 
-  const ingredientFilter = (str, ings) => {
+  const ingredientFilter = (str: string, ings: Immutable.List<Ingredient>) => {
     if (!str) return ings
     else
       return ings.filter((i) =>
@@ -67,7 +80,7 @@ const EditableMealIngredient = (props) => {
       )
   }
 
-  const handleQuantity = (qty) => {
+  const handleQuantity = (qty: number) => {
     ing.quantity = qty
     props.editIngredient(props.rowIndex, ing)
   }
@@ -77,13 +90,13 @@ const EditableMealIngredient = (props) => {
     props.editIngredient(props.rowIndex, ing)
   }
 
-  const handleUnit = (unit) => {
+  const handleUnit = (unit: string) => {
     const newUnit = units.find((u) => u.unit_id === unit)
-    ing.unit = newUnit
+    ing.unit = newUnit!
     props.editIngredient(props.rowIndex, ing)
   }
 
-  const handleIngredient = (desc) => {
+  const handleIngredient = (desc: string) => {
     let newIngredient = ingredients.find((i) => i.description === desc)
     if (!newIngredient) {
       newIngredient = cloneDeep(EMPTY_INGREDIENT)
@@ -95,9 +108,9 @@ const EditableMealIngredient = (props) => {
     props.editIngredient(props.rowIndex, ing)
   }
 
-  const handleLocation = (loc) => {
+  const handleLocation = (loc: string) => {
     const newLocation = locations.find((l) => l.store_location_id === loc)
-    ing.ingredient.store_location = newLocation
+    ing.ingredient.store_location = newLocation!
     props.editIngredient(props.rowIndex, ing)
   }
 
@@ -128,8 +141,10 @@ const EditableMealIngredient = (props) => {
         <Input
           required
           value={mi.quantity}
-          onChange={(e) => handleQuantity(e.target.value)}
-          label="Quantity"
+          onChange={(e) => {
+            const qty: number = +e.target.value
+            handleQuantity(qty)
+          }}
           type="number"
           placeholder="Qty"
           error={mi.quantity <= 0}
@@ -144,7 +159,7 @@ const EditableMealIngredient = (props) => {
           required
           label="Unit"
           value={mi.unit.unit_id}
-          onChange={(e) => handleUnit(e.target.value)}
+          onChange={(e) => handleUnit(e.target.value as string)}
         >
           {units.map((u) => (
             <MenuItem key={u.unit_id} value={u.unit_id}>
@@ -163,7 +178,7 @@ const EditableMealIngredient = (props) => {
           required
           label="Location"
           value={mi.ingredient.store_location.store_location_id}
-          onChange={(e) => handleLocation(e.target.value)}
+          onChange={(e) => handleLocation(e.target.value as string)}
         >
           {locations.map((l) => (
             <MenuItem key={l.store_location_id} value={l.store_location_id}>

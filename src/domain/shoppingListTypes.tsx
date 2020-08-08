@@ -52,7 +52,7 @@ export type Meal = {
 }
 
 export type ShoppingListItem = {
-  item_id: number
+  item_id?: number
   quantity: number
   unit: Unit
   ingredient: Ingredient

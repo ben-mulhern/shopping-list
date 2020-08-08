@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { setLastTickedItem } from "../state/actions"
 import DisplayIngredient from "./DisplayIngredient"
 
-const ShoppingListItem = (props) => {
+const DisplayShoppingListItem = (props) => {
   const li = props.item
   const toggleItemApi = props.toggleItem
   const lastTickedId = useSelector((state) => state.lastTickedId)
@@ -32,4 +32,4 @@ const ShoppingListItem = (props) => {
   )
 }
 
-export default ShoppingListItem
+export default DisplayShoppingListItem
