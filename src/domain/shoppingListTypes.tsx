@@ -1,4 +1,4 @@
-export type DietType = "OMNI" | "VEGETARIAN" | "VEGN"
+export type DietType = "OMNI" | "VEGETARIAN" | "VEGAN"
 
 export type StoreLocation = {
   store_location_id: string
@@ -12,7 +12,7 @@ export type Unit = {
 }
 
 export type Ingredient = {
-  ingredient_id: number
+  ingredient_id?: number
   description: string
   store_location: StoreLocation
 }

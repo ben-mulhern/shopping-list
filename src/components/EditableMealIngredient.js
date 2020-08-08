@@ -50,7 +50,7 @@ const EMPTY_INGREDIENT = {
   },
 }
 
-const MealIngredient = (props) => {
+const EditableMealIngredient = (props) => {
   const mi = props.mealIngredient
   let ing = cloneDeep(mi)
   const units = useSelector((state) => state.units)
@@ -218,4 +218,4 @@ const MealIngredient = (props) => {
   )
 }
 
-export default MealIngredient
+export default EditableMealIngredient

@@ -9,6 +9,8 @@ export const EMPTY_MEAL_INGREDIENT = {
     store_location: {
       store_location_id: "OTHER",
       description: "Other",
+      shop_order: 0,
     },
   },
+  default_question_mark: false,
 }

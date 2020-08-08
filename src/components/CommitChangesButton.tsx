@@ -23,19 +23,19 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface Props {
-  mealIngredients: MealIngredient[]
+  mealIngredients: Immutable.List<MealIngredient>
   mealId: number
   description: string
   serves: number
   dietType: DietType
-  recipeBook: string
-  imageUrl: string
+  recipeBook?: string
+  imageUrl?: string
   tagString: string
   errorsExist: boolean
 }
 
 interface IngredientInsert {
-  ingredient_id: number
+  ingredient_id?: number
   description: string
   store_location_id: string
 }
@@ -84,7 +84,7 @@ const CommitChangesButton = (props: Props) => {
 
   const saveChanges = () => {
     // Ingredients firt, the rest follows on once completed
-    const ingredients: IngredientInsert[] = props.mealIngredients
+    const ingredients: Immutable.List<IngredientInsert> = props.mealIngredients
       .map((mi: MealIngredient) => mi.ingredient)
       .map((i: Ingredient) => prepareIngredientForInsert(i))
     upsertIngredients({
@@ -128,7 +128,7 @@ const CommitChangesButton = (props: Props) => {
     // Now we have to merge that returned info with the quantity and unit info from the UI.
     // We try to match on either the id (exisitng ings) or the description (new ings)
     const getIngredientId = (desc: string): number =>
-      ingResponse.find((i) => i.description === desc)!.ingredient_id
+      ingResponse.find((i) => i.description === desc)!.ingredient_id!
     const mis = Immutable.Set(props.mealIngredients)
     const newMealIngredients = mis.map((mi) =>
       mi.ingredient.ingredient_id

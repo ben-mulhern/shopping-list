@@ -7,17 +7,18 @@ import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
 import Slider from "@material-ui/core/Slider"
-import MealIngredient from "./MealIngredient"
+import EditableMealIngredient from "./EditableMealIngredient"
 import Paper from "@material-ui/core/Paper"
 import Button from "@material-ui/core/Button"
 import AddIcon from "@material-ui/icons/Add"
 import CancelIcon from "@material-ui/icons/Cancel"
-import { withRouter } from "react-router-dom"
+import { withRouter, RouteComponentProps } from "react-router-dom"
 import Immutable from "immutable"
 import cloneDeep from "lodash.clonedeep"
 import { Redirect } from "react-router"
 import CommitChangesButton from "./CommitChangesButton"
 import { EMPTY_MEAL_INGREDIENT } from "../domain/sharedValues"
+import { Meal, MealIngredient, DietType } from "../domain/shoppingListTypes"
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -36,7 +37,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MealDetailForm = (props) => {
+interface Props extends RouteComponentProps {
+  meal: Meal
+}
+
+const MealDetailForm = (props: Props) => {
   const classes = useStyles()
   const meal = props.meal
   const initTagString = meal.meal_tags.map((t) => t.tag).join(" ")
@@ -57,13 +62,13 @@ const MealDetailForm = (props) => {
 
   if (redirect) return <Redirect push to="/meals" />
 
-  const handleDescription = (desc) => {
+  const handleDescription = (desc: string) => {
     setDescription(desc)
     const errorMessage = desc === "" ? "Description cannot be blank" : ""
     setDescriptionErrorText(errorMessage)
   }
 
-  const handleTagString = (str) => {
+  const handleTagString = (str: string) => {
     const uc = str.toUpperCase()
     setTagString(uc)
     const strList = Immutable.List(uc.split(""))
@@ -81,26 +86,26 @@ const MealDetailForm = (props) => {
     .fill({})
     .map((e, i) => ({ value: i + 1, label: (i + 1).toString() }))
 
-  const deleteIngredient = (i) => {
+  const deleteIngredient = (i: number) => {
     const ings = mealIngredients.delete(i)
     setMealIngredients(ings)
     validateIngredients(ings)
   }
 
-  const editIngredient = (i, ing) => {
+  const editIngredient = (i: number, ing: MealIngredient) => {
     const ings = mealIngredients.set(i, ing)
     setMealIngredients(ings)
     validateIngredients(ings)
   }
 
   const addIngredient = () => {
-    const newIngredient = cloneDeep(EMPTY_MEAL_INGREDIENT)
+    const newIngredient: MealIngredient = cloneDeep(EMPTY_MEAL_INGREDIENT)
     const ings = mealIngredients.unshift(newIngredient)
     setMealIngredients(ings)
     validateIngredients(ings)
   }
 
-  const validateIngredients = (ings) => {
+  const validateIngredients = (ings: Immutable.List<MealIngredient>) => {
     // Ingredient names must be non-blank
     if (ings.findIndex((mi) => !mi.ingredient.description) >= 0)
       setIngredientErrorText("Ingredient name must be specified")
@@ -143,7 +148,7 @@ const MealDetailForm = (props) => {
             row
             name="diet_type"
             value={dietType}
-            onChange={(e) => setDietType(e.target.value)}
+            onChange={(e) => setDietType(e.target.value as DietType)}
           >
             <FormControlLabel value="OMNI" control={<Radio />} label="Omni" />
             <FormControlLabel
@@ -176,7 +181,7 @@ const MealDetailForm = (props) => {
             max={8}
             value={serves}
             valueLabelDisplay="on"
-            onChange={(e, v) => setServes(v)}
+            onChange={(e, v) => setServes(v as number)}
           />
         </FormControl>
 
@@ -218,7 +223,7 @@ const MealDetailForm = (props) => {
         Add ingredient
       </Button>
       {mealIngredients.map((mi, i) => (
-        <MealIngredient
+        <EditableMealIngredient
           mealIngredient={mi}
           key={i}
           rowIndex={i}

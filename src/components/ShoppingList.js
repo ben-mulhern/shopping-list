@@ -17,7 +17,7 @@ import { UPSERT_INGREDIENTS } from "../api/mealListApiOperations"
 import List from "@material-ui/core/List"
 import Paper from "@material-ui/core/Paper"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
-import MealIngredient from "./MealIngredient"
+import EditableMealIngredient from "./EditableMealIngredient"
 import UndoButton from "./UndoButton"
 import { EMPTY_MEAL_INGREDIENT } from "../domain/sharedValues"
 import ShoppingListItem from "./ShoppingListItem"
@@ -238,7 +238,7 @@ const ShoppingList = (props) => {
   )
 
   const mealIngredient = (
-    <MealIngredient
+    <EditableMealIngredient
       mealIngredient={editItem}
       deleteIngredient={stopEdits}
       editIngredient={handleItemEdit}

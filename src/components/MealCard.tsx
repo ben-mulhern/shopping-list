@@ -273,7 +273,7 @@ const MealCard = (props: Props) => {
                       item_id: 0,
                       question_mark: false,
                     }}
-                    index={mi.ingredient.ingredient_id}
+                    index={mi.ingredient.ingredient_id!}
                     key={mi.ingredient.ingredient_id}
                     checkboxTooltipText="Check if required"
                     checked={checked}
@@ -281,14 +281,14 @@ const MealCard = (props: Props) => {
                     toggleItem={() =>
                       toggleItem(
                         meal.meal_id,
-                        mi.ingredient.ingredient_id,
+                        mi.ingredient.ingredient_id!,
                         !checked
                       )
                     }
                     toggleQuestionMark={() =>
                       toggleQuestionMark(
                         meal.meal_id,
-                        mi.ingredient.ingredient_id,
+                        mi.ingredient.ingredient_id!,
                         !questionMark
                       )
                     }
