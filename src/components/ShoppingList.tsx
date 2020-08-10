@@ -26,7 +26,15 @@ import ConfirmClearWindow from "./ConfirmClearWindow"
 import Fab from "@material-ui/core/Fab"
 import AddIcon from "@material-ui/icons/Add"
 import Tooltip from "@material-ui/core/Tooltip"
-import { Ingredient, ShoppingListItem } from "../domain/shoppingListTypes"
+import {
+  Ingredient,
+  ShoppingListItem,
+  MealIngredient,
+} from "../domain/shoppingListTypes"
+import {
+  shoppingListItemToMealIngredientConverter,
+  mealIngredientToShoppingListItemConverter,
+} from "../domain/editableItemConverters"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -104,8 +112,9 @@ const ShoppingList = () => {
     })
   }
 
-  const handleItemEdit = (i: number, ing: ShoppingListItem) => {
-    setEditItem(ing)
+  const handleItemEdit = (i: number, ing: MealIngredient) => {
+    const sli = mealIngredientToShoppingListItemConverter(ing)
+    setEditItem(sli)
   }
 
   const stopEdits = () => {
@@ -246,7 +255,8 @@ const ShoppingList = () => {
 
   const mealIngredient = (
     <EditableMealIngredient
-      mealIngredient={editItem}
+      rowIndex={1}
+      mealIngredient={shoppingListItemToMealIngredientConverter(editItem)}
       deleteIngredient={stopEdits}
       editIngredient={handleItemEdit}
       listMode={true}
