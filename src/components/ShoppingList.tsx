@@ -30,6 +30,8 @@ import {
   Ingredient,
   ShoppingListItem,
   EditableItem,
+  Unit,
+  StoreLocation,
 } from "../domain/shoppingListTypes"
 import {
   shoppingListItemToEditableItemConverter,
@@ -79,9 +81,13 @@ const ShoppingList = () => {
   const [clearAllWindowOpen, setClearAllWindowOpen] = useState(false)
 
   if (!staticLoading) {
-    const units = Immutable.List(staticData.unit)
-    const locations = Immutable.List(staticData.store_location)
-    const ingredients = Immutable.List(staticData.ingredient)
+    const units: Immutable.List<Unit> = Immutable.List(staticData.unit)
+    const locations: Immutable.List<StoreLocation> = Immutable.List(
+      staticData.store_location
+    )
+    const ingredients: Immutable.List<Ingredient> = Immutable.List(
+      staticData.ingredient
+    )
     dispatch(storeStaticData(units, locations, ingredients))
   }
 

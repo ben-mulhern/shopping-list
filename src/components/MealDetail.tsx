@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import { QUERY_STATIC_DATA } from "../api/staticDataApiOperations"
 import { MEAL_QUERY } from "../api/mealListApiOperations"
 import Immutable from "immutable"
+import { Unit, StoreLocation, Ingredient } from "../domain/shoppingListTypes"
 
 const EMPTY_MEAL = {
   description: "",
@@ -54,9 +55,13 @@ const MealDetail = (props: Props) => {
   )
 
   if (!staticLoading) {
-    const units = Immutable.List(staticData.unit)
-    const locations = Immutable.List(staticData.store_location)
-    const ingredients = Immutable.List(staticData.ingredient)
+    const units: Immutable.List<Unit> = Immutable.List(staticData.unit)
+    const locations: Immutable.List<StoreLocation> = Immutable.List(
+      staticData.store_location
+    )
+    const ingredients: Immutable.List<Ingredient> = Immutable.List(
+      staticData.ingredient
+    )
     dispatch(storeStaticData(units, locations, ingredients))
   }
 

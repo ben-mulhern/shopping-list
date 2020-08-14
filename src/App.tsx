@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom"
 import { ApolloProvider } from "@apollo/react-hooks"
 import apiClient from "./api/apiClient"
 
-const App = (props) => (
+const App = () => (
   <Provider store={configureStore()}>
     <ApolloProvider client={apiClient}>
       <React.Fragment>

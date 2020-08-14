@@ -10,3 +10,13 @@ export interface RootState {
   locations: Immutable.List<StoreLocation>
   ingredients: Immutable.List<Ingredient>
 }
+
+export const INITIAL_STATE = {
+  loggedIn: false,
+  activeTab: 0,
+  lastTickedId: 0,
+  planOnlyMode: false,
+  units: Immutable.List(),
+  locations: Immutable.List(),
+  ingredients: Immutable.List(),
+}
