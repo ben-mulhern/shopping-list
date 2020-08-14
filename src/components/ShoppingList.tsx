@@ -29,11 +29,11 @@ import Tooltip from "@material-ui/core/Tooltip"
 import {
   Ingredient,
   ShoppingListItem,
-  MealIngredient,
+  EditableItem,
 } from "../domain/shoppingListTypes"
 import {
-  shoppingListItemToMealIngredientConverter,
-  mealIngredientToShoppingListItemConverter,
+  shoppingListItemToEditableItemConverter,
+  editableItemToShoppingListItemConverter,
 } from "../domain/editableItemConverters"
 
 const useStyles = makeStyles((theme) => ({
@@ -112,8 +112,8 @@ const ShoppingList = () => {
     })
   }
 
-  const handleItemEdit = (i: number, ing: MealIngredient) => {
-    const sli = mealIngredientToShoppingListItemConverter(ing)
+  const handleItemEdit = (i: number, ei: EditableItem) => {
+    const sli = editableItemToShoppingListItemConverter(ei)
     setEditItem(sli)
   }
 
@@ -256,9 +256,9 @@ const ShoppingList = () => {
   const mealIngredient = (
     <EditableMealIngredient
       rowIndex={1}
-      mealIngredient={shoppingListItemToMealIngredientConverter(editItem)}
+      mealIngredient={shoppingListItemToEditableItemConverter(editItem)}
       deleteIngredient={stopEdits}
-      editIngredient={handleItemEdit}
+      editItem={handleItemEdit}
       listMode={true}
       setItem={handleSetItem}
     />
@@ -278,7 +278,7 @@ const ShoppingList = () => {
               ) : (
                 <DisplayShoppingListItem
                   key={li.item_id}
-                  index={li.item_id}
+                  index={li.item_id!}
                   item={li}
                   toggleItem={toggleItem}
                   toggleQuestionMark={toggleQuestionMark}

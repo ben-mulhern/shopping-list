@@ -18,7 +18,16 @@ import cloneDeep from "lodash.clonedeep"
 import { Redirect } from "react-router"
 import CommitChangesButton from "./CommitChangesButton"
 import { EMPTY_MEAL_INGREDIENT } from "../domain/sharedValues"
-import { Meal, MealIngredient, DietType } from "../domain/shoppingListTypes"
+import {
+  Meal,
+  MealIngredient,
+  EditableItem,
+  DietType,
+} from "../domain/shoppingListTypes"
+import {
+  editableItemToMealIngredientConverter,
+  mealIngredientToEditableItemConverter,
+} from "../domain/editableItemConverters"
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -92,7 +101,8 @@ const MealDetailForm = (props: Props) => {
     validateIngredients(ings)
   }
 
-  const editIngredient = (i: number, ing: MealIngredient) => {
+  const editIngredient = (i: number, ei: EditableItem) => {
+    const ing = editableItemToMealIngredientConverter(ei)
     const ings = mealIngredients.set(i, ing)
     setMealIngredients(ings)
     validateIngredients(ings)
@@ -224,11 +234,11 @@ const MealDetailForm = (props: Props) => {
       </Button>
       {mealIngredients.map((mi, i) => (
         <EditableMealIngredient
-          mealIngredient={mi}
+          mealIngredient={mealIngredientToEditableItemConverter(mi)}
           key={i}
           rowIndex={i}
           deleteIngredient={() => deleteIngredient(i)}
-          editIngredient={editIngredient}
+          editItem={editIngredient}
           listMode={false}
         />
       ))}

@@ -5,7 +5,6 @@ const mealSearch = (searchString, meal) => {
   if (!searchString) return true
   const wordSet = Immutable.Set(searchString.toUpperCase().split(" "))
   const hits = wordSet.map((w) => checkMealWord(meal, w))
-  //console.log(hits.toArray())
   return !hits.includes(false)
 }
 

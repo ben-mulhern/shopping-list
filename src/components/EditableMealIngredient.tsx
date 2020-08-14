@@ -17,7 +17,7 @@ import Tooltip from "@material-ui/core/Tooltip"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import { useSelector } from "react-redux"
-import { MealIngredient, Ingredient } from "../domain/shoppingListTypes"
+import { EditableItem, Ingredient } from "../domain/shoppingListTypes"
 import { RootState } from "../state/RootState"
 import Immutable from "immutable"
 
@@ -55,17 +55,17 @@ const EMPTY_INGREDIENT = {
 }
 
 interface Props {
-  mealIngredient: MealIngredient
+  mealIngredient: EditableItem
   rowIndex: number
-  editIngredient(rowIndex: number, ingredient: MealIngredient): any
+  editItem(rowIndex: number, ingredient: EditableItem): any
   listMode: boolean
   setItem?(): any
   deleteIngredient(): any
 }
 
 const EditableMealIngredient = (props: Props) => {
-  const mi = props.mealIngredient
-  let ing = cloneDeep(mi)
+  const ei = props.mealIngredient
+  let ing = cloneDeep(ei)
   const units = useSelector((state: RootState) => state.units)
   const locations = useSelector((state: RootState) => state.locations)
   const ings = useSelector((state: RootState) => state.ingredients)
@@ -82,18 +82,18 @@ const EditableMealIngredient = (props: Props) => {
 
   const handleQuantity = (qty: number) => {
     ing.quantity = qty
-    props.editIngredient(props.rowIndex, ing)
+    props.editItem(props.rowIndex, ing)
   }
 
   const handleQuestionMark = () => {
-    ing.default_question_mark = !mi.default_question_mark
-    props.editIngredient(props.rowIndex, ing)
+    ing.default_question_mark = !ei.default_question_mark
+    props.editItem(props.rowIndex, ing)
   }
 
   const handleUnit = (unit: string) => {
     const newUnit = units.find((u) => u.unit_id === unit)
     ing.unit = newUnit!
-    props.editIngredient(props.rowIndex, ing)
+    props.editItem(props.rowIndex, ing)
   }
 
   const handleIngredient = (desc: string) => {
@@ -101,17 +101,17 @@ const EditableMealIngredient = (props: Props) => {
     if (!newIngredient) {
       newIngredient = cloneDeep(EMPTY_INGREDIENT)
       newIngredient.description = desc
-      newIngredient.store_location = mi.ingredient.store_location
+      newIngredient.store_location = ei.ingredient.store_location
     }
     ing.ingredient = newIngredient
     setIngredients(ingredientFilter(desc, ings))
-    props.editIngredient(props.rowIndex, ing)
+    props.editItem(props.rowIndex, ing)
   }
 
   const handleLocation = (loc: string) => {
     const newLocation = locations.find((l) => l.store_location_id === loc)
     ing.ingredient.store_location = newLocation!
-    props.editIngredient(props.rowIndex, ing)
+    props.editItem(props.rowIndex, ing)
   }
 
   return (
@@ -120,13 +120,13 @@ const EditableMealIngredient = (props: Props) => {
         <Autocomplete
           freeSolo
           options={ingredients.map((i) => i.description).toArray()}
-          value={mi.ingredient.description}
+          value={ei.ingredient.description}
           onInputChange={(e, v) => handleIngredient(v)}
           renderInput={(params) => (
             <TextField
               {...params}
               fullWidth
-              autoFocus={props.listMode || !mi.ingredient.description}
+              autoFocus={props.listMode || !ei.ingredient.description}
               placeholder="Ingredient"
               required
             />
@@ -140,14 +140,14 @@ const EditableMealIngredient = (props: Props) => {
       >
         <Input
           required
-          value={mi.quantity}
+          value={ei.quantity}
           onChange={(e) => {
             const qty: number = +e.target.value
             handleQuantity(qty)
           }}
           type="number"
           placeholder="Qty"
-          error={mi.quantity <= 0}
+          error={ei.quantity <= 0}
         />
       </FormControl>
       <FormControl
@@ -158,7 +158,7 @@ const EditableMealIngredient = (props: Props) => {
           variant="standard"
           required
           label="Unit"
-          value={mi.unit.unit_id}
+          value={ei.unit.unit_id}
           onChange={(e) => handleUnit(e.target.value as string)}
         >
           {units.map((u) => (
@@ -177,7 +177,7 @@ const EditableMealIngredient = (props: Props) => {
           variant="standard"
           required
           label="Location"
-          value={mi.ingredient.store_location.store_location_id}
+          value={ei.ingredient.store_location.store_location_id}
           onChange={(e) => handleLocation(e.target.value as string)}
         >
           {locations.map((l) => (
@@ -194,7 +194,7 @@ const EditableMealIngredient = (props: Props) => {
             <IconButton
               color="primary"
               onClick={props.setItem}
-              disabled={!mi.ingredient.description}
+              disabled={!ei.ingredient.description}
             >
               <AddCircleIcon />
             </IconButton>
@@ -209,13 +209,13 @@ const EditableMealIngredient = (props: Props) => {
         <span>
           <Tooltip
             title={
-              mi.default_question_mark
+              ei.default_question_mark
                 ? "Mark as probably needed"
                 : "Mark as always check"
             }
           >
             <IconButton onClick={() => handleQuestionMark()}>
-              {mi.default_question_mark ? (
+              {ei.default_question_mark ? (
                 <HelpIcon color="secondary" />
               ) : (
                 <HelpOutlineIcon />

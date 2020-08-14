@@ -24,7 +24,6 @@ const wsLink = new WebSocketLink({
 })
 
 export const reStartWsLink = () => {
-  console.log("Restarting ws link")
   wsLink.subscriptionClient.close()
   wsLink.subscriptionClient.connect()
 }

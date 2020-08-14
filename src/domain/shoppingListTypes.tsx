@@ -59,3 +59,14 @@ export type ShoppingListItem = {
   ticked_at?: Date
   question_mark: boolean
 }
+
+// Not ideal but kind of a mish-mash of MealIngredient and ShoppingListItem
+// that allows them to share a UI component
+export type EditableItem = {
+  ingredient: Ingredient
+  quantity: number
+  unit: Unit
+  default_question_mark?: boolean
+  item_id?: number
+  question_mark?: boolean
+}

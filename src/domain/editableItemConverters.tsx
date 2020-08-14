@@ -1,19 +1,43 @@
-import { ShoppingListItem, MealIngredient } from "./shoppingListTypes"
+import {
+  ShoppingListItem,
+  MealIngredient,
+  EditableItem,
+} from "./shoppingListTypes"
 
-export const shoppingListItemToMealIngredientConverter = (
+export const shoppingListItemToEditableItemConverter = (
   shoppingList: ShoppingListItem
-): MealIngredient => ({
+): EditableItem => ({
+  item_id: shoppingList.item_id,
   ingredient: shoppingList.ingredient,
   quantity: shoppingList.quantity,
   unit: shoppingList.unit,
-  default_question_mark: shoppingList.question_mark,
+  question_mark: shoppingList.question_mark,
 })
 
-export const mealIngredientToShoppingListItemConverter = (
-  mealIngredient: MealIngredient
+export const editableItemToShoppingListItemConverter = (
+  ei: EditableItem
 ): ShoppingListItem => ({
+  item_id: ei.item_id,
+  quantity: ei.quantity,
+  unit: ei.unit,
+  ingredient: ei.ingredient,
+  question_mark: ei.question_mark!,
+})
+
+export const editableItemToMealIngredientConverter = (
+  ei: EditableItem
+): MealIngredient => ({
+  quantity: ei.quantity,
+  unit: ei.unit,
+  ingredient: ei.ingredient,
+  default_question_mark: ei.default_question_mark!,
+})
+
+export const mealIngredientToEditableItemConverter = (
+  mealIngredient: MealIngredient
+): EditableItem => ({
   quantity: mealIngredient.quantity,
   unit: mealIngredient.unit,
   ingredient: mealIngredient.ingredient,
-  question_mark: mealIngredient.default_question_mark,
+  default_question_mark: mealIngredient.default_question_mark,
 })
