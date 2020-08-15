@@ -11,7 +11,7 @@ const httpLink = createHttpLink({
 })
 
 const wsLink = new WebSocketLink({
-  uri: process.env.REACT_APP_API_WS_URL,
+  uri: process.env.REACT_APP_API_WS_URL!,
   options: {
     lazy: true,
     reconnect: true,
@@ -22,11 +22,6 @@ const wsLink = new WebSocketLink({
     },
   },
 })
-
-export const reStartWsLink = () => {
-  wsLink.subscriptionClient.close()
-  wsLink.subscriptionClient.connect()
-}
 
 const authLink = setContext((_, { headers }) => {
   const apiKey = localStorage.getItem("API_KEY")
@@ -42,8 +37,10 @@ const authLink = setContext((_, { headers }) => {
 const link = split(
   // split based on operation type
   ({ query }) => {
-    const { kind, operation } = getMainDefinition(query)
-    return kind === "OperationDefinition" && operation === "subscription"
+    const def = getMainDefinition(query)
+    return (
+      def.kind === "OperationDefinition" && def.operation === "subscription"
+    )
   },
   wsLink,
   authLink.concat(httpLink)
