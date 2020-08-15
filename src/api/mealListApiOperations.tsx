@@ -79,7 +79,12 @@ export const MEAL_SUBSCRIPTION = gql`
       meal_tags {
         tag
       }
-      meal_ingredients {
+      meal_ingredients(
+        order_by: [
+          { ingredient: { store_location: { shop_order: asc } } }
+          { ingredient: { ingredient_id: asc } }
+        ]
+      ) {
         ingredient {
           ingredient_id
           description
@@ -118,7 +123,12 @@ export const MEAL_QUERY = gql`
       meal_tags {
         tag
       }
-      meal_ingredients {
+      meal_ingredients(
+        order_by: [
+          { ingredient: { store_location: { shop_order: asc } } }
+          { ingredient: { ingredient_id: asc } }
+        ]
+      ) {
         quantity
         default_question_mark
         unit {
