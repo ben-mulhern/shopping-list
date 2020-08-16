@@ -56,8 +56,8 @@ const EMPTY_INGREDIENT = {
 
 interface Props {
   mealIngredient: EditableItem
-  rowIndex: number
-  editItem(rowIndex: number, ingredient: EditableItem): any
+  key: number
+  editItem(key: number, ingredient: EditableItem): any
   listMode: boolean
   setItem?(): any
   deleteIngredient(): any
@@ -82,18 +82,18 @@ const EditableMealIngredient = (props: Props) => {
 
   const handleQuantity = (qty: number) => {
     ing.quantity = qty
-    props.editItem(props.rowIndex, ing)
+    props.editItem(props.key, ing)
   }
 
   const handleQuestionMark = () => {
     ing.default_question_mark = !ei.default_question_mark
-    props.editItem(props.rowIndex, ing)
+    props.editItem(props.key, ing)
   }
 
   const handleUnit = (unit: string) => {
     const newUnit = units.find((u) => u.unit_id === unit)
     ing.unit = newUnit!
-    props.editItem(props.rowIndex, ing)
+    props.editItem(props.key, ing)
   }
 
   const handleIngredient = (desc: string) => {
@@ -106,13 +106,13 @@ const EditableMealIngredient = (props: Props) => {
     newIngredient.store_location = ei.ingredient.store_location
     ing.ingredient = newIngredient
     setIngredients(ingredientFilter(desc, ings))
-    props.editItem(props.rowIndex, ing)
+    props.editItem(props.key, ing)
   }
 
   const handleLocation = (loc: string) => {
     const newLocation = locations.find((l) => l.store_location_id === loc)
     ing.ingredient.store_location = newLocation!
-    props.editItem(props.rowIndex, ing)
+    props.editItem(props.key, ing)
   }
 
   return (
