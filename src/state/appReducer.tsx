@@ -42,7 +42,6 @@ const appReducer = (state = INITIAL_STATE, action: AppActionType) => {
       }
 
     case "SET_SEARCH_STRING":
-      console.log(`Setting search string ${action.searchString}`)
       return {
         ...state,
         searchString: action.searchString,
