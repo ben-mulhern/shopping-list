@@ -75,6 +75,16 @@ interface STORE_STATIC_DATA_ACTION {
   ingredients: Immutable.List<Ingredient>
 }
 
+export const SET_SEARCH_STRING = "SET_SEARCH_STRING"
+export const setSearchString = (str: string): AppActionType => ({
+  type: SET_SEARCH_STRING,
+  searchString: str,
+})
+interface SET_SEARCH_STRING_ACTION {
+  type: typeof SET_SEARCH_STRING
+  searchString: string
+}
+
 export type AppActionType =
   | LOGIN_ACTION
   | LOGOUT_ACTION
@@ -83,3 +93,4 @@ export type AppActionType =
   | SET_LAST_TICKED_ITEM_ACTION
   | TOGGLE_PLAN_ONLY_MODE_ACTION
   | STORE_STATIC_DATA_ACTION
+  | SET_SEARCH_STRING_ACTION

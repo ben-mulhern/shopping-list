@@ -9,6 +9,7 @@ export interface RootState {
   units: Immutable.List<Unit>
   locations: Immutable.List<StoreLocation>
   ingredients: Immutable.List<Ingredient>
+  searchString: string
 }
 
 export const INITIAL_STATE = {
@@ -19,4 +20,5 @@ export const INITIAL_STATE = {
   units: Immutable.List(),
   locations: Immutable.List(),
   ingredients: Immutable.List(),
+  searchString: "",
 }
