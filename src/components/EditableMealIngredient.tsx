@@ -103,6 +103,7 @@ const EditableMealIngredient = (props: Props) => {
       newIngredient.description = desc
       newIngredient.store_location = ei.ingredient.store_location
     }
+    newIngredient.store_location = ei.ingredient.store_location
     ing.ingredient = newIngredient
     setIngredients(ingredientFilter(desc, ings))
     props.editItem(props.rowIndex, ing)
