@@ -40,6 +40,7 @@ import { useSelector } from "react-redux"
 import IconButton from "@material-ui/core/IconButton"
 import { RootState } from "../state/RootState"
 import { Meal } from "../domain/shoppingListTypes"
+import mealSearch from "../domain/mealSearch"
 
 const useStyles = makeStyles({
   card: {
@@ -71,7 +72,6 @@ const useStyles = makeStyles({
 interface Props extends RouteComponentProps {
   meal: Meal
   selected: boolean
-  hidden: boolean
 }
 
 const MealCard = (props: Props) => {
@@ -85,8 +85,11 @@ const MealCard = (props: Props) => {
   const [uncheckPlanItem] = useMutation(UNCHECK_PLAN_ITEM)
   const [updateMealPlanCount] = useMutation(UPDATE_MEAL_PLAN_COUNT)
   const selected = props.selected
+  const planOnly = useSelector((state: RootState) => state.planOnlyMode)
+  const searchString = useSelector((state: RootState) => state.searchString)
+  const hidden = (planOnly && !selected) || !mealSearch(searchString, meal)
 
-  const cardClass = clsx(classes.card, props.hidden && classes.hidden)
+  const cardClass = clsx(classes.card, hidden && classes.hidden)
   const sliderClass = clsx(classes.slider, !selected && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
   const mealCount =
@@ -149,7 +152,6 @@ const MealCard = (props: Props) => {
     }
   }
 
-  const planOnly = useSelector((state: RootState) => state.planOnlyMode)
   const [cardElevation, setCardElevation] = useState(1)
   const [expanded, setExpanded] = useState(false)
 

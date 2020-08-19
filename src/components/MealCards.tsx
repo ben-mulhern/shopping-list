@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { setTab } from "../state/actions"
 import { makeStyles } from "@material-ui/core/styles"
 import Button from "@material-ui/core/Button"
-import mealSearch from "../domain/mealSearch"
 import AddIcon from "@material-ui/icons/Add"
 import { withRouter, RouteComponentProps } from "react-router-dom"
 import CircularProgress from "@material-ui/core/CircularProgress"
@@ -41,7 +40,6 @@ const MealCards = (props: Props) => {
   const dispatch = useDispatch()
   dispatch(setTab(1))
   const planOnly = useSelector((state: RootState) => state.planOnlyMode)
-  const searchString = useSelector((state: RootState) => state.searchString)
 
   const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
   const {
@@ -90,10 +88,6 @@ const MealCards = (props: Props) => {
           <MealCard
             meal={m}
             key={m.meal_id}
-            hidden={
-              (planOnly && !selectedMeals.includes(m.meal_id)) ||
-              !mealSearch(searchString, m)
-            }
             selected={selectedMeals.includes(m.meal_id)}
           />
         ))}
