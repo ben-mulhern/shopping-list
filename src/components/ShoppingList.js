@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { connect } from "react-redux"
-import { setTab } from "../state/actions"
+import { useDispatch } from "react-redux"
+import { setTab, storeStaticData } from "../state/actions"
 import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
@@ -14,11 +14,8 @@ import {
   SHOPPING_LIST_SUBSCRIPTION,
 } from "../api/shoppingListApiOperations"
 import { UPSERT_INGREDIENTS } from "../api/mealListApiOperations"
-import IconButton from "@material-ui/core/IconButton"
-import AddCircleIcon from "@material-ui/icons/AddCircle"
 import List from "@material-ui/core/List"
 import Paper from "@material-ui/core/Paper"
-import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import MealIngredient from "./MealIngredient"
 import UndoButton from "./UndoButton"
@@ -26,6 +23,9 @@ import { EMPTY_MEAL_INGREDIENT } from "../domain/sharedValues"
 import ShoppingListItem from "./ShoppingListItem"
 import ClearIcon from "@material-ui/icons/Clear"
 import ConfirmClearWindow from "./ConfirmClearWindow"
+import Fab from "@material-ui/core/Fab"
+import AddIcon from "@material-ui/icons/Add"
+import Tooltip from "@material-ui/core/Tooltip"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
 
 const ShoppingList = (props) => {
   const classes = useStyles()
-  props.setTab(0)
+  const dispatch = useDispatch()
+  dispatch(setTab(0))
 
   const { loading, error, data } = useSubscription(SHOPPING_LIST_SUBSCRIPTION)
 
@@ -65,6 +66,13 @@ const ShoppingList = (props) => {
   const [addMode, setAddMode] = useState(false)
   const [editItem, setEditItem] = useState(EMPTY_MEAL_INGREDIENT)
   const [clearAllWindowOpen, setClearAllWindowOpen] = useState(false)
+
+  if (!staticLoading) {
+    const units = Immutable.List(staticData.unit)
+    const locations = Immutable.List(staticData.store_location)
+    const ingredients = Immutable.List(staticData.ingredient)
+    dispatch(storeStaticData(units, locations, ingredients))
+  }
 
   const toggleItem = (id, checked) => {
     if (checked) {
@@ -184,27 +192,44 @@ const ShoppingList = (props) => {
 
   const buttons = (
     <div>
-      <IconButton
-        variant="outlined"
-        color="primary"
-        onClick={() => setAddMode(true)}
-      >
-        <AddCircleIcon />
-      </IconButton>
+      <Tooltip title="Add a new list item">
+        <Fab
+          className={classes.margin}
+          color="primary"
+          onClick={() => setAddMode(true)}
+          size="small"
+        >
+          <AddIcon />
+        </Fab>
+      </Tooltip>
       <UndoButton />
-      <IconButton
-        variant="outlined"
-        onClick={() => setQuestionMarksOnly(!questionMarksOnly)}
+      <Tooltip
+        title={
+          questionMarksOnly
+            ? "Show all unticked items"
+            : "Show only question marks"
+        }
       >
-        {questionMarksOnly ? (
-          <HelpIcon color="secondary" />
-        ) : (
+        <Fab
+          className={classes.margin}
+          color={questionMarksOnly ? "secondary" : "default"}
+          onClick={() => setQuestionMarksOnly(!questionMarksOnly)}
+          size="small"
+        >
           <HelpOutlineIcon />
-        )}
-      </IconButton>
-      <IconButton onClick={() => setClearAllWindowOpen(true)}>
-        <ClearIcon color="secondary" />
-      </IconButton>
+        </Fab>
+      </Tooltip>
+      <Tooltip title="Clear entire list">
+        <Fab
+          className={classes.margin}
+          color="secondary"
+          onClick={() => setClearAllWindowOpen(true)}
+          size="small"
+          disabled={items.size === 0}
+        >
+          <ClearIcon />
+        </Fab>
+      </Tooltip>
       <ConfirmClearWindow
         open={clearAllWindowOpen}
         handleClose={() => setClearAllWindowOpen(false)}
@@ -215,9 +240,6 @@ const ShoppingList = (props) => {
   const mealIngredient = (
     <MealIngredient
       mealIngredient={editItem}
-      units={staticData.unit}
-      locations={staticData.store_location}
-      ingredients={staticData.ingredient}
       deleteIngredient={stopEdits}
       editIngredient={handleItemEdit}
       listMode={true}
@@ -233,13 +255,13 @@ const ShoppingList = (props) => {
         <List>
           {items
             .filter((i) => !questionMarksOnly || i.question_mark)
-            .map((li, i) =>
+            .map((li) =>
               li.item_id === editItem.item_id ? (
                 mealIngredient
               ) : (
                 <ShoppingListItem
-                  key={i}
-                  index={i}
+                  key={li.item_id}
+                  index={li.item_id}
                   item={li}
                   toggleItem={toggleItem}
                   toggleQuestionMark={toggleQuestionMark}
@@ -252,9 +274,4 @@ const ShoppingList = (props) => {
     </div>
   )
 }
-
-const mapDispatchToProps = (dispatch) => ({
-  setTab: (index) => dispatch(setTab(index)),
-})
-
-export default connect(null, mapDispatchToProps)(ShoppingList)
+export default ShoppingList

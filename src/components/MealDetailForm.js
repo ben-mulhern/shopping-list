@@ -6,7 +6,6 @@ import RadioGroup from "@material-ui/core/RadioGroup"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
-import Switch from "@material-ui/core/Switch"
 import Slider from "@material-ui/core/Slider"
 import MealIngredient from "./MealIngredient"
 import Paper from "@material-ui/core/Paper"
@@ -45,7 +44,6 @@ const MealDetailForm = (props) => {
   const [redirect, setRedirect] = useState(false)
   const [description, setDescription] = useState(meal.description)
   const [dietType, setDietType] = useState(meal.diet_type)
-  const [leftovers, setLeftovers] = useState(meal.leftovers)
   const [imageUrl, setImageUrl] = useState(meal.image_url)
   const [serves, setServes] = useState(meal.serves)
   const [recipeBook, setRecipeBook] = useState(meal.recipe_book)
@@ -79,16 +77,9 @@ const MealDetailForm = (props) => {
     setTagErrorText(errorMessage)
   }
 
-  const marks = [
-    { value: 1, label: "1" },
-    { value: 2, label: "2" },
-    { value: 3, label: "3" },
-    { value: 4, label: "4" },
-    { value: 5, label: "5" },
-    { value: 6, label: "6" },
-    { value: 7, label: "7" },
-    { value: 8, label: "8" },
-  ]
+  const marks = Array(8)
+    .fill({})
+    .map((e, i) => ({ value: i + 1, label: (i + 1).toString() }))
 
   const deleteIngredient = (i) => {
     const ings = mealIngredients.delete(i)
@@ -104,7 +95,7 @@ const MealDetailForm = (props) => {
 
   const addIngredient = () => {
     const newIngredient = cloneDeep(EMPTY_MEAL_INGREDIENT)
-    const ings = mealIngredients.push(newIngredient)
+    const ings = mealIngredients.unshift(newIngredient)
     setMealIngredients(ings)
     validateIngredients(ings)
   }
@@ -165,16 +156,6 @@ const MealDetailForm = (props) => {
         </FormControl>
 
         <FormControl component="fieldset" className={classes.formControl}>
-          <FormLabel component="legend">Leftovers</FormLabel>
-          <Switch
-            value={leftovers}
-            checked={leftovers}
-            color="primary"
-            onChange={(e) => setLeftovers(e.target.checked)}
-          />
-        </FormControl>
-
-        <FormControl component="fieldset" className={classes.formControl}>
           <TextField
             label="Image URL"
             value={imageUrl}
@@ -227,12 +208,18 @@ const MealDetailForm = (props) => {
         </FormControl>
       </Paper>
       <h2 className={classes.margin}>Ingredients</h2>
+      <Button
+        variant="contained"
+        color="secondary"
+        className={classes.margin}
+        startIcon={<AddIcon />}
+        onClick={() => addIngredient()}
+      >
+        Add ingredient
+      </Button>
       {mealIngredients.map((mi, i) => (
         <MealIngredient
           mealIngredient={mi}
-          units={props.units}
-          locations={props.locations}
-          ingredients={props.ingredients}
           key={i}
           rowIndex={i}
           deleteIngredient={() => deleteIngredient(i)}
@@ -246,7 +233,6 @@ const MealDetailForm = (props) => {
         mealId={meal.meal_id}
         description={description}
         serves={serves}
-        leftovers={leftovers}
         dietType={dietType}
         recipeBook={recipeBook}
         imageUrl={imageUrl}
@@ -260,15 +246,6 @@ const MealDetailForm = (props) => {
           !tagString
         }
       />
-      <Button
-        variant="contained"
-        color="secondary"
-        className={classes.margin}
-        startIcon={<AddIcon />}
-        onClick={() => addIngredient()}
-      >
-        Add ingredient
-      </Button>
       <Button
         variant="contained"
         color="default"

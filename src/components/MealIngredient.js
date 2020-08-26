@@ -13,6 +13,10 @@ import cloneDeep from "lodash.clonedeep"
 import Paper from "@material-ui/core/Paper"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import ClearIcon from "@material-ui/icons/Clear"
+import Tooltip from "@material-ui/core/Tooltip"
+import HelpIcon from "@material-ui/icons/Help"
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
+import { useSelector } from "react-redux"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -49,10 +53,11 @@ const EMPTY_INGREDIENT = {
 const MealIngredient = (props) => {
   const mi = props.mealIngredient
   let ing = cloneDeep(mi)
-  const units = props.units
-  const locations = props.locations
+  const units = useSelector((state) => state.units)
+  const locations = useSelector((state) => state.locations)
+  const ings = useSelector((state) => state.ingredients)
   const classes = useStyles()
-  const [ingredients, setIngredients] = useState(props.ingredients)
+  const [ingredients, setIngredients] = useState(ings)
 
   const ingredientFilter = (str, ings) => {
     if (!str) return ings
@@ -64,6 +69,11 @@ const MealIngredient = (props) => {
 
   const handleQuantity = (qty) => {
     ing.quantity = qty
+    props.editIngredient(props.rowIndex, ing)
+  }
+
+  const handleQuestionMark = () => {
+    ing.default_question_mark = !mi.default_question_mark
     props.editIngredient(props.rowIndex, ing)
   }
 
@@ -81,7 +91,7 @@ const MealIngredient = (props) => {
       newIngredient.store_location = mi.ingredient.store_location
     }
     ing.ingredient = newIngredient
-    setIngredients(ingredientFilter(desc, props.ingredients))
+    setIngredients(ingredientFilter(desc, ings))
     props.editIngredient(props.rowIndex, ing)
   }
 
@@ -96,13 +106,14 @@ const MealIngredient = (props) => {
       <FormControl className={clsx(classes.margin, classes.textField200)}>
         <Autocomplete
           freeSolo
-          options={ingredients.map((i) => i.description)}
+          options={ingredients.map((i) => i.description).toArray()}
           value={mi.ingredient.description}
           onInputChange={(e, v) => handleIngredient(v)}
           renderInput={(params) => (
             <TextField
               {...params}
               fullWidth
+              autoFocus={props.listMode || !mi.ingredient.description}
               placeholder="Ingredient"
               required
             />
@@ -161,23 +172,47 @@ const MealIngredient = (props) => {
           ))}
         </Select>
       </FormControl>
+
       {props.listMode ? (
         <span>
-          <IconButton
-            color="primary"
-            onClick={props.setItem}
-            disabled={!mi.ingredient.description}
-          >
-            <AddCircleIcon />
-          </IconButton>
-          <IconButton color="inherit" onClick={props.deleteIngredient}>
-            <ClearIcon />
-          </IconButton>
+          <Tooltip title="Add ingredient to list">
+            <IconButton
+              color="primary"
+              onClick={props.setItem}
+              disabled={!mi.ingredient.description}
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Cancel changes">
+            <IconButton color="inherit" onClick={props.deleteIngredient}>
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
         </span>
       ) : (
-        <IconButton color="inherit" onClick={props.deleteIngredient}>
-          <DeleteIcon />
-        </IconButton>
+        <span>
+          <Tooltip
+            title={
+              mi.default_question_mark
+                ? "Mark as probably needed"
+                : "Mark as always check"
+            }
+          >
+            <IconButton onClick={() => handleQuestionMark()}>
+              {mi.default_question_mark ? (
+                <HelpIcon color="secondary" />
+              ) : (
+                <HelpOutlineIcon />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Remove ingredient from meal">
+            <IconButton color="inherit" onClick={props.deleteIngredient}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </span>
       )}
     </Paper>
   )

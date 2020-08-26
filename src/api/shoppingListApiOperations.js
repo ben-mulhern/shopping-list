@@ -84,9 +84,15 @@ export const GET_LAST_TICKED_ITEM = gql`
 `
 
 export const TICK_ALL = gql`
-  mutation reinsert_list {
-    delete_shopping_list_item(where: { ticked_at: { _eq: null } }) {
+  mutation tick_item($ts: timestamp!) {
+    update_shopping_list_item(
+      where: { ticked_at: { _is_null: true } }
+      _set: { ticked_at: $ts }
+    ) {
       affected_rows
+      returning {
+        item_id
+      }
     }
   }
 `
@@ -98,6 +104,7 @@ export const SHOPPING_LIST_SUBSCRIPTION = gql`
       order_by: [
         { ingredient: { store_location: { shop_order: asc } } }
         { ingredient: { ingredient_id: asc } }
+        { item_id: asc }
       ]
     ) {
       item_id
@@ -114,6 +121,36 @@ export const SHOPPING_LIST_SUBSCRIPTION = gql`
           store_location_id
           shop_order
         }
+      }
+    }
+  }
+`
+
+export const LIST_DATA_QUERY = gql`
+  query getMealIngredients {
+    meal_ingredient_plan_item(where: { checked: { _eq: true } }) {
+      meal_id
+      ingredient_id
+      question_mark
+      meal_ingredient {
+        quantity
+        unit {
+          unit_id
+        }
+      }
+    }
+    meal_plan_count {
+      meal_id
+      meal_count
+    }
+    shopping_list_item(where: { ticked_at: { _is_null: true } }) {
+      quantity
+      unit {
+        unit_id
+      }
+      question_mark
+      ingredient {
+        ingredient_id
       }
     }
   }

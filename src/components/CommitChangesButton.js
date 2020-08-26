@@ -58,7 +58,6 @@ const CommitChangesButton = (props) => {
 
   const saveChanges = () => {
     // Ingredients firt, the rest follows on once completed
-    console.log("Attempting ingredient upsert")
     const ingredients = props.mealIngredients
       .map((mi) => mi.ingredient)
       .map((i) => omitDeep(i, "__typename"))
@@ -66,7 +65,6 @@ const CommitChangesButton = (props) => {
         set(i, "store_location_id", i.store_location.store_location_id)
       )
       .map((i) => omitDeep(i, "store_location"))
-    console.log(JSON.stringify(ingredients))
     upsertIngredients({
       variables: {
         ingredients: ingredients,
@@ -80,17 +78,14 @@ const CommitChangesButton = (props) => {
     !ingredientsError &&
     !calledMeal
   ) {
-    console.log("Attempting meal upsert")
     const meal = {
       meal_id: props.mealId,
       description: props.description,
       serves: props.serves,
-      leftovers: props.leftovers,
       diet_type: props.dietType,
       recipe_book: props.recipeBook,
       image_url: props.imageUrl,
     }
-    console.log(JSON.stringify(meal))
     upsertMeal({
       variables: {
         meal: meal,
@@ -99,7 +94,6 @@ const CommitChangesButton = (props) => {
   }
 
   if (calledMeal && !loadingMeal && !mealError && !calledMealIngsTags) {
-    console.log("Attempting mi & tags update")
     const mealId = mealData.insert_meal.returning[0].meal_id
     const tags =
       props.tagString.length === 0
@@ -130,6 +124,7 @@ const CommitChangesButton = (props) => {
       ingredient_id: nmi.ingredient.ingredient_id,
       quantity: nmi.quantity,
       unit_id: nmi.unit.unit_id,
+      default_question_mark: nmi.default_question_mark,
     }))
     setMealIngsTags({
       variables: {

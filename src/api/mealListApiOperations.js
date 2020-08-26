@@ -23,14 +23,7 @@ export const UPSERT_MEAL = gql`
       objects: [$meal]
       on_conflict: {
         constraint: pk_meal
-        update_columns: [
-          description
-          serves
-          leftovers
-          diet_type
-          recipe_book
-          image_url
-        ]
+        update_columns: [description, serves, diet_type, recipe_book, image_url]
       }
     ) {
       returning {
@@ -75,18 +68,40 @@ export const DELETE_MEAL = gql`
 
 export const MEAL_SUBSCRIPTION = gql`
   subscription {
-    meal {
+    meal(order_by: { meal_id: asc }) {
       meal_id
       description
       image_url
+      serves
+      meal_plan_counts {
+        meal_count
+      }
       meal_tags {
         tag
       }
       meal_ingredients {
         ingredient {
+          ingredient_id
           description
         }
+        unit {
+          unit_id
+        }
+        quantity
+        default_question_mark
+        meal_ingredient_plan_items {
+          checked
+          question_mark
+        }
       }
+    }
+  }
+`
+
+export const SELECTED_MEALS_SUBSCRIPTION = gql`
+  subscription {
+    meal_ingredient_plan_item(distinct_on: meal_id) {
+      meal_id
     }
   }
 `
@@ -97,7 +112,6 @@ export const MEAL_QUERY = gql`
       meal_id
       description
       diet_type
-      leftovers
       image_url
       serves
       recipe_book
@@ -106,6 +120,7 @@ export const MEAL_QUERY = gql`
       }
       meal_ingredients {
         quantity
+        default_question_mark
         unit {
           unit_id
         }
@@ -117,6 +132,113 @@ export const MEAL_QUERY = gql`
           }
         }
       }
+    }
+  }
+`
+
+export const ADD_MEAL_TO_PLAN = gql`
+  mutation insert_meal_plan(
+    $meal: [meal_ingredient_plan_item_insert_input!]!
+    $mealId: Int!
+  ) {
+    insert_meal_ingredient_plan_item(objects: $meal) {
+      returning {
+        meal_id
+      }
+    }
+    insert_meal_plan_count(objects: [{ meal_id: $mealId }]) {
+      returning {
+        meal_id
+      }
+    }
+  }
+`
+
+export const REMOVE_MEAL_FROM_PLAN = gql`
+  mutation delete_meal_ingredient_plan_item($meal_id: Int!) {
+    delete_meal_ingredient_plan_item(where: { meal_id: { _eq: $meal_id } }) {
+      affected_rows
+    }
+    delete_meal_plan_count(where: { meal_id: { _eq: $meal_id } }) {
+      affected_rows
+    }
+  }
+`
+
+export const CLEAR_PLAN = gql`
+  mutation delete_meal_ingredient_plan_item {
+    delete_meal_ingredient_plan_item(where: {}) {
+      affected_rows
+    }
+    delete_meal_plan_count(where: {}) {
+      affected_rows
+    }
+  }
+`
+
+export const SET_PLAN_QUESTION_MARK = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { question_mark: true }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const CHECK_PLAN_ITEM = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { checked: true }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const UNSET_PLAN_QUESTION_MARK = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { question_mark: false }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const UNCHECK_PLAN_ITEM = gql`
+  mutation set_plan_question_mark($meal_id: Int!, $ingredient_id: Int!) {
+    update_meal_ingredient_plan_item(
+      where: {
+        meal_id: { _eq: $meal_id }
+        ingredient_id: { _eq: $ingredient_id }
+      }
+      _set: { checked: false, question_mark: false }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+export const UPDATE_MEAL_PLAN_COUNT = gql`
+  mutation update_meal_plan_count($meal_id: Int!, $count: numeric!) {
+    update_meal_plan_count(
+      where: { meal_id: { _eq: $meal_id } }
+      _set: { meal_count: $count }
+    ) {
+      affected_rows
     }
   }
 `

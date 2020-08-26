@@ -17,7 +17,7 @@ const wsLink = new WebSocketLink({
     reconnect: true,
     connectionParams: {
       headers: {
-        "x-hasura-admin-secret": sessionStorage.getItem("API_KEY") || "",
+        "x-hasura-admin-secret": localStorage.getItem("API_KEY") || "",
       },
     },
   },
@@ -30,7 +30,7 @@ export const reStartWsLink = () => {
 }
 
 const authLink = setContext((_, { headers }) => {
-  const apiKey = sessionStorage.getItem("API_KEY")
+  const apiKey = localStorage.getItem("API_KEY")
 
   return {
     headers: {

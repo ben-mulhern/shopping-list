@@ -5,41 +5,37 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
-import { useMutation } from "@apollo/react-hooks"
-import { DELETE_MEAL } from "../api/mealListApiOperations"
 import CircularProgress from "@material-ui/core/CircularProgress"
 
-const ConfirmWindow = (props) => {
-  const [deleteMeal, { loading: deleting, error: deleteError }] = useMutation(
-    DELETE_MEAL
-  )
-
-  const deleteAndClose = () => {
-    deleteMeal({
-      variables: { meal_id: props.mealId },
-    })
+const DialogBox = (props) => {
+  const actThenClose = () => {
+    props.action()
     props.handleClose()
   }
 
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
-      <DialogTitle id="alert-dialog-title">Confirm delete?</DialogTitle>
+      <DialogTitle id="alert-dialog-title">Confirm action</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          {deleting ? (
+          {props.waiting ? (
             <CircularProgress color="secondary" />
-          ) : deleteError ? (
-            `${deleteError}`
+          ) : props.actionError ? (
+            `${props.actionError}`
           ) : (
-            `Are you sure you want to delete ${props.description}?`
+            `${props.message}`
           )}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={deleteAndClose} color="primary" disabled={deleting}>
+        <Button onClick={actThenClose} color="primary" disabled={props.waiting}>
           Confirm
         </Button>
-        <Button onClick={props.handleClose} color="default" disabled={deleting}>
+        <Button
+          onClick={props.handleClose}
+          color="default"
+          disabled={props.waiting}
+        >
           Cancel
         </Button>
       </DialogActions>
@@ -47,4 +43,4 @@ const ConfirmWindow = (props) => {
   )
 }
 
-export default ConfirmWindow
+export default DialogBox

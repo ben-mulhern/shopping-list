@@ -1,17 +1,17 @@
 import React from "react"
-import { connect } from "react-redux"
-import { setTab } from "../state/actions"
+import { useDispatch } from "react-redux"
+import { setTab, storeStaticData } from "../state/actions"
 import { useLazyQuery, useQuery } from "@apollo/react-hooks"
 import MealDetailForm from "./MealDetailForm"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core/styles"
 import { QUERY_STATIC_DATA } from "../api/staticDataApiOperations"
 import { MEAL_QUERY } from "../api/mealListApiOperations"
+import Immutable from "immutable"
 
 const EMPTY_MEAL = {
   description: "",
   diet_type: "OMNI",
-  leftovers: false,
   image_url: null,
   serves: 4,
   recipe_book: null,
@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const MealDetail = (props) => {
-  props.setTab(1)
+  const dispatch = useDispatch()
+  dispatch(setTab(1))
   const mealId = props.match.params.id
   const classes = useStyles()
 
@@ -44,6 +45,13 @@ const MealDetail = (props) => {
     }
   )
 
+  if (!staticLoading) {
+    const units = Immutable.List(staticData.unit)
+    const locations = Immutable.List(staticData.store_location)
+    const ingredients = Immutable.List(staticData.ingredient)
+    dispatch(storeStaticData(units, locations, ingredients))
+  }
+
   if (!called && mealId !== "new") runMealQuery()
 
   if (loading || staticLoading)
@@ -51,22 +59,8 @@ const MealDetail = (props) => {
   if (error || staticError) return <p>Error :(</p>
 
   const meal = called ? data.meal[0] : EMPTY_MEAL
-  const units = staticData.unit
-  const locations = staticData.store_location
-  const ingredients = staticData.ingredient
 
-  return (
-    <MealDetailForm
-      meal={meal}
-      units={units}
-      locations={locations}
-      ingredients={ingredients}
-    />
-  )
+  return <MealDetailForm meal={meal} />
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  setTab: (index) => dispatch(setTab(index)),
-})
-
-export default connect(null, mapDispatchToProps)(MealDetail)
+export default MealDetail

@@ -3,8 +3,11 @@ import Immutable from "immutable"
 const initialState = {
   loggedIn: false,
   activeTab: 0,
-  selectedMeals: Immutable.Set(),
   lastTickedId: 0,
+  planOnlyMode: false,
+  units: Immutable.List(),
+  locations: Immutable.List(),
+  ingredients: Immutable.List(),
 }
 
 const appReducer = (state = initialState, action) => {
@@ -15,32 +18,36 @@ const appReducer = (state = initialState, action) => {
         loggedIn: true,
       }
 
+    case "LOGOUT":
+      return {
+        ...state,
+        loggedIn: false,
+      }
+
     case "SET_TAB":
       return {
         ...state,
         activeTab: action.tabIndex,
       }
 
-    case "TOGGLE_MEAL":
-      const newMeals = state.selectedMeals.includes(action.mealId)
-        ? state.selectedMeals.delete(action.mealId)
-        : state.selectedMeals.add(action.mealId)
-      return {
-        ...state,
-        selectedMeals: newMeals,
-      }
-
-    case "CLEAR_SELECTED_MEALS":
-      const noMeals = Immutable.Set()
-      return {
-        ...state,
-        selectedMeals: noMeals,
-      }
-
     case "SET_LAST_TICKED_ITEM":
       return {
         ...state,
         lastTickedId: action.id,
+      }
+
+    case "TOGGLE_PLAN_ONLY_MODE":
+      return {
+        ...state,
+        planOnlyMode: action.mode,
+      }
+
+    case "STORE_STATIC_DATA":
+      return {
+        ...state,
+        units: action.units,
+        locations: action.locations,
+        ingredients: action.ingredients,
       }
 
     default:
