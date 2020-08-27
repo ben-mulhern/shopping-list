@@ -110,7 +110,7 @@ CREATE SEQUENCE shopping_list_seq;
 
 CREATE TABLE shopping_list_item (
 
-  CONSTRAINT pk_shopping_list PRIMARY KEY (item_id),
+  CONSTRAINT pk_shopping_list_item PRIMARY KEY (item_id),
   
   item_id INT NOT NULL DEFAULT nextval('shopping_list_seq')
     CONSTRAINT ck_shopping_list_item_item_id CHECK (item_id > 0),

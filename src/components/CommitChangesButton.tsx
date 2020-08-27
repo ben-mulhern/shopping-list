@@ -9,10 +9,12 @@ import {
   UPSERT_MEAL,
   SET_INGREDIENTS_AND_TAGS,
 } from "../api/mealListApiOperations"
-import omitDeep from "omit-deep-lodash"
-import set from "lodash.set"
-
 import { Redirect } from "react-router"
+import {
+  DietType,
+  MealIngredient,
+  Ingredient,
+} from "../domain/shoppingListTypes"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -20,7 +22,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const CommitChangesButton = (props) => {
+interface Props {
+  mealIngredients: Immutable.List<MealIngredient>
+  mealId: number
+  description: string
+  serves: number
+  dietType: DietType
+  recipeBook?: string
+  imageUrl?: string
+  tagString: string
+  errorsExist: boolean
+}
+
+interface IngredientInsert {
+  ingredient_id?: number
+  description: string
+  store_location_id: string
+}
+
+const prepareIngredientForInsert = (i: Ingredient): IngredientInsert => ({
+  ingredient_id: i.ingredient_id,
+  description: i.description,
+  store_location_id: i.store_location.store_location_id,
+})
+
+const CommitChangesButton = (props: Props) => {
   const classes = useStyles()
 
   const [
@@ -58,13 +84,9 @@ const CommitChangesButton = (props) => {
 
   const saveChanges = () => {
     // Ingredients firt, the rest follows on once completed
-    const ingredients = props.mealIngredients
-      .map((mi) => mi.ingredient)
-      .map((i) => omitDeep(i, "__typename"))
-      .map((i) =>
-        set(i, "store_location_id", i.store_location.store_location_id)
-      )
-      .map((i) => omitDeep(i, "store_location"))
+    const ingredients: Immutable.List<IngredientInsert> = props.mealIngredients
+      .map((mi: MealIngredient) => mi.ingredient)
+      .map((i: Ingredient) => prepareIngredientForInsert(i))
     upsertIngredients({
       variables: {
         ingredients: ingredients,
@@ -100,16 +122,16 @@ const CommitChangesButton = (props) => {
         ? []
         : props.tagString.split(" ").map((t) => ({ meal_id: mealId, tag: t }))
     // This is the returned list of ids and descriptions from the API
-    const ingResponse = Immutable.Set(
+    const ingResponse: Immutable.Set<Ingredient> = Immutable.Set(
       ingredientsData.insert_ingredient.returning
     )
     // Now we have to merge that returned info with the quantity and unit info from the UI.
     // We try to match on either the id (exisitng ings) or the description (new ings)
-    const getIngredientId = (desc) =>
-      ingResponse.find((i) => i.description === desc).ingredient_id
+    const getIngredientId = (desc: string): number =>
+      ingResponse.find((i) => i.description === desc)!.ingredient_id!
     const mis = Immutable.Set(props.mealIngredients)
     const newMealIngredients = mis.map((mi) =>
-      mi.ingredient_id
+      mi.ingredient.ingredient_id
         ? mi
         : {
             ...mi,

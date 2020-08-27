@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import FormControl from "@material-ui/core/FormControl"
 import InputAdornment from "@material-ui/core/InputAdornment"
 import OutlinedInput from "@material-ui/core/OutlinedInput"
@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux"
 import { setTab, logIn } from "../state/actions"
 import { useLazyQuery } from "@apollo/react-hooks"
 import CircularProgress from "@material-ui/core/CircularProgress"
-import reStartWsLink from "../api/apiClient"
+import reStartWsLink from "../api/reStartWsLink"
 import { LOGIN_TEST } from "../api/staticDataApiOperations"
 import Tooltip from "@material-ui/core/Tooltip"
 
@@ -26,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Login = (props) => {
+const Login = () => {
   const dispatch = useDispatch()
   const [attemptLogInCall, { called, loading, error }] = useLazyQuery(
     LOGIN_TEST
   )
 
-  const attemptLogin = (apiKey) => {
+  const attemptLogin = (apiKey: string) => {
     localStorage.setItem("API_KEY", apiKey)
     reStartWsLink()
     attemptLogInCall()
@@ -41,22 +41,8 @@ const Login = (props) => {
   dispatch(setTab(0))
 
   const classes = useStyles()
-  const [values, setValues] = React.useState({
-    password: "",
-    showPassword: false,
-  })
-
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
-
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword })
-  }
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault()
-  }
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
   if (called && loading)
     return <CircularProgress color="secondary" className={classes.margin} />
@@ -78,7 +64,7 @@ const Login = (props) => {
       <p>
         Welcome to Bolly's shopping list. Please enter the password to continue.
       </p>
-      <form onSubmit={() => attemptLogin(values.password)}>
+      <form onSubmit={() => attemptLogin(password)}>
         <FormControl
           className={clsx(classes.margin, classes.textField)}
           variant="outlined"
@@ -89,20 +75,15 @@ const Login = (props) => {
           </InputLabel>
           <OutlinedInput
             className={classes.margin}
-            autoComplete
             id="outlined-adornment-password"
-            type={values.showPassword ? "text" : "password"}
-            value={values.password}
-            onChange={handleChange("password")}
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             endAdornment={
               <InputAdornment position="end">
                 <Tooltip title="Show password">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                  <IconButton onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </Tooltip>
               </InputAdornment>

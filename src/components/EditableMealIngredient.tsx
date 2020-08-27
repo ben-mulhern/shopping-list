@@ -17,6 +17,9 @@ import Tooltip from "@material-ui/core/Tooltip"
 import HelpIcon from "@material-ui/icons/Help"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
 import { useSelector } from "react-redux"
+import { EditableItem, Ingredient } from "../domain/shoppingListTypes"
+import { RootState } from "../state/RootState"
+import Immutable from "immutable"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -47,19 +50,29 @@ const EMPTY_INGREDIENT = {
   store_location: {
     store_location_id: "",
     description: "",
+    shop_order: 0,
   },
 }
 
-const MealIngredient = (props) => {
-  const mi = props.mealIngredient
-  let ing = cloneDeep(mi)
-  const units = useSelector((state) => state.units)
-  const locations = useSelector((state) => state.locations)
-  const ings = useSelector((state) => state.ingredients)
+interface Props {
+  mealIngredient: EditableItem
+  key: number
+  editItem(key: number, ingredient: EditableItem): any
+  listMode: boolean
+  setItem?(): any
+  deleteIngredient(): any
+}
+
+const EditableMealIngredient = (props: Props) => {
+  const ei = props.mealIngredient
+  let ing = cloneDeep(ei)
+  const units = useSelector((state: RootState) => state.units)
+  const locations = useSelector((state: RootState) => state.locations)
+  const ings = useSelector((state: RootState) => state.ingredients)
   const classes = useStyles()
   const [ingredients, setIngredients] = useState(ings)
 
-  const ingredientFilter = (str, ings) => {
+  const ingredientFilter = (str: string, ings: Immutable.List<Ingredient>) => {
     if (!str) return ings
     else
       return ings.filter((i) =>
@@ -67,38 +80,39 @@ const MealIngredient = (props) => {
       )
   }
 
-  const handleQuantity = (qty) => {
+  const handleQuantity = (qty: number) => {
     ing.quantity = qty
-    props.editIngredient(props.rowIndex, ing)
+    props.editItem(props.key, ing)
   }
 
   const handleQuestionMark = () => {
-    ing.default_question_mark = !mi.default_question_mark
-    props.editIngredient(props.rowIndex, ing)
+    ing.default_question_mark = !ei.default_question_mark
+    props.editItem(props.key, ing)
   }
 
-  const handleUnit = (unit) => {
+  const handleUnit = (unit: string) => {
     const newUnit = units.find((u) => u.unit_id === unit)
-    ing.unit = newUnit
-    props.editIngredient(props.rowIndex, ing)
+    ing.unit = newUnit!
+    props.editItem(props.key, ing)
   }
 
-  const handleIngredient = (desc) => {
+  const handleIngredient = (desc: string) => {
     let newIngredient = ingredients.find((i) => i.description === desc)
     if (!newIngredient) {
       newIngredient = cloneDeep(EMPTY_INGREDIENT)
       newIngredient.description = desc
-      newIngredient.store_location = mi.ingredient.store_location
+      newIngredient.store_location = ei.ingredient.store_location
     }
+    newIngredient.store_location = ei.ingredient.store_location
     ing.ingredient = newIngredient
     setIngredients(ingredientFilter(desc, ings))
-    props.editIngredient(props.rowIndex, ing)
+    props.editItem(props.key, ing)
   }
 
-  const handleLocation = (loc) => {
+  const handleLocation = (loc: string) => {
     const newLocation = locations.find((l) => l.store_location_id === loc)
-    ing.ingredient.store_location = newLocation
-    props.editIngredient(props.rowIndex, ing)
+    ing.ingredient.store_location = newLocation!
+    props.editItem(props.key, ing)
   }
 
   return (
@@ -107,13 +121,13 @@ const MealIngredient = (props) => {
         <Autocomplete
           freeSolo
           options={ingredients.map((i) => i.description).toArray()}
-          value={mi.ingredient.description}
+          value={ei.ingredient.description}
           onInputChange={(e, v) => handleIngredient(v)}
           renderInput={(params) => (
             <TextField
               {...params}
               fullWidth
-              autoFocus={props.listMode || !mi.ingredient.description}
+              autoFocus={props.listMode || !ei.ingredient.description}
               placeholder="Ingredient"
               required
             />
@@ -127,12 +141,14 @@ const MealIngredient = (props) => {
       >
         <Input
           required
-          value={mi.quantity}
-          onChange={(e) => handleQuantity(e.target.value)}
-          label="Quantity"
+          value={ei.quantity}
+          onChange={(e) => {
+            const qty: number = +e.target.value
+            handleQuantity(qty)
+          }}
           type="number"
           placeholder="Qty"
-          error={mi.quantity <= 0}
+          error={ei.quantity <= 0}
         />
       </FormControl>
       <FormControl
@@ -143,8 +159,8 @@ const MealIngredient = (props) => {
           variant="standard"
           required
           label="Unit"
-          value={mi.unit.unit_id}
-          onChange={(e) => handleUnit(e.target.value)}
+          value={ei.unit.unit_id}
+          onChange={(e) => handleUnit(e.target.value as string)}
         >
           {units.map((u) => (
             <MenuItem key={u.unit_id} value={u.unit_id}>
@@ -162,8 +178,8 @@ const MealIngredient = (props) => {
           variant="standard"
           required
           label="Location"
-          value={mi.ingredient.store_location.store_location_id}
-          onChange={(e) => handleLocation(e.target.value)}
+          value={ei.ingredient.store_location.store_location_id}
+          onChange={(e) => handleLocation(e.target.value as string)}
         >
           {locations.map((l) => (
             <MenuItem key={l.store_location_id} value={l.store_location_id}>
@@ -179,7 +195,7 @@ const MealIngredient = (props) => {
             <IconButton
               color="primary"
               onClick={props.setItem}
-              disabled={!mi.ingredient.description}
+              disabled={!ei.ingredient.description}
             >
               <AddCircleIcon />
             </IconButton>
@@ -194,13 +210,13 @@ const MealIngredient = (props) => {
         <span>
           <Tooltip
             title={
-              mi.default_question_mark
+              ei.default_question_mark
                 ? "Mark as probably needed"
                 : "Mark as always check"
             }
           >
             <IconButton onClick={() => handleQuestionMark()}>
-              {mi.default_question_mark ? (
+              {ei.default_question_mark ? (
                 <HelpIcon color="secondary" />
               ) : (
                 <HelpOutlineIcon />
@@ -218,4 +234,4 @@ const MealIngredient = (props) => {
   )
 }
 
-export default MealIngredient
+export default EditableMealIngredient

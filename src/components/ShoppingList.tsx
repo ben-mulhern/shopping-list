@@ -17,15 +17,26 @@ import { UPSERT_INGREDIENTS } from "../api/mealListApiOperations"
 import List from "@material-ui/core/List"
 import Paper from "@material-ui/core/Paper"
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline"
-import MealIngredient from "./MealIngredient"
+import EditableMealIngredient from "./EditableMealIngredient"
 import UndoButton from "./UndoButton"
-import { EMPTY_MEAL_INGREDIENT } from "../domain/sharedValues"
-import ShoppingListItem from "./ShoppingListItem"
+import { EMPTY_SHOPPING_LIST_ITEM } from "../domain/sharedValues"
+import DisplayShoppingListItem from "./DisplayShoppingListItem"
 import ClearIcon from "@material-ui/icons/Clear"
 import ConfirmClearWindow from "./ConfirmClearWindow"
 import Fab from "@material-ui/core/Fab"
 import AddIcon from "@material-ui/icons/Add"
 import Tooltip from "@material-ui/core/Tooltip"
+import {
+  Ingredient,
+  ShoppingListItem,
+  EditableItem,
+  Unit,
+  StoreLocation,
+} from "../domain/shoppingListTypes"
+import {
+  shoppingListItemToEditableItemConverter,
+  editableItemToShoppingListItemConverter,
+} from "../domain/editableItemConverters"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -39,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ShoppingList = (props) => {
+const ShoppingList = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   dispatch(setTab(0))
@@ -64,17 +75,23 @@ const ShoppingList = (props) => {
 
   const [questionMarksOnly, setQuestionMarksOnly] = useState(false)
   const [addMode, setAddMode] = useState(false)
-  const [editItem, setEditItem] = useState(EMPTY_MEAL_INGREDIENT)
+  const [editItem, setEditItem] = useState(
+    EMPTY_SHOPPING_LIST_ITEM as ShoppingListItem
+  )
   const [clearAllWindowOpen, setClearAllWindowOpen] = useState(false)
 
   if (!staticLoading) {
-    const units = Immutable.List(staticData.unit)
-    const locations = Immutable.List(staticData.store_location)
-    const ingredients = Immutable.List(staticData.ingredient)
+    const units: Immutable.List<Unit> = Immutable.List(staticData.unit)
+    const locations: Immutable.List<StoreLocation> = Immutable.List(
+      staticData.store_location
+    )
+    const ingredients: Immutable.List<Ingredient> = Immutable.List(
+      staticData.ingredient
+    )
     dispatch(storeStaticData(units, locations, ingredients))
   }
 
-  const toggleItem = (id, checked) => {
+  const toggleItem = (id: number, checked: boolean) => {
     if (checked) {
       const now = new Date()
       tickItem({
@@ -92,7 +109,7 @@ const ShoppingList = (props) => {
     }
   }
 
-  const toggleQuestionMark = (id, qm) => {
+  const toggleQuestionMark = (id: number, qm: boolean) => {
     setQuestionMark({
       variables: {
         itemId: id,
@@ -101,12 +118,13 @@ const ShoppingList = (props) => {
     })
   }
 
-  const handleItemEdit = (i, ing) => {
-    setEditItem(ing)
+  const handleItemEdit = (i: number, ei: EditableItem) => {
+    const sli = editableItemToShoppingListItemConverter(ei)
+    setEditItem(sli)
   }
 
   const stopEdits = () => {
-    setEditItem(EMPTY_MEAL_INGREDIENT)
+    setEditItem(EMPTY_SHOPPING_LIST_ITEM)
     setAddMode(false)
   }
 
@@ -116,8 +134,10 @@ const ShoppingList = (props) => {
     if (!!id) {
       // Lookup the current location
       const id = editItem.ingredient.ingredient_id
-      const ings = Immutable.List(staticData.ingredient)
-      const originalLocationId = ings.find((i) => i.ingredient_id === id)
+      const ings: Immutable.List<Ingredient> = Immutable.List(
+        staticData.ingredient
+      )
+      const originalLocationId = ings.find((i) => i.ingredient_id === id)!
         .store_location.store_location_id
       if (
         originalLocationId !==
@@ -171,7 +191,7 @@ const ShoppingList = (props) => {
     stopEdits()
   }
 
-  const editListItem = (i) => {
+  const editListItem = (i: ShoppingListItem) => {
     setEditItem(i)
   }
 
@@ -188,7 +208,9 @@ const ShoppingList = (props) => {
   )
     return <p>Error :(</p>
 
-  const items = Immutable.List(data.shopping_list_item)
+  const items: Immutable.List<ShoppingListItem> = Immutable.List(
+    data.shopping_list_item
+  )
 
   const buttons = (
     <div>
@@ -238,10 +260,11 @@ const ShoppingList = (props) => {
   )
 
   const mealIngredient = (
-    <MealIngredient
-      mealIngredient={editItem}
+    <EditableMealIngredient
+      key={1}
+      mealIngredient={shoppingListItemToEditableItemConverter(editItem)}
       deleteIngredient={stopEdits}
-      editIngredient={handleItemEdit}
+      editItem={handleItemEdit}
       listMode={true}
       setItem={handleSetItem}
     />
@@ -259,9 +282,9 @@ const ShoppingList = (props) => {
               li.item_id === editItem.item_id ? (
                 mealIngredient
               ) : (
-                <ShoppingListItem
+                <DisplayShoppingListItem
                   key={li.item_id}
-                  index={li.item_id}
+                  index={li.item_id!}
                   item={li}
                   toggleItem={toggleItem}
                   toggleQuestionMark={toggleQuestionMark}

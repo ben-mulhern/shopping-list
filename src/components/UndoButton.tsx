@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const UndoButton = (props) => {
+const UndoButton = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [disableButton, setDisableButton] = useState(false)

@@ -5,12 +5,13 @@ import Tab from "@material-ui/core/Tab"
 import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { logOut } from "../state/actions"
+import { RootState } from "../state/RootState"
 
-const Navbar = (props) => {
+const Navbar = () => {
   const dispatch = useDispatch()
-  const activeTab = useSelector((state) => state.activeTab)
-  const loggedIn = useSelector((state) => state.loggedIn)
-  const LinkTab = (props) => (
+  const activeTab = useSelector((state: RootState) => state.activeTab)
+  const loggedIn = useSelector((state: RootState) => state.loggedIn)
+  const LinkTab = (props: { label: string; href: string }) => (
     <Tab
       label={props.label}
       component={Link}
