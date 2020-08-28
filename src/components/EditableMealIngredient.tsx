@@ -98,12 +98,13 @@ const EditableMealIngredient = (props: Props) => {
 
   const handleIngredient = (desc: string) => {
     let newIngredient = ingredients.find((i) => i.description === desc)
+    console.log(JSON.stringify(newIngredient))
     if (!newIngredient) {
       newIngredient = cloneDeep(EMPTY_INGREDIENT)
       newIngredient.description = desc
       newIngredient.store_location = ei.ingredient.store_location
     }
-    newIngredient.store_location = ei.ingredient.store_location
+    //newIngredient.store_location = ei.ingredient.store_location
     ing.ingredient = newIngredient
     setIngredients(ingredientFilter(desc, ings))
     props.editItem(props.key, ing)
@@ -192,13 +193,15 @@ const EditableMealIngredient = (props: Props) => {
       {props.listMode ? (
         <span>
           <Tooltip title="Add ingredient to list">
-            <IconButton
-              color="primary"
-              onClick={props.setItem}
-              disabled={!ei.ingredient.description}
-            >
-              <AddCircleIcon />
-            </IconButton>
+            <span>
+              <IconButton
+                color="primary"
+                onClick={props.setItem}
+                disabled={!ei.ingredient.description}
+              >
+                <AddCircleIcon />
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Cancel changes">
             <IconButton color="inherit" onClick={props.deleteIngredient}>
