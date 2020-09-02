@@ -83,18 +83,18 @@ const EditableMealIngredient = (props: Props) => {
 
   const handleQuantity = (qty: number) => {
     ing.quantity = qty
-    props.editItem(props.key, ing)
+    props.editItem(props.index, ing)
   }
 
   const handleQuestionMark = () => {
     ing.default_question_mark = !ei.default_question_mark
-    props.editItem(props.key, ing)
+    props.editItem(props.index, ing)
   }
 
   const handleUnit = (unit: string) => {
     const newUnit = units.find((u) => u.unit_id === unit)
     ing.unit = newUnit!
-    props.editItem(props.key, ing)
+    props.editItem(props.index, ing)
   }
 
   const handleIngredient = (desc: string) => {
@@ -115,7 +115,7 @@ const EditableMealIngredient = (props: Props) => {
   const handleLocation = (loc: string) => {
     const newLocation = locations.find((l) => l.store_location_id === loc)
     ing.ingredient.store_location = newLocation!
-    props.editItem(props.key, ing)
+    props.editItem(props.index, ing)
   }
 
   return (
