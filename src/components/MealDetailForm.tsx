@@ -236,6 +236,7 @@ const MealDetailForm = (props: Props) => {
         <EditableMealIngredient
           mealIngredient={mealIngredientToEditableItemConverter(mi)}
           key={i}
+          index={i}
           deleteIngredient={() => deleteIngredient(i)}
           editItem={editIngredient}
           listMode={false}
