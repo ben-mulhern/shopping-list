@@ -262,6 +262,7 @@ const ShoppingList = () => {
   const mealIngredient = (
     <EditableMealIngredient
       key={1}
+      index={1}
       mealIngredient={shoppingListItemToEditableItemConverter(editItem)}
       deleteIngredient={stopEdits}
       editItem={handleItemEdit}

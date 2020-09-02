@@ -57,6 +57,7 @@ const EMPTY_INGREDIENT = {
 interface Props {
   mealIngredient: EditableItem
   key: number
+  index: number
   editItem(key: number, ingredient: EditableItem): any
   listMode: boolean
   setItem?(): any
@@ -97,17 +98,18 @@ const EditableMealIngredient = (props: Props) => {
   }
 
   const handleIngredient = (desc: string) => {
-    let newIngredient = ingredients.find((i) => i.description === desc)
-    console.log(JSON.stringify(newIngredient))
+    let newIngredient = ings.find((i) => i.description === desc)
     if (!newIngredient) {
       newIngredient = cloneDeep(EMPTY_INGREDIENT)
       newIngredient.description = desc
       newIngredient.store_location = ei.ingredient.store_location
     }
-    //newIngredient.store_location = ei.ingredient.store_location
+    if (ei.ingredient.ingredient_id === newIngredient.ingredient_id) {
+      newIngredient.store_location = ei.ingredient.store_location
+    }
     ing.ingredient = newIngredient
     setIngredients(ingredientFilter(desc, ings))
-    props.editItem(props.key, ing)
+    props.editItem(props.index, ing)
   }
 
   const handleLocation = (loc: string) => {
