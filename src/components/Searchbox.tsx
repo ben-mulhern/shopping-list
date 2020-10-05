@@ -36,6 +36,7 @@ const Searchbox = () => {
         className={classes.input}
         placeholder="Search meals"
         value={searchString}
+        type="search"
         onChange={(e) => dispatch(setSearchString(e.target.value))}
       />
       <IconButton className={classes.iconButton}>
