@@ -21,6 +21,7 @@ import { togglePlanOnlyMode } from "../state/actions"
 import { RootState } from "../state/RootState"
 import { Meal, MealIngredientPlanItem } from "../domain/shoppingListTypes"
 import Searchbox from "./Searchbox"
+import mealSearch from "../domain/mealSearch"
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -40,6 +41,7 @@ const MealCards = (props: Props) => {
   const dispatch = useDispatch()
   dispatch(setTab(1))
   const planOnly = useSelector((state: RootState) => state.planOnlyMode)
+  const searchString = useSelector((state: RootState) => state.searchString)
 
   const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
   const {
@@ -84,13 +86,15 @@ const MealCards = (props: Props) => {
         />
       </FormControl>
       <div>
-        {meals.map((m) => (
-          <MealCard
-            meal={m}
-            key={m.meal_id}
-            selected={selectedMeals.includes(m.meal_id)}
-          />
-        ))}
+        {meals
+          .filter((m) => mealSearch(searchString, m))
+          .map((m) => (
+            <MealCard
+              meal={m}
+              key={m.meal_id}
+              selected={selectedMeals.includes(m.meal_id)}
+            />
+          ))}
       </div>
     </div>
   )
