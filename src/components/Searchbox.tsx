@@ -2,10 +2,9 @@ import React, { useState } from "react"
 import Paper from "@material-ui/core/Paper"
 import InputBase from "@material-ui/core/InputBase"
 import IconButton from "@material-ui/core/IconButton"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import SearchIcon from "@material-ui/icons/Search"
 import { makeStyles } from "@material-ui/core/styles"
-import { RootState } from "../state/RootState"
 import { setSearchString } from "../state/actions"
 
 const useStyles = makeStyles((theme) => ({
