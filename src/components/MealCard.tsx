@@ -174,12 +174,14 @@ const MealCard = (props: Props) => {
         <CardActionArea onClick={() => addOrRemoveMeal()}>
           <CardMedia
             className={classes.media}
+            component="img"
             image={
               meal.image_url
                 ? meal.image_url
                 : process.env.PUBLIC_URL + "/meal-placeholder.png"
             }
             title={meal.description}
+            loading="lazy"
           />
           <CardContent>
             <Typography variant="h5" component="h2">
