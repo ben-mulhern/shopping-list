@@ -216,3 +216,8 @@ VALUES
 ('BEER', 'Squash, beer', 29),
 ('WINE', 'Wine, spirits', 30),
 ('CEREAL', 'Cereal', 24);
+
+-- If importing data into the tables then you'll need to reset the sequences
+--  ALTER SEQUENCE ingredient_seq RESTART WITH xxxx;
+--  ALTER SEQUENCE meal_seq RESTART WITH xxxx;
+--  ALTER SEQUENCE shopping_list_seq RESTART WITH xxxx;

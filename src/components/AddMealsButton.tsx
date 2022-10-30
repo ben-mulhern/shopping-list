@@ -53,6 +53,7 @@ const AddMealsButton = (props: Props) => {
       dataIngs.shopping_list_item,
       dataIngs.meal_plan_count
     )
+    console.log(JSON.stringify(newList))
     reinsertList({
       variables: {
         items: newList,

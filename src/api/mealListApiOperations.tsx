@@ -73,7 +73,7 @@ export const MEAL_SUBSCRIPTION = gql`
       description
       image_url
       serves
-      meal_plan_counts {
+      meal_plan_count {
         meal_count
       }
       meal_tags {
@@ -94,7 +94,7 @@ export const MEAL_SUBSCRIPTION = gql`
         }
         quantity
         default_question_mark
-        meal_ingredient_plan_items {
+        meal_ingredient_plan_item {
           checked
           question_mark
         }

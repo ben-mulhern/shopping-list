@@ -30,7 +30,7 @@ export type MealIngredient = {
   quantity: number
   unit: Unit
   default_question_mark: boolean
-  meal_ingredient_plan_items?: MealIngredientPlanItem[]
+  meal_ingredient_plan_item?: MealIngredientPlanItem
 }
 
 export type MealPlanCount = {
@@ -51,7 +51,7 @@ export type Meal = {
   image_url?: string
   meal_ingredients: MealIngredient[]
   meal_tags: MealTag[]
-  meal_plan_counts?: MealPlanCount[]
+  meal_plan_count?: MealPlanCount
 }
 
 export type ShoppingListItem = {
