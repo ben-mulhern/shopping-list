@@ -44,11 +44,14 @@ const MealCards = (props: Props) => {
   const searchString = useSelector((state: RootState) => state.searchString)
 
   const { loading, error, data } = useSubscription(MEAL_SUBSCRIPTION)
+
   const {
     loading: loadingSelected,
     error: errorSelected,
     data: dataSelected,
   } = useSubscription(SELECTED_MEALS_SUBSCRIPTION)
+
+  //console.log("Error is " + JSON.stringify(error) ?? "undefined")
 
   if (loading || loadingSelected)
     return <CircularProgress color="secondary" className={classes.margin} />

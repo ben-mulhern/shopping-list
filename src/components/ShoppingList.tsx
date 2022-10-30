@@ -60,12 +60,10 @@ const ShoppingList = () => {
   const [tickItem, { error: tickError }] = useMutation(TICK_ITEM)
   const [untickItem, { error: untickError }] = useMutation(UNTICK_ITEM)
   const [saveEditItem, { error: saveError }] = useMutation(UPSERT_LIST_ITEM)
-  const [setQuestionMark, { error: questionMarkError }] = useMutation(
-    SET_QUESTION_MARK
-  )
-  const [updateIngredient, { error: ingError }] = useMutation(
-    UPSERT_INGREDIENTS
-  )
+  const [setQuestionMark, { error: questionMarkError }] =
+    useMutation(SET_QUESTION_MARK)
+  const [updateIngredient, { error: ingError }] =
+    useMutation(UPSERT_INGREDIENTS)
 
   const {
     loading: staticLoading,

@@ -5,7 +5,7 @@ export const UPSERT_LIST_ITEM = gql`
     insert_shopping_list_item(
       objects: [$item]
       on_conflict: {
-        constraint: pk_shopping_list
+        constraint: pk_shopping_list_item
         update_columns: [quantity, unit_id, ingredient_id]
       }
     ) {
@@ -60,7 +60,7 @@ export const SET_QUESTION_MARK = gql`
 
 export const REINSERT_LIST = gql`
   mutation reinsert_list($items: [shopping_list_item_insert_input!]!) {
-    delete_shopping_list_item(where: { ticked_at: { _eq: null } }) {
+    delete_shopping_list_item(where: { ticked_at: { _is_null: true } }) {
       affected_rows
     }
     insert_shopping_list_item(objects: $items) {

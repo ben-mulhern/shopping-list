@@ -93,9 +93,7 @@ const MealCard = (props: Props) => {
   const cardClass = clsx(classes.card, hidden && classes.hidden)
   const sliderClass = clsx(classes.slider, !selected && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
-  const mealCount =
-    meal.meal_plan_counts!.length > 0 ? meal.meal_plan_counts![0].meal_count : 1
-
+  const mealCount = meal.meal_plan_count?.meal_count ?? 1
   const marks = Array(6)
     .fill({})
     .map((e, i) => ({ value: (i + 1) / 2, label: ((i + 1) / 2).toString() }))
@@ -264,12 +262,9 @@ const MealCard = (props: Props) => {
             </FormControl>
             <List>
               {meal.meal_ingredients.map((mi) => {
-                const checked =
-                  mi.meal_ingredient_plan_items!.length > 0 &&
-                  mi.meal_ingredient_plan_items![0].checked
+                const checked = mi.meal_ingredient_plan_item?.checked ?? false
                 const questionMark =
-                  mi.meal_ingredient_plan_items!.length > 0 &&
-                  mi.meal_ingredient_plan_items![0].question_mark
+                  mi.meal_ingredient_plan_item?.question_mark ?? false
                 return (
                   <DisplayIngredient
                     item={{
