@@ -21,7 +21,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const AddMealsButton = (props) => {
+interface Props {
+  mealCount: number
+}
+
+const AddMealsButton = (props: Props) => {
   const classes = useStyles()
   const [
     getListDataQuery,
@@ -42,9 +46,6 @@ const AddMealsButton = (props) => {
 
   if (redirect) return <Redirect push to="/list" />
 
-  // Get the meal ids
-  const ids = props.meals
-
   // if called and finished loading boths lists and neither has errored
   if (calledIngs && !loadingIngs && !errorIngs) {
     const newList = shoppingListBuilder(
@@ -52,6 +53,7 @@ const AddMealsButton = (props) => {
       dataIngs.shopping_list_item,
       dataIngs.meal_plan_count
     )
+    console.log(JSON.stringify(newList))
     reinsertList({
       variables: {
         items: newList,
@@ -67,7 +69,7 @@ const AddMealsButton = (props) => {
       variant="contained"
       color="secondary"
       className={classes.button}
-      disabled={ids.size === 0 || loadingRil}
+      disabled={props.mealCount === 0 || loadingRil}
       startIcon={<PlaylistAddIcon />}
       onClick={() => getListDataQuery()}
     >

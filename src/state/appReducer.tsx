@@ -1,16 +1,7 @@
-import Immutable from "immutable"
+import { AppActionType } from "./actions"
+import { INITIAL_STATE } from "./RootState"
 
-const initialState = {
-  loggedIn: false,
-  activeTab: 0,
-  lastTickedId: 0,
-  planOnlyMode: false,
-  units: Immutable.List(),
-  locations: Immutable.List(),
-  ingredients: Immutable.List(),
-}
-
-const appReducer = (state = initialState, action) => {
+const appReducer = (state = INITIAL_STATE, action: AppActionType) => {
   switch (action.type) {
     case "LOGIN":
       return {
@@ -48,6 +39,12 @@ const appReducer = (state = initialState, action) => {
         units: action.units,
         locations: action.locations,
         ingredients: action.ingredients,
+      }
+
+    case "SET_SEARCH_STRING":
+      return {
+        ...state,
+        searchString: action.searchString,
       }
 
     default:

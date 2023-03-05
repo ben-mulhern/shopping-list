@@ -7,7 +7,16 @@ import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import CircularProgress from "@material-ui/core/CircularProgress"
 
-const DialogBox = (props) => {
+interface Props {
+  action(): any
+  handleClose(): any
+  actionError?: string
+  message: string
+  waiting: boolean
+  open: boolean
+}
+
+const DialogBox = (props: Props) => {
   const actThenClose = () => {
     props.action()
     props.handleClose()

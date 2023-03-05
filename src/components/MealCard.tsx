@@ -7,11 +7,10 @@ import CardMedia from "@material-ui/core/CardMedia"
 import CardActionArea from "@material-ui/core/CardActionArea"
 import CardActions from "@material-ui/core/CardActions"
 import Button from "@material-ui/core/Button"
-import Chip from "@material-ui/core/Chip"
 import clsx from "clsx"
 import EditIcon from "@material-ui/icons/Edit"
 import DeleteIcon from "@material-ui/icons/Delete"
-import { withRouter } from "react-router-dom"
+import { RouteComponentProps, withRouter } from "react-router-dom"
 import ConfirmDeleteWindow from "./ConfirmDeleteWindow"
 import PersonIcon from "@material-ui/icons/Person"
 import Badge from "@material-ui/core/Badge"
@@ -38,6 +37,9 @@ import FormControl from "@material-ui/core/FormControl"
 import FormLabel from "@material-ui/core/FormLabel"
 import { useSelector } from "react-redux"
 import IconButton from "@material-ui/core/IconButton"
+import { RootState } from "../state/RootState"
+import { Meal } from "../domain/shoppingListTypes"
+//import mealSearch from "../domain/mealSearch"
 
 const useStyles = makeStyles({
   card: {
@@ -66,7 +68,12 @@ const useStyles = makeStyles({
   },
 })
 
-const MealCard = (props) => {
+interface Props extends RouteComponentProps {
+  meal: Meal
+  selected: boolean
+}
+
+const MealCard = (props: Props) => {
   const classes = useStyles()
   const meal = props.meal
   const [addMealToPlan] = useMutation(ADD_MEAL_TO_PLAN)
@@ -77,18 +84,24 @@ const MealCard = (props) => {
   const [uncheckPlanItem] = useMutation(UNCHECK_PLAN_ITEM)
   const [updateMealPlanCount] = useMutation(UPDATE_MEAL_PLAN_COUNT)
   const selected = props.selected
+  const planOnly = useSelector((state: RootState) => state.planOnlyMode)
+  //const searchString = useSelector((state: RootState) => state.searchString)
+  //const hidden = (planOnly && !selected) || !mealSearch(searchString, meal)
+  const hidden = planOnly && !selected
 
-  const cardClass = clsx(classes.card, props.hidden && classes.hidden)
+  const cardClass = clsx(classes.card, hidden && classes.hidden)
   const sliderClass = clsx(classes.slider, !selected && classes.hidden)
   const [deleteWindowOpen, setDeleteWindowOpen] = useState(false)
-  const mealCount =
-    meal.meal_plan_counts.length > 0 ? meal.meal_plan_counts[0].meal_count : 1
-
+  const mealCount = meal.meal_plan_count?.meal_count ?? 1
   const marks = Array(6)
     .fill({})
     .map((e, i) => ({ value: (i + 1) / 2, label: ((i + 1) / 2).toString() }))
 
-  const toggleItem = (mealId, ingredientId, checked) => {
+  const toggleItem = (
+    mealId: number,
+    ingredientId: number,
+    checked: boolean
+  ) => {
     const variables = {
       variables: { meal_id: mealId, ingredient_id: ingredientId },
     }
@@ -96,7 +109,11 @@ const MealCard = (props) => {
     else uncheckPlanItem(variables)
   }
 
-  const toggleQuestionMark = (mealId, ingredientId, checked) => {
+  const toggleQuestionMark = (
+    mealId: number,
+    ingredientId: number,
+    checked: boolean
+  ) => {
     const variables = {
       variables: { meal_id: mealId, ingredient_id: ingredientId },
     }
@@ -104,7 +121,9 @@ const MealCard = (props) => {
     else unsetPlanQuestionMark(variables)
   }
 
-  const triggerDeleteWindow = (e) => {
+  const triggerDeleteWindow = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation()
     setDeleteWindowOpen(true)
   }
@@ -131,7 +150,6 @@ const MealCard = (props) => {
     }
   }
 
-  const planOnly = useSelector((state) => state.planOnlyMode)
   const [cardElevation, setCardElevation] = useState(1)
   const [expanded, setExpanded] = useState(false)
 
@@ -153,20 +171,19 @@ const MealCard = (props) => {
         <CardActionArea onClick={() => addOrRemoveMeal()}>
           <CardMedia
             className={classes.media}
+            component="img"
             image={
               meal.image_url
                 ? meal.image_url
                 : process.env.PUBLIC_URL + "/meal-placeholder.png"
             }
             title={meal.description}
+            loading="lazy"
           />
           <CardContent>
             <Typography variant="h5" component="h2">
               {meal.description}
             </Typography>
-            {meal.meal_tags.map((t, i) => (
-              <Chip label={t.tag} className={classes.chip} key={i} />
-            ))}
           </CardContent>
         </CardActionArea>
       </Box>
@@ -178,12 +195,14 @@ const MealCard = (props) => {
         <AccordionSummary
           expandIcon={
             <Tooltip title={expanded ? "Hide ingredients" : "View ingredients"}>
-              <IconButton
-                onClick={() => setExpanded(!expanded)}
-                disabled={planOnly}
-              >
-                <ExpandMoreIcon />
-              </IconButton>
+              <span>
+                <IconButton
+                  onClick={() => setExpanded(!expanded)}
+                  disabled={planOnly}
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </span>
             </Tooltip>
           }
         >
@@ -239,33 +258,33 @@ const MealCard = (props) => {
             </FormControl>
             <List>
               {meal.meal_ingredients.map((mi) => {
-                const checked =
-                  mi.meal_ingredient_plan_items.length > 0 &&
-                  mi.meal_ingredient_plan_items[0].checked
+                const checked = mi.meal_ingredient_plan_item?.checked ?? false
                 const questionMark =
-                  mi.meal_ingredient_plan_items.length > 0 &&
-                  mi.meal_ingredient_plan_items[0].question_mark
+                  mi.meal_ingredient_plan_item?.question_mark ?? false
                 return (
                   <DisplayIngredient
                     item={{
                       ...mi,
                       quantity: mi.quantity * mealCount,
+                      item_id: 0,
+                      question_mark: false,
                     }}
-                    index={mi.ingredient.ingredient_id}
+                    index={mi.ingredient.ingredient_id!}
+                    key={mi.ingredient.ingredient_id}
                     checkboxTooltipText="Check if required"
                     checked={checked}
                     questionMark={questionMark}
                     toggleItem={() =>
                       toggleItem(
                         meal.meal_id,
-                        mi.ingredient.ingredient_id,
+                        mi.ingredient.ingredient_id!,
                         !checked
                       )
                     }
                     toggleQuestionMark={() =>
                       toggleQuestionMark(
                         meal.meal_id,
-                        mi.ingredient.ingredient_id,
+                        mi.ingredient.ingredient_id!,
                         !questionMark
                       )
                     }

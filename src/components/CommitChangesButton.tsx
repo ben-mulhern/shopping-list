@@ -7,12 +7,14 @@ import { makeStyles } from "@material-ui/core/styles"
 import {
   UPSERT_INGREDIENTS,
   UPSERT_MEAL,
-  SET_INGREDIENTS_AND_TAGS,
+  SET_INGREDIENTS,
 } from "../api/mealListApiOperations"
-import omitDeep from "omit-deep-lodash"
-import set from "lodash.set"
-
 import { Redirect } from "react-router"
+import {
+  DietType,
+  MealIngredient,
+  Ingredient,
+} from "../domain/shoppingListTypes"
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -20,7 +22,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const CommitChangesButton = (props) => {
+interface Props {
+  mealIngredients: Immutable.List<MealIngredient>
+  mealId: number
+  description: string
+  serves: number
+  dietType: DietType
+  recipeBook?: string
+  imageUrl?: string
+  errorsExist: boolean
+}
+
+interface IngredientInsert {
+  ingredient_id?: number
+  description: string
+  store_location_id: string
+}
+
+const prepareIngredientForInsert = (i: Ingredient): IngredientInsert => ({
+  ingredient_id: i.ingredient_id,
+  description: i.description,
+  store_location_id: i.store_location.store_location_id,
+})
+
+const CommitChangesButton = (props: Props) => {
   const classes = useStyles()
 
   const [
@@ -44,13 +69,9 @@ const CommitChangesButton = (props) => {
   ] = useMutation(UPSERT_MEAL)
 
   const [
-    setMealIngsTags,
-    {
-      called: calledMealIngsTags,
-      loading: loadingMealIngsTags,
-      error: mealIngsTagsError,
-    },
-  ] = useMutation(SET_INGREDIENTS_AND_TAGS)
+    setMealIngs,
+    { called: calledMealIngs, loading: loadingMealIngs, error: mealIngsError },
+  ] = useMutation(SET_INGREDIENTS)
 
   const [redirect, setRedirect] = useState(false)
 
@@ -58,13 +79,9 @@ const CommitChangesButton = (props) => {
 
   const saveChanges = () => {
     // Ingredients firt, the rest follows on once completed
-    const ingredients = props.mealIngredients
-      .map((mi) => mi.ingredient)
-      .map((i) => omitDeep(i, "__typename"))
-      .map((i) =>
-        set(i, "store_location_id", i.store_location.store_location_id)
-      )
-      .map((i) => omitDeep(i, "store_location"))
+    const ingredients: Immutable.List<IngredientInsert> = props.mealIngredients
+      .map((mi: MealIngredient) => mi.ingredient)
+      .map((i: Ingredient) => prepareIngredientForInsert(i))
     upsertIngredients({
       variables: {
         ingredients: ingredients,
@@ -93,23 +110,19 @@ const CommitChangesButton = (props) => {
     })
   }
 
-  if (calledMeal && !loadingMeal && !mealError && !calledMealIngsTags) {
+  if (calledMeal && !loadingMeal && !mealError && !calledMealIngs) {
     const mealId = mealData.insert_meal.returning[0].meal_id
-    const tags =
-      props.tagString.length === 0
-        ? []
-        : props.tagString.split(" ").map((t) => ({ meal_id: mealId, tag: t }))
     // This is the returned list of ids and descriptions from the API
-    const ingResponse = Immutable.Set(
+    const ingResponse: Immutable.Set<Ingredient> = Immutable.Set(
       ingredientsData.insert_ingredient.returning
     )
     // Now we have to merge that returned info with the quantity and unit info from the UI.
     // We try to match on either the id (exisitng ings) or the description (new ings)
-    const getIngredientId = (desc) =>
-      ingResponse.find((i) => i.description === desc).ingredient_id
+    const getIngredientId = (desc: string): number =>
+      ingResponse.find((i) => i.description === desc)!.ingredient_id!
     const mis = Immutable.Set(props.mealIngredients)
     const newMealIngredients = mis.map((mi) =>
-      mi.ingredient_id
+      mi.ingredient.ingredient_id
         ? mi
         : {
             ...mi,
@@ -126,17 +139,15 @@ const CommitChangesButton = (props) => {
       unit_id: nmi.unit.unit_id,
       default_question_mark: nmi.default_question_mark,
     }))
-    setMealIngsTags({
+    setMealIngs({
       variables: {
         mealId: mealId,
         mealIngredients: miInsert,
-        tags: tags,
       },
     })
   }
 
-  if (calledMealIngsTags && !loadingMealIngsTags && !mealIngsTagsError)
-    setRedirect(true)
+  if (calledMealIngs && !loadingMealIngs && !mealIngsError) setRedirect(true)
 
   return (
     <Button
@@ -145,12 +156,7 @@ const CommitChangesButton = (props) => {
       className={classes.margin}
       startIcon={<SaveIcon />}
       onClick={() => saveChanges()}
-      disabled={
-        props.errorsExist ||
-        loadingIngredients ||
-        loadingMeal ||
-        loadingMealIngsTags
-      }
+      disabled={props.errorsExist || loadingIngredients || loadingMeal}
     >
       Save
     </Button>

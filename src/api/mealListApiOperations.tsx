@@ -33,11 +33,10 @@ export const UPSERT_MEAL = gql`
   }
 `
 
-export const SET_INGREDIENTS_AND_TAGS = gql`
+export const SET_INGREDIENTS = gql`
   mutation set_meal_children(
     $mealId: Int!
     $mealIngredients: [meal_ingredient_insert_input!]!
-    $tags: [meal_tag_insert_input!]!
   ) {
     delete_meal_ingredient(where: { meal_id: { _eq: $mealId } }) {
       affected_rows
@@ -45,14 +44,6 @@ export const SET_INGREDIENTS_AND_TAGS = gql`
     insert_meal_ingredient(objects: $mealIngredients) {
       returning {
         ingredient_id
-      }
-    }
-    delete_meal_tag(where: { meal_id: { _eq: $mealId } }) {
-      affected_rows
-    }
-    insert_meal_tag(objects: $tags) {
-      returning {
-        tag
       }
     }
   }
@@ -73,13 +64,15 @@ export const MEAL_SUBSCRIPTION = gql`
       description
       image_url
       serves
-      meal_plan_counts {
+      meal_plan_count {
         meal_count
       }
-      meal_tags {
-        tag
-      }
-      meal_ingredients {
+      meal_ingredients(
+        order_by: [
+          { ingredient: { store_location: { shop_order: asc } } }
+          { ingredient: { ingredient_id: asc } }
+        ]
+      ) {
         ingredient {
           ingredient_id
           description
@@ -89,7 +82,7 @@ export const MEAL_SUBSCRIPTION = gql`
         }
         quantity
         default_question_mark
-        meal_ingredient_plan_items {
+        meal_ingredient_plan_item {
           checked
           question_mark
         }
@@ -115,10 +108,12 @@ export const MEAL_QUERY = gql`
       image_url
       serves
       recipe_book
-      meal_tags {
-        tag
-      }
-      meal_ingredients {
+      meal_ingredients(
+        order_by: [
+          { ingredient: { store_location: { shop_order: asc } } }
+          { ingredient: { ingredient_id: asc } }
+        ]
+      ) {
         quantity
         default_question_mark
         unit {
