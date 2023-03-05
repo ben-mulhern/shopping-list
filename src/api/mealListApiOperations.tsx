@@ -33,11 +33,10 @@ export const UPSERT_MEAL = gql`
   }
 `
 
-export const SET_INGREDIENTS_AND_TAGS = gql`
+export const SET_INGREDIENTS = gql`
   mutation set_meal_children(
     $mealId: Int!
     $mealIngredients: [meal_ingredient_insert_input!]!
-    $tags: [meal_tag_insert_input!]!
   ) {
     delete_meal_ingredient(where: { meal_id: { _eq: $mealId } }) {
       affected_rows
@@ -45,14 +44,6 @@ export const SET_INGREDIENTS_AND_TAGS = gql`
     insert_meal_ingredient(objects: $mealIngredients) {
       returning {
         ingredient_id
-      }
-    }
-    delete_meal_tag(where: { meal_id: { _eq: $mealId } }) {
-      affected_rows
-    }
-    insert_meal_tag(objects: $tags) {
-      returning {
-        tag
       }
     }
   }
@@ -75,9 +66,6 @@ export const MEAL_SUBSCRIPTION = gql`
       serves
       meal_plan_count {
         meal_count
-      }
-      meal_tags {
-        tag
       }
       meal_ingredients(
         order_by: [
@@ -120,9 +108,6 @@ export const MEAL_QUERY = gql`
       image_url
       serves
       recipe_book
-      meal_tags {
-        tag
-      }
       meal_ingredients(
         order_by: [
           { ingredient: { store_location: { shop_order: asc } } }

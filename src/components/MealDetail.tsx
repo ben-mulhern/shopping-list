@@ -16,7 +16,6 @@ const EMPTY_MEAL = {
   image_url: null,
   serves: 4,
   recipe_book: null,
-  meal_tags: [],
   meal_ingredients: [],
 }
 

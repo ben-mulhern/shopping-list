@@ -53,7 +53,6 @@ interface Props extends RouteComponentProps {
 const MealDetailForm = (props: Props) => {
   const classes = useStyles()
   const meal = props.meal
-  const initTagString = meal.meal_tags.map((t) => t.tag).join(" ")
 
   const [redirect, setRedirect] = useState(false)
   const [description, setDescription] = useState(meal.description)
@@ -61,9 +60,7 @@ const MealDetailForm = (props: Props) => {
   const [imageUrl, setImageUrl] = useState(meal.image_url)
   const [serves, setServes] = useState(meal.serves)
   const [recipeBook, setRecipeBook] = useState(meal.recipe_book)
-  const [tagString, setTagString] = useState(initTagString)
   const [descriptionErrorText, setDescriptionErrorText] = useState("")
-  const [tagErrorText, setTagErrorText] = useState("")
   const [ingredientErrorText, setIngredientErrorText] = useState("")
   const [mealIngredients, setMealIngredients] = useState(
     Immutable.List(meal.meal_ingredients)
@@ -75,20 +72,6 @@ const MealDetailForm = (props: Props) => {
     setDescription(desc)
     const errorMessage = desc === "" ? "Description cannot be blank" : ""
     setDescriptionErrorText(errorMessage)
-  }
-
-  const handleTagString = (str: string) => {
-    const uc = str.toUpperCase()
-    setTagString(uc)
-    const strList = Immutable.List(uc.split(""))
-    const e = strList.filterNot(
-      (c) => (c >= "A" && c <= "Z") || (c >= "0" && c <= "9") || c === " "
-    )
-    const errorMessage =
-      e.size > 0 || uc.trim().length === 0
-        ? "At least one tag required, no symbols"
-        : ""
-    setTagErrorText(errorMessage)
   }
 
   const marks = Array(8)
@@ -206,21 +189,6 @@ const MealDetailForm = (props: Props) => {
             placeholder="Recipe book"
           />
         </FormControl>
-
-        <FormControl component="fieldset" className={classes.formControl}>
-          <TextField
-            label="Tags"
-            value={tagString}
-            required
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            onChange={(e) => handleTagString(e.target.value)}
-            error={!!tagErrorText}
-            helperText={tagErrorText}
-            placeholder="Tags"
-          />
-        </FormControl>
       </Paper>
       <h2 className={classes.margin}>Ingredients</h2>
       <Button
@@ -251,14 +219,9 @@ const MealDetailForm = (props: Props) => {
         dietType={dietType}
         recipeBook={recipeBook}
         imageUrl={imageUrl}
-        tagString={tagString}
         mealIngredients={mealIngredients}
         errorsExist={
-          !!descriptionErrorText ||
-          !!tagErrorText ||
-          !!ingredientErrorText ||
-          !description ||
-          !tagString
+          !!descriptionErrorText || !!ingredientErrorText || !description
         }
       />
       <Button

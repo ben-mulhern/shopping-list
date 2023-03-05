@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import {
   UPSERT_INGREDIENTS,
   UPSERT_MEAL,
-  SET_INGREDIENTS_AND_TAGS,
+  SET_INGREDIENTS,
 } from "../api/mealListApiOperations"
 import { Redirect } from "react-router"
 import {
@@ -30,7 +30,6 @@ interface Props {
   dietType: DietType
   recipeBook?: string
   imageUrl?: string
-  tagString: string
   errorsExist: boolean
 }
 
@@ -70,13 +69,9 @@ const CommitChangesButton = (props: Props) => {
   ] = useMutation(UPSERT_MEAL)
 
   const [
-    setMealIngsTags,
-    {
-      called: calledMealIngsTags,
-      loading: loadingMealIngsTags,
-      error: mealIngsTagsError,
-    },
-  ] = useMutation(SET_INGREDIENTS_AND_TAGS)
+    setMealIngs,
+    { called: calledMealIngs, loading: loadingMealIngs, error: mealIngsError },
+  ] = useMutation(SET_INGREDIENTS)
 
   const [redirect, setRedirect] = useState(false)
 
@@ -115,12 +110,8 @@ const CommitChangesButton = (props: Props) => {
     })
   }
 
-  if (calledMeal && !loadingMeal && !mealError && !calledMealIngsTags) {
+  if (calledMeal && !loadingMeal && !mealError && !calledMealIngs) {
     const mealId = mealData.insert_meal.returning[0].meal_id
-    const tags =
-      props.tagString.length === 0
-        ? []
-        : props.tagString.split(" ").map((t) => ({ meal_id: mealId, tag: t }))
     // This is the returned list of ids and descriptions from the API
     const ingResponse: Immutable.Set<Ingredient> = Immutable.Set(
       ingredientsData.insert_ingredient.returning
@@ -148,17 +139,15 @@ const CommitChangesButton = (props: Props) => {
       unit_id: nmi.unit.unit_id,
       default_question_mark: nmi.default_question_mark,
     }))
-    setMealIngsTags({
+    setMealIngs({
       variables: {
         mealId: mealId,
         mealIngredients: miInsert,
-        tags: tags,
       },
     })
   }
 
-  if (calledMealIngsTags && !loadingMealIngsTags && !mealIngsTagsError)
-    setRedirect(true)
+  if (calledMealIngs && !loadingMealIngs && !mealIngsError) setRedirect(true)
 
   return (
     <Button
@@ -167,12 +156,7 @@ const CommitChangesButton = (props: Props) => {
       className={classes.margin}
       startIcon={<SaveIcon />}
       onClick={() => saveChanges()}
-      disabled={
-        props.errorsExist ||
-        loadingIngredients ||
-        loadingMeal ||
-        loadingMealIngsTags
-      }
+      disabled={props.errorsExist || loadingIngredients || loadingMeal}
     >
       Save
     </Button>
