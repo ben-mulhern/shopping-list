@@ -88,24 +88,6 @@ CREATE TABLE meal_ingredient (
 
 );
 
-CREATE TABLE meal_tag (
-
-  CONSTRAINT pk_meal_tag PRIMARY KEY (meal_id, tag),
-
-  meal_id INT NOT NULL,
-  tag VARCHAR(20) NOT NULL
-    CONSTRAINT ck_meal_tag_tag CHECK (tag <> ''
-			 AND TRIM(TRANSLATE(tag, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-			                         '                                    ')) = ''),
-
-  CONSTRAINT fk_meal_tag_meal FOREIGN KEY (meal_id) REFERENCES meal(meal_id)
-    ON DELETE CASCADE
-	  ON UPDATE RESTRICT
-
-);
-
-CREATE INDEX meal_tag_by_tag ON meal_tag(tag);
-
 CREATE SEQUENCE shopping_list_seq;
 
 CREATE TABLE shopping_list_item (

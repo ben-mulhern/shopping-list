@@ -7,7 +7,6 @@ import CardMedia from "@material-ui/core/CardMedia"
 import CardActionArea from "@material-ui/core/CardActionArea"
 import CardActions from "@material-ui/core/CardActions"
 import Button from "@material-ui/core/Button"
-import Chip from "@material-ui/core/Chip"
 import clsx from "clsx"
 import EditIcon from "@material-ui/icons/Edit"
 import DeleteIcon from "@material-ui/icons/Delete"
@@ -185,9 +184,6 @@ const MealCard = (props: Props) => {
             <Typography variant="h5" component="h2">
               {meal.description}
             </Typography>
-            {meal.meal_tags.map((t, i) => (
-              <Chip label={t.tag} className={classes.chip} key={i} />
-            ))}
           </CardContent>
         </CardActionArea>
       </Box>

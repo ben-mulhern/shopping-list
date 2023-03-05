@@ -38,10 +38,6 @@ export type MealPlanCount = {
   meal_count: number
 }
 
-export type MealTag = {
-  tag: string
-}
-
 export type Meal = {
   meal_id: number
   description: string
@@ -50,7 +46,6 @@ export type Meal = {
   recipe_book?: string
   image_url?: string
   meal_ingredients: MealIngredient[]
-  meal_tags: MealTag[]
   meal_plan_count?: MealPlanCount
 }
 
