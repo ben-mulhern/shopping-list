@@ -2,10 +2,11 @@ import React, { useState } from "react"
 import Paper from "@material-ui/core/Paper"
 import InputBase from "@material-ui/core/InputBase"
 import IconButton from "@material-ui/core/IconButton"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import SearchIcon from "@material-ui/icons/Search"
 import { makeStyles } from "@material-ui/core/styles"
 import { setSearchString } from "../state/actions"
+import { RootState } from "../state/RootState"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,23 +30,33 @@ const Searchbox = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [localSearchString, setLocalSearchString] = useState("")
-  //const searchString = useSelector((state: RootState) => state.searchString)
+  const planOnly = useSelector((state: RootState) => state.planOnlyMode)
+  const searchString = useSelector((state: RootState) => state.searchString)
+
   return (
-    <Paper className={classes.root}>
-      <InputBase
-        className={classes.input}
-        placeholder="Search meals"
-        value={localSearchString}
-        type="search"
-        onChange={(e) => {
-          setLocalSearchString(e.target.value)
-          dispatch(setSearchString(e.target.value))
-        }}
-      />
-      <IconButton className={classes.iconButton}>
-        <SearchIcon />
-      </IconButton>
-    </Paper>
+    <div>
+      <Paper className={classes.root}>
+        <InputBase
+          className={classes.input}
+          placeholder="Search meals"
+          value={localSearchString}
+          type="search"
+          onChange={(e) => {
+            setLocalSearchString(e.target.value)
+          }}
+        />
+        <IconButton
+          className={classes.iconButton}
+          onClick={() => {
+            console.log("Clicked the search button")
+            dispatch(setSearchString(localSearchString))
+          }}
+        >
+          <SearchIcon />
+        </IconButton>
+      </Paper>
+      {!(searchString || planOnly) && <p>Showing first 20 meals only</p>}
+    </div>
   )
 }
 

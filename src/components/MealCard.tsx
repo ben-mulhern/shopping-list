@@ -39,7 +39,6 @@ import { useSelector } from "react-redux"
 import IconButton from "@material-ui/core/IconButton"
 import { RootState } from "../state/RootState"
 import { Meal } from "../domain/shoppingListTypes"
-//import mealSearch from "../domain/mealSearch"
 
 const useStyles = makeStyles({
   card: {
@@ -85,8 +84,6 @@ const MealCard = (props: Props) => {
   const [updateMealPlanCount] = useMutation(UPDATE_MEAL_PLAN_COUNT)
   const selected = props.selected
   const planOnly = useSelector((state: RootState) => state.planOnlyMode)
-  //const searchString = useSelector((state: RootState) => state.searchString)
-  //const hidden = (planOnly && !selected) || !mealSearch(searchString, meal)
   const hidden = planOnly && !selected
 
   const cardClass = clsx(classes.card, hidden && classes.hidden)

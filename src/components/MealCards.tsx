@@ -57,7 +57,12 @@ const MealCards = (props: Props) => {
     return <CircularProgress color="secondary" className={classes.margin} />
   if (error || errorSelected) return <p>Error :(</p>
 
-  const meals: Immutable.List<Meal> = Immutable.List(data.meal)
+  const allMeals: Immutable.List<Meal> = Immutable.List(data.meal)
+  const filteredMeals: Immutable.List<Meal> = allMeals.filter((m: Meal) =>
+    mealSearch(searchString, m)
+  )
+  const meals =
+    searchString || planOnly ? filteredMeals : filteredMeals.take(20)
   const selectedItems: Immutable.List<MealIngredientPlanItem> = Immutable.List(
     dataSelected.meal_ingredient_plan_item
   )
@@ -89,15 +94,13 @@ const MealCards = (props: Props) => {
         />
       </FormControl>
       <div>
-        {meals
-          .filter((m) => mealSearch(searchString, m))
-          .map((m) => (
-            <MealCard
-              meal={m}
-              key={m.meal_id}
-              selected={selectedMeals.includes(m.meal_id)}
-            />
-          ))}
+        {meals.map((m) => (
+          <MealCard
+            meal={m}
+            key={m.meal_id}
+            selected={selectedMeals.includes(m.meal_id)}
+          />
+        ))}
       </div>
     </div>
   )
